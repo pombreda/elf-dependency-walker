@@ -1,12 +1,34 @@
 package com.peter;
 
 import java.awt.BorderLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.util.Vector;
 
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.JToolBar;
+import javax.swing.JTree;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.WindowConstants;
+
+import com.petersoft.CommonLib;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
@@ -23,6 +45,8 @@ public class Application extends javax.swing.JFrame {
 	private JPanel jTreePanel;
 	private JScrollPane jScrollPane1;
 	private JScrollPane jScrollPane2;
+	private JButton jButton1;
+	private JPopupMenu jPopupMenu1;
 	private JButton jAnalystButton;
 	private JToolBar jToolBar1;
 	private JTextArea jTextArea1;
@@ -107,6 +131,21 @@ public class Application extends javax.swing.JFrame {
 						}
 					});
 				}
+				{
+					jButton1 = new JButton();
+					jToolBar1.add(jButton1);
+					jButton1.setText("_");
+					jButton1.addMouseListener(new MouseAdapter() {
+						public void mouseExited(MouseEvent evt) {
+							jButton1MouseExited(evt);
+						}
+					});
+					jButton1.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							jButton1ActionPerformed(evt);
+						}
+					});
+				}
 			}
 			int x = Setting.getInstance().getX();
 			int y = Setting.getInstance().getY();
@@ -120,8 +159,24 @@ public class Application extends javax.swing.JFrame {
 	}
 
 	private void jAnalystButtonActionPerformed(ActionEvent evt) {
-		JAnalystDialog dialog = new JAnalystDialog(this);
-		dialog.setVisible(true);
+		final JFileChooser fc = new JFileChooser(Setting.getInstance().getLastOpenPath());
+		int returnVal = fc.showOpenDialog(this);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			File file = fc.getSelectedFile();
+			Setting.getInstance().getHistoryList().add(file.getAbsolutePath());
+			Setting.getInstance().setLastOpenPath(file.getParentFile().getAbsolutePath());
+
+			String result = CommonLib.runCommand("nm " + file.getAbsolutePath());
+
+			if (result.trim().equals("") || result.contains("no symbols")) {
+				JOptionPane.showMessageDialog(this, "Not an ELF file");
+			} else {
+				jTree1 = new JTree(new ELFNode(file, result));
+				JAnalystDialog dialog = new JAnalystDialog(this, jTree1);
+				dialog.setVisible(true);
+			}
+		}
+
 	}
 
 	private void thisWindowClosing(WindowEvent evt) {
@@ -131,6 +186,36 @@ public class Application extends javax.swing.JFrame {
 		Setting.getInstance().setY(this.getLocation().y);
 		Setting.getInstance().setDivX(jSplitPane1.getDividerLocation());
 		Setting.getInstance().save();
+	}
+
+	private JPopupMenu getJPopupMenu1() {
+		if (jPopupMenu1 == null) {
+			jPopupMenu1 = new JPopupMenu();
+		}
+		return jPopupMenu1;
+	}
+
+	private void jButton1ActionPerformed(ActionEvent evt) {
+		if (getJPopupMenu1().isVisible()) {
+			getJPopupMenu1().setVisible(false);
+		} else {
+			getJPopupMenu1().removeAll();
+			Vector<String> historyList = Setting.getInstance().getHistoryList();
+			for (String str : historyList) {
+				System.out.println(str);
+				JMenuItem jMenuItem = new JMenuItem(str);
+				getJPopupMenu1().add(jMenuItem);
+			}
+
+			Point p = jButton1.getLocationOnScreen();
+			p.y += jButton1.getHeight();
+			getJPopupMenu1().setLocation(p);
+			getJPopupMenu1().setVisible(true);
+		}
+	}
+
+	private void jButton1MouseExited(MouseEvent evt) {
+		getJPopupMenu1().setVisible(false);
 	}
 
 }
