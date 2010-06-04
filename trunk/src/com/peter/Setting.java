@@ -3,17 +3,36 @@ package com.peter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.Vector;
 
 import org.apache.commons.betwixt.io.BeanReader;
 import org.apache.commons.betwixt.io.BeanWriter;
 
 public class Setting {
 	private static Setting setting = null;
-	int x;
-	int y;
-	int width;
-	int height;
-	int divX;
+	private int x;
+	private int y;
+	private int width;
+	private int height;
+	private int divX;
+	private String lastOpenPath;
+	private Vector<String> historyList = new Vector<String>();
+
+	public Vector<String> getHistoryList() {
+		return historyList;
+	}
+
+	public void setHistoryList(Vector<String> historyList) {
+		this.historyList = historyList;
+	}
+
+	public String getLastOpenPath() {
+		return lastOpenPath;
+	}
+
+	public void setLastOpenPath(String lastOpenPath) {
+		this.lastOpenPath = lastOpenPath;
+	}
 
 	public Setting() {
 		width = 800;
@@ -126,6 +145,12 @@ public class Setting {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return new Setting();
+		}
+	}
+
+	public void addHistoryList(String str) {
+		if (str != null) {
+			historyList.add(str);
 		}
 	}
 
