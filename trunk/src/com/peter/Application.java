@@ -1,10 +1,8 @@
 package com.peter;
 
 import java.awt.BorderLayout;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -12,7 +10,6 @@ import java.io.File;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -29,6 +26,7 @@ import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
 import com.petersoft.CommonLib;
+import com.petersoft.advancedswing.jdropdownbutton.JDropDownButton;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
@@ -45,9 +43,8 @@ public class Application extends javax.swing.JFrame {
 	private JPanel jTreePanel;
 	private JScrollPane jScrollPane1;
 	private JScrollPane jScrollPane2;
-	private JButton jButton1;
 	private JPopupMenu jPopupMenu1;
-	private JButton jAnalystButton;
+	private JDropDownButton jAnalystButton;
 	private JToolBar jToolBar1;
 	private JTextArea jTextArea1;
 	private JTree jTree1;
@@ -122,29 +119,19 @@ public class Application extends javax.swing.JFrame {
 				jToolBar1 = new JToolBar();
 				getContentPane().add(jToolBar1, BorderLayout.NORTH);
 				{
-					jAnalystButton = new JButton();
+					jAnalystButton = new JDropDownButton();
 					jToolBar1.add(jAnalystButton);
 					jAnalystButton.setText("Analyst");
+					jAnalystButton.setMaximumSize(new java.awt.Dimension(75, 962));
 					jAnalystButton.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							jAnalystButtonActionPerformed(evt);
 						}
 					});
-				}
-				{
-					jButton1 = new JButton();
-					jToolBar1.add(jButton1);
-					jButton1.setText("_");
-					jButton1.addMouseListener(new MouseAdapter() {
-						public void mouseExited(MouseEvent evt) {
-							jButton1MouseExited(evt);
-						}
-					});
-					jButton1.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent evt) {
-							jButton1ActionPerformed(evt);
-						}
-					});
+					Vector<String> historyVector = Setting.getInstance().getHistoryList();
+					for (String str : historyVector) {
+						jAnalystButton.add(new JMenuItem(str));
+					}
 				}
 			}
 			int x = Setting.getInstance().getX();
@@ -193,25 +180,6 @@ public class Application extends javax.swing.JFrame {
 			jPopupMenu1 = new JPopupMenu();
 		}
 		return jPopupMenu1;
-	}
-
-	private void jButton1ActionPerformed(ActionEvent evt) {
-		if (getJPopupMenu1().isVisible()) {
-			getJPopupMenu1().setVisible(false);
-		} else {
-			getJPopupMenu1().removeAll();
-			Vector<String> historyList = Setting.getInstance().getHistoryList();
-			for (String str : historyList) {
-				System.out.println(str);
-				JMenuItem jMenuItem = new JMenuItem(str);
-				getJPopupMenu1().add(jMenuItem);
-			}
-
-			Point p = jButton1.getLocationOnScreen();
-			p.y += jButton1.getHeight();
-			getJPopupMenu1().setLocation(p);
-			getJPopupMenu1().setVisible(true);
-		}
 	}
 
 	private void jButton1MouseExited(MouseEvent evt) {
