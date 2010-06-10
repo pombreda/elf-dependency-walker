@@ -1,13 +1,14 @@
 <?xml version='1.0' ?>  <Setting>
     <divX>255</divX>
-    <height>385</height>
+    <height>618</height>
     <historyList>
       <historyList>/lib/libc.so.6</historyList>
       <historyList>/lib/libm.so.6</historyList>
       <historyList>/lib/libaudit.so.1</historyList>
+      <historyList>/usr/local/lib/libtokyotyrant.so</historyList>
     </historyList>
-    <lastOpenPath>/lib</lastOpenPath>
-    <width>669</width>
-    <x>259</x>
-    <y>135</y>
+    <lastOpenPath>/usr/local/lib</lastOpenPath>
+    <width>1036</width>
+    <x>127</x>
+    <y>91</y>
   </Setting>
