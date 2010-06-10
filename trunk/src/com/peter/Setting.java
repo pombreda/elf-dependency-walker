@@ -3,6 +3,7 @@ package com.peter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.LinkedHashSet;
 import java.util.Vector;
 
 import org.apache.commons.betwixt.io.BeanReader;
@@ -16,13 +17,13 @@ public class Setting {
 	private int height;
 	private int divX;
 	private String lastOpenPath;
-	private Vector<String> historyList = new Vector<String>();
+	private LinkedHashSet<String> historyList = new LinkedHashSet<String>();
 
-	public Vector<String> getHistoryList() {
+	public LinkedHashSet<String> getHistoryList() {
 		return historyList;
 	}
 
-	public void setHistoryList(Vector<String> historyList) {
+	public void setHistoryList(LinkedHashSet<String> historyList) {
 		this.historyList = historyList;
 	}
 

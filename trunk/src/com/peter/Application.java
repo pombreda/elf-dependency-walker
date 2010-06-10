@@ -7,7 +7,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.util.Vector;
+import java.util.LinkedHashSet;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -29,14 +29,10 @@ import com.petersoft.CommonLib;
 import com.petersoft.advancedswing.jdropdownbutton.JDropDownButton;
 
 /**
- * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
- * Builder, which is free for non-commercial use. If Jigloo is being used
- * commercially (ie, by a corporation, company or business for any purpose
- * whatever) then you should purchase a license for each developer using Jigloo.
- * Please visit www.cloudgarden.com for details. Use of Jigloo implies
- * acceptance of these licensing terms. A COMMERCIAL LICENSE HAS NOT BEEN
- * PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR
- * ANY CORPORATE OR COMMERCIAL PURPOSE.
+ * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI Builder, which is free for non-commercial use. If Jigloo is being used commercially (ie, by a
+ * corporation, company or business for any purpose whatever) then you should purchase a license for each developer using Jigloo. Please visit www.cloudgarden.com for details. Use
+ * of Jigloo implies acceptance of these licensing terms. A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR ANY
+ * CORPORATE OR COMMERCIAL PURPOSE.
  */
 public class Application extends javax.swing.JFrame {
 	private JTabbedPane jTabbedPane1;
@@ -49,6 +45,7 @@ public class Application extends javax.swing.JFrame {
 	private JTextArea jTextArea1;
 	private JTree jTree1;
 	private JSplitPane jSplitPane1;
+	private MyTreeModel myTreeModel = new MyTreeModel(null);
 
 	/**
 	 * Auto-generated main method to display this JFrame
@@ -98,7 +95,8 @@ public class Application extends javax.swing.JFrame {
 							jSplitPane1.add(jScrollPane1, JSplitPane.LEFT);
 							jScrollPane1.setPreferredSize(new java.awt.Dimension(79, 541));
 							{
-								jTree1 = new JTree();
+								jTree1 = new JTree(myTreeModel);
+								// jTree1.setVisible(false);
 								jScrollPane1.setViewportView(jTree1);
 							}
 						}
@@ -122,13 +120,13 @@ public class Application extends javax.swing.JFrame {
 					jAnalystButton = new JDropDownButton();
 					jToolBar1.add(jAnalystButton);
 					jAnalystButton.setText("Analyst");
-					jAnalystButton.setMaximumSize(new java.awt.Dimension(75, 962));
+					jAnalystButton.setMaximumSize(new java.awt.Dimension(85, 962));
 					jAnalystButton.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							jAnalystButtonActionPerformed(evt);
 						}
 					});
-					Vector<String> historyVector = Setting.getInstance().getHistoryList();
+					LinkedHashSet<String> historyVector = Setting.getInstance().getHistoryList();
 					for (String str : historyVector) {
 						jAnalystButton.add(new JMenuItem(str));
 					}
@@ -146,10 +144,18 @@ public class Application extends javax.swing.JFrame {
 	}
 
 	private void jAnalystButtonActionPerformed(ActionEvent evt) {
-		final JFileChooser fc = new JFileChooser(Setting.getInstance().getLastOpenPath());
-		int returnVal = fc.showOpenDialog(this);
-		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			File file = fc.getSelectedFile();
+		File file = null;
+		System.out.println(jAnalystButton.getEventSource());
+		if (jAnalystButton.getEventSource() == null) {
+			final JFileChooser fc = new JFileChooser(Setting.getInstance().getLastOpenPath());
+			int returnVal = fc.showOpenDialog(this);
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				file = fc.getSelectedFile();
+			}
+		} else {
+			file = new File(((JMenuItem) jAnalystButton.getEventSource()).getText());
+		}
+		if (file != null && file.exists()) {
 			Setting.getInstance().getHistoryList().add(file.getAbsolutePath());
 			Setting.getInstance().setLastOpenPath(file.getParentFile().getAbsolutePath());
 
@@ -158,12 +164,12 @@ public class Application extends javax.swing.JFrame {
 			if (result.trim().equals("") || result.contains("no symbols")) {
 				JOptionPane.showMessageDialog(this, "Not an ELF file");
 			} else {
-				jTree1 = new JTree(new ELFNode(file, result));
+				System.out.println(result);
+				myTreeModel.setRoot(new ELFNode(file, result));
 				JAnalystDialog dialog = new JAnalystDialog(this, jTree1);
 				dialog.setVisible(true);
 			}
 		}
-
 	}
 
 	private void thisWindowClosing(WindowEvent evt) {
