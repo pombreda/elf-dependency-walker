@@ -79,15 +79,36 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 
 	@Override
 	public void run() {
-		((MyTreeModel) jTree.getModel()).setRoot(analystELF(file, null));
+		ELFNode node = analystELF(file, null);
+		System.out.println(node.getChildCount());
+		((MyTreeModel) jTree.getModel()).setRoot(node);
+		jLabel1.setText("End");
 	}
 
 	private ELFNode analystELF(File file, ELFNode parent) {
 		jLabel1.setText(file.getAbsolutePath());
-		String result = CommonLib.runCommand("nm " + file.getAbsolutePath());
-		System.out.println(result);
-		ELFNode node = new ELFNode(file, result, parent);
-		node.child=
+
+		System.out.println("readelf -a " + file.getAbsolutePath());
+		String result = CommonLib.runCommand("readelf -a " + file.getAbsolutePath());
+		System.out.println("runCommand end");
+		// System.out.println(result);
+		String lines[] = result.split("\n");
+
+		ELFNode node = new ELFNode(file, parent);
+		if (parent != null) {
+			parent.child.add(node);
+		}
+
+		for (String line : lines) {
+			if (line.toLowerCase().contains("needed")) {
+				String words[] = line.split("[\\[\\]]");
+				if (words.length > 0) {
+					if (new File("/lib/" + words[1]).exists()) {
+						analystELF(new File("/lib/" + words[1]), node);
+					}
+				}
+			}
+		}
 		return node;
 	}
 

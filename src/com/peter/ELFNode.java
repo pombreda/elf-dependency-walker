@@ -15,9 +15,8 @@ public class ELFNode implements TreeNode {
 	ELFNode parent;
 	LinkedHashSet<ELFNode> child = new LinkedHashSet<ELFNode>();
 
-	public ELFNode(File file, String nmResult, ELFNode parent) {
+	public ELFNode(File file, ELFNode parent) {
 		this.file = file;
-		this.nmResult = nmResult;
 		this.parent = parent;
 	}
 
@@ -36,8 +35,7 @@ public class ELFNode implements TreeNode {
 
 	@Override
 	public boolean getAllowsChildren() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
@@ -67,6 +65,6 @@ public class ELFNode implements TreeNode {
 
 	@Override
 	public boolean isLeaf() {
-		return getChildCount() > 0;
+		return getChildCount() == 0;
 	}
 }
