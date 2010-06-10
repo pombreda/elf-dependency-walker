@@ -1,19 +1,24 @@
 package com.peter;
 
 import java.io.File;
+import java.util.Enumeration;
+import java.util.LinkedHashSet;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
 
-public class ELFNode extends DefaultMutableTreeNode {
+public class ELFNode implements TreeNode {
 	Icon icon = new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/script.png"));
 	File file;
 	String nmResult;
+	ELFNode parent;
+	LinkedHashSet<ELFNode> child = new LinkedHashSet<ELFNode>();
 
-	public ELFNode(File file, String nmResult) {
+	public ELFNode(File file, String nmResult, ELFNode parent) {
 		this.file = file;
 		this.nmResult = nmResult;
+		this.parent = parent;
 	}
 
 	public Icon getIcon() {
@@ -22,5 +27,46 @@ public class ELFNode extends DefaultMutableTreeNode {
 
 	public String toString() {
 		return file.getName();
+	}
+
+	@Override
+	public Enumeration children() {
+		return (Enumeration) child;
+	}
+
+	@Override
+	public boolean getAllowsChildren() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public TreeNode getChildAt(int childIndex) {
+		return (TreeNode) child.toArray()[childIndex];
+	}
+
+	@Override
+	public int getChildCount() {
+		return child.size();
+	}
+
+	@Override
+	public int getIndex(TreeNode node) {
+		for (int x = 0; x < getChildCount() - 1; x++) {
+			if (child.toArray()[x] == node) {
+				return x;
+			}
+		}
+		return -1;
+	}
+
+	@Override
+	public TreeNode getParent() {
+		return parent;
+	}
+
+	@Override
+	public boolean isLeaf() {
+		return getChildCount() > 0;
 	}
 }

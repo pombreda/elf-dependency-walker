@@ -3,7 +3,6 @@ package com.peter;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -14,7 +13,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
@@ -29,17 +27,20 @@ import com.petersoft.CommonLib;
 import com.petersoft.advancedswing.jdropdownbutton.JDropDownButton;
 
 /**
- * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI Builder, which is free for non-commercial use. If Jigloo is being used commercially (ie, by a
- * corporation, company or business for any purpose whatever) then you should purchase a license for each developer using Jigloo. Please visit www.cloudgarden.com for details. Use
- * of Jigloo implies acceptance of these licensing terms. A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR ANY
- * CORPORATE OR COMMERCIAL PURPOSE.
+ * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
+ * Builder, which is free for non-commercial use. If Jigloo is being used
+ * commercially (ie, by a corporation, company or business for any purpose
+ * whatever) then you should purchase a license for each developer using Jigloo.
+ * Please visit www.cloudgarden.com for details. Use of Jigloo implies
+ * acceptance of these licensing terms. A COMMERCIAL LICENSE HAS NOT BEEN
+ * PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR
+ * ANY CORPORATE OR COMMERCIAL PURPOSE.
  */
 public class Application extends javax.swing.JFrame {
 	private JTabbedPane jTabbedPane1;
 	private JPanel jTreePanel;
 	private JScrollPane jScrollPane1;
 	private JScrollPane jScrollPane2;
-	private JPopupMenu jPopupMenu1;
 	private JDropDownButton jAnalystButton;
 	private JToolBar jToolBar1;
 	private JTextArea jTextArea1;
@@ -145,7 +146,6 @@ public class Application extends javax.swing.JFrame {
 
 	private void jAnalystButtonActionPerformed(ActionEvent evt) {
 		File file = null;
-		System.out.println(jAnalystButton.getEventSource());
 		if (jAnalystButton.getEventSource() == null) {
 			final JFileChooser fc = new JFileChooser(Setting.getInstance().getLastOpenPath());
 			int returnVal = fc.showOpenDialog(this);
@@ -159,16 +159,8 @@ public class Application extends javax.swing.JFrame {
 			Setting.getInstance().getHistoryList().add(file.getAbsolutePath());
 			Setting.getInstance().setLastOpenPath(file.getParentFile().getAbsolutePath());
 
-			String result = CommonLib.runCommand("nm " + file.getAbsolutePath());
-
-			if (result.trim().equals("") || result.contains("no symbols")) {
-				JOptionPane.showMessageDialog(this, "Not an ELF file");
-			} else {
-				System.out.println(result);
-				myTreeModel.setRoot(new ELFNode(file, result));
-				JAnalystDialog dialog = new JAnalystDialog(this, jTree1);
-				dialog.setVisible(true);
-			}
+			JAnalystDialog dialog = new JAnalystDialog(this, jTree1, file);
+			dialog.setVisible(true);
 		}
 	}
 
@@ -179,17 +171,6 @@ public class Application extends javax.swing.JFrame {
 		Setting.getInstance().setY(this.getLocation().y);
 		Setting.getInstance().setDivX(jSplitPane1.getDividerLocation());
 		Setting.getInstance().save();
-	}
-
-	private JPopupMenu getJPopupMenu1() {
-		if (jPopupMenu1 == null) {
-			jPopupMenu1 = new JPopupMenu();
-		}
-		return jPopupMenu1;
-	}
-
-	private void jButton1MouseExited(MouseEvent evt) {
-		getJPopupMenu1().setVisible(false);
 	}
 
 }
