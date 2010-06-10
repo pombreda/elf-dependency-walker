@@ -1,7 +1,13 @@
 <?xml version='1.0' ?>  <Setting>
-    <divX>182</divX>
-    <height>488</height>
-    <width>865</width>
-    <x>245</x>
-    <y>109</y>
+    <divX>255</divX>
+    <height>385</height>
+    <historyList>
+      <historyList>/lib/libc.so.6</historyList>
+      <historyList>/lib/libm.so.6</historyList>
+      <historyList>/lib/libaudit.so.1</historyList>
+    </historyList>
+    <lastOpenPath>/lib</lastOpenPath>
+    <width>669</width>
+    <x>259</x>
+    <y>135</y>
   </Setting>

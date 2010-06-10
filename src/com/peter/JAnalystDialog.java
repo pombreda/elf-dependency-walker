@@ -1,14 +1,14 @@
 package com.peter;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JTree;
 import javax.swing.LayoutStyle;
 
@@ -28,10 +28,12 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 	private JButton jCancelButton;
 	private JLabel jLabel1;
 	private JTree jTree;
+	private File file;
 
-	public JAnalystDialog(JFrame frame, JTree jTree) {
+	public JAnalystDialog(JFrame frame, JTree jTree, File file) {
 		super(frame);
 		this.jTree = jTree;
+		this.file = file;
 
 		// File files[] = new File("/lib").listFiles();
 		// for (File file : files) {
@@ -40,8 +42,6 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 
 		initGUI();
 		CommonLib.centerDialog(this);
-
-		new Thread(this).start();
 	}
 
 	private void initGUI() {
@@ -50,6 +50,11 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 				GroupLayout thisLayout = new GroupLayout((JComponent) getContentPane());
 				getContentPane().setLayout(thisLayout);
 				this.setTitle("Analyting");
+				this.addWindowListener(new WindowAdapter() {
+					public void windowActivated(WindowEvent evt) {
+						thisWindowActivated(evt);
+					}
+				});
 				{
 					jCancelButton = new JButton();
 					jCancelButton.setText("Cancel");
@@ -74,6 +79,19 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 
 	@Override
 	public void run() {
+		((MyTreeModel) jTree.getModel()).setRoot(analystELF(file, null));
+	}
 
+	private ELFNode analystELF(File file, ELFNode parent) {
+		jLabel1.setText(file.getAbsolutePath());
+		String result = CommonLib.runCommand("nm " + file.getAbsolutePath());
+		System.out.println(result);
+		ELFNode node = new ELFNode(file, result, parent);
+		node.child=
+		return node;
+	}
+
+	private void thisWindowActivated(WindowEvent evt) {
+		new Thread(this).start();
 	}
 }
