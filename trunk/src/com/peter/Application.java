@@ -180,8 +180,12 @@ public class Application extends javax.swing.JFrame {
 	}
 
 	private void jTree1ValueChanged(TreeSelectionEvent evt) {
-		ELFNode node = (ELFNode) jTree1.getLastSelectedPathComponent();
-		jTextArea1.setText(node.getNmResult());
+		try {
+			ELFNode node = (ELFNode) jTree1.getLastSelectedPathComponent();
+			jTextArea1.setText(node.getNmResult());
+		} catch (Exception ex) {
+
+		}
 	}
 
 }
