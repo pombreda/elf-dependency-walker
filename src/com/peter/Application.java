@@ -11,7 +11,6 @@ import java.util.LinkedHashSet;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -22,8 +21,9 @@ import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 
-import com.petersoft.CommonLib;
 import com.petersoft.advancedswing.jdropdownbutton.JDropDownButton;
 
 /**
@@ -97,8 +97,14 @@ public class Application extends javax.swing.JFrame {
 							jScrollPane1.setPreferredSize(new java.awt.Dimension(79, 541));
 							{
 								jTree1 = new JTree(myTreeModel);
-								// jTree1.setVisible(false);
+								jTree1.setShowsRootHandles(true);
+								jTree1.setCellRenderer(new MyTreeRenderer());
 								jScrollPane1.setViewportView(jTree1);
+								jTree1.addTreeSelectionListener(new TreeSelectionListener() {
+									public void valueChanged(TreeSelectionEvent evt) {
+										jTree1ValueChanged(evt);
+									}
+								});
 							}
 						}
 						{
@@ -171,6 +177,11 @@ public class Application extends javax.swing.JFrame {
 		Setting.getInstance().setY(this.getLocation().y);
 		Setting.getInstance().setDivX(jSplitPane1.getDividerLocation());
 		Setting.getInstance().save();
+	}
+
+	private void jTree1ValueChanged(TreeSelectionEvent evt) {
+		ELFNode node = (ELFNode) jTree1.getLastSelectedPathComponent();
+		jTextArea1.setText(node.getNmResult());
 	}
 
 }

@@ -13,6 +13,8 @@ import javax.swing.JTree;
 import javax.swing.LayoutStyle;
 
 import com.petersoft.CommonLib;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
@@ -57,6 +59,11 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 				});
 				{
 					jCancelButton = new JButton();
+					jCancelButton.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							jCancelButtonActionPerformed(evt);
+						}
+					});
 					jCancelButton.setText("Cancel");
 				}
 				{
@@ -80,9 +87,8 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 	@Override
 	public void run() {
 		ELFNode node = analystELF(file, null);
-		System.out.println(node.getChildCount());
 		((MyTreeModel) jTree.getModel()).setRoot(node);
-		jLabel1.setText("End");
+		this.jCancelButton.setText("Finished");
 	}
 
 	private ELFNode analystELF(File file, ELFNode parent) {
@@ -94,7 +100,7 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 		// System.out.println(result);
 		String lines[] = result.split("\n");
 
-		ELFNode node = new ELFNode(file, parent);
+		ELFNode node = new ELFNode(file, result, parent);
 		if (parent != null) {
 			parent.child.add(node);
 		}
@@ -114,5 +120,9 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 
 	private void thisWindowActivated(WindowEvent evt) {
 		new Thread(this).start();
+	}
+
+	private void jCancelButtonActionPerformed(ActionEvent evt) {
+		this.setVisible(false);
 	}
 }
