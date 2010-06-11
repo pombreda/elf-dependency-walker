@@ -94,9 +94,7 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 	private ELFNode analystELF(File file, ELFNode parent) {
 		jLabel1.setText(file.getAbsolutePath());
 
-		System.out.println("readelf -a " + file.getAbsolutePath());
 		String result = CommonLib.runCommand("readelf -a " + file.getAbsolutePath());
-		System.out.println("runCommand end");
 		// System.out.println(result);
 		String lines[] = result.split("\n");
 
