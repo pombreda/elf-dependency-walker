@@ -1,0 +1,14 @@
+#Fat Jar Configuration File
+#Fri Jun 11 22:37:06 GMT+08:00 2010
+onejar.license.required=true
+manifest.classpath=
+manifest.removesigners=true
+onejar.checkbox=false
+jarname=elf-dependency-walker_fat.jar
+manifest.mergeall=true
+manifest.mainclass=com.peter.Application
+manifest.file=<createnew>
+jarname.isextern=false
+onejar.expand=
+excludes=
+includes=
