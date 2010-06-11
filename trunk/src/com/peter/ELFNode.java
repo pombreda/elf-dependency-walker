@@ -12,12 +12,22 @@ public class ELFNode implements TreeNode {
 	Icon icon = new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/script.png"));
 	File file;
 	String nmResult;
+
+	public String getNmResult() {
+		return nmResult;
+	}
+
+	public void setNmResult(String nmResult) {
+		this.nmResult = nmResult;
+	}
+
 	ELFNode parent;
 	LinkedHashSet<ELFNode> child = new LinkedHashSet<ELFNode>();
 
-	public ELFNode(File file, ELFNode parent) {
+	public ELFNode(File file, String result, ELFNode parent) {
 		this.file = file;
 		this.parent = parent;
+		this.nmResult = result;
 	}
 
 	public Icon getIcon() {
@@ -67,4 +77,5 @@ public class ELFNode implements TreeNode {
 	public boolean isLeaf() {
 		return getChildCount() == 0;
 	}
+
 }
