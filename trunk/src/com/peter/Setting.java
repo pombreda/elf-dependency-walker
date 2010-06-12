@@ -150,6 +150,7 @@ public class Setting {
 	}
 
 	public void addHistoryList(String str) {
+		historyList.remove(str);
 		if (str != null) {
 			historyList.add(str);
 		}
