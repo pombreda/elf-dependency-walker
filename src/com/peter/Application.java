@@ -27,14 +27,10 @@ import javax.swing.event.TreeSelectionListener;
 import com.petersoft.advancedswing.jdropdownbutton.JDropDownButton;
 
 /**
- * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
- * Builder, which is free for non-commercial use. If Jigloo is being used
- * commercially (ie, by a corporation, company or business for any purpose
- * whatever) then you should purchase a license for each developer using Jigloo.
- * Please visit www.cloudgarden.com for details. Use of Jigloo implies
- * acceptance of these licensing terms. A COMMERCIAL LICENSE HAS NOT BEEN
- * PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR
- * ANY CORPORATE OR COMMERCIAL PURPOSE.
+ * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI Builder, which is free for non-commercial use. If Jigloo is being used commercially (ie, by a
+ * corporation, company or business for any purpose whatever) then you should purchase a license for each developer using Jigloo. Please visit www.cloudgarden.com for details. Use
+ * of Jigloo implies acceptance of these licensing terms. A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR ANY
+ * CORPORATE OR COMMERCIAL PURPOSE.
  */
 public class Application extends javax.swing.JFrame {
 	private JTabbedPane jTabbedPane1;
@@ -133,10 +129,7 @@ public class Application extends javax.swing.JFrame {
 							jAnalystButtonActionPerformed(evt);
 						}
 					});
-					LinkedHashSet<String> historyVector = Setting.getInstance().getHistoryList();
-					for (String str : historyVector) {
-						jAnalystButton.add(new JMenuItem(str));
-					}
+					addHistoryMenuitems();
 				}
 			}
 			int x = Setting.getInstance().getX();
@@ -162,11 +155,24 @@ public class Application extends javax.swing.JFrame {
 			file = new File(((JMenuItem) jAnalystButton.getEventSource()).getText());
 		}
 		if (file != null && file.exists()) {
+			Setting.getInstance().addHistoryList(file.getAbsolutePath());
+			addHistoryMenuitems();
+
 			Setting.getInstance().getHistoryList().add(file.getAbsolutePath());
 			Setting.getInstance().setLastOpenPath(file.getParentFile().getAbsolutePath());
 
 			JAnalystDialog dialog = new JAnalystDialog(this, jTree1, file);
 			dialog.setVisible(true);
+		}
+	}
+
+	private void addHistoryMenuitems() {
+		jAnalystButton.removeAll();
+		LinkedHashSet<String> historyVector = Setting.getInstance().getHistoryList();
+		for (String str : historyVector) {
+			if (new File(str).exists()) {
+				jAnalystButton.insert(new JMenuItem(str), 0);
+			}
 		}
 	}
 
