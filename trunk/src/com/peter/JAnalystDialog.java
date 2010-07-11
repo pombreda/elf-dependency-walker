@@ -17,14 +17,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
- * Builder, which is free for non-commercial use. If Jigloo is being used
- * commercially (ie, by a corporation, company or business for any purpose
- * whatever) then you should purchase a license for each developer using Jigloo.
- * Please visit www.cloudgarden.com for details. Use of Jigloo implies
- * acceptance of these licensing terms. A COMMERCIAL LICENSE HAS NOT BEEN
- * PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR
- * ANY CORPORATE OR COMMERCIAL PURPOSE.
+ * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI Builder, which is free for non-commercial use. If Jigloo is being used commercially (ie, by a
+ * corporation, company or business for any purpose whatever) then you should purchase a license for each developer using Jigloo. Please visit www.cloudgarden.com for details. Use
+ * of Jigloo implies acceptance of these licensing terms. A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR ANY
+ * CORPORATE OR COMMERCIAL PURPOSE.
  */
 public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 	private JButton jCancelButton;
@@ -69,14 +65,20 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 				{
 					jLabel1 = new JLabel();
 				}
-				thisLayout.setVerticalGroup(thisLayout.createSequentialGroup().addContainerGap().addComponent(jLabel1, 0, 44, Short.MAX_VALUE).addPreferredGap(
-						LayoutStyle.ComponentPlacement.RELATED).addComponent(jCancelButton, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addContainerGap());
-				thisLayout.setHorizontalGroup(thisLayout.createSequentialGroup().addContainerGap().addGroup(
-						thisLayout.createParallelGroup().addComponent(jLabel1, GroupLayout.Alignment.LEADING, 0, 378, Short.MAX_VALUE).addGroup(
-								GroupLayout.Alignment.LEADING,
-								thisLayout.createSequentialGroup().addGap(0, 317, Short.MAX_VALUE).addComponent(jCancelButton, GroupLayout.PREFERRED_SIZE, 62,
-										GroupLayout.PREFERRED_SIZE))).addContainerGap());
+				thisLayout.setVerticalGroup(thisLayout.createSequentialGroup().addContainerGap().addComponent(jLabel1, 0, 44, Short.MAX_VALUE)
+						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(jCancelButton, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE).addContainerGap());
+				thisLayout.setHorizontalGroup(thisLayout
+						.createSequentialGroup()
+						.addContainerGap()
+						.addGroup(
+								thisLayout
+										.createParallelGroup()
+										.addComponent(jLabel1, GroupLayout.Alignment.LEADING, 0, 378, Short.MAX_VALUE)
+										.addGroup(
+												GroupLayout.Alignment.LEADING,
+												thisLayout.createSequentialGroup().addGap(0, 317, Short.MAX_VALUE)
+														.addComponent(jCancelButton, GroupLayout.PREFERRED_SIZE, 62, GroupLayout.PREFERRED_SIZE))).addContainerGap());
 			}
 			this.setSize(418, 126);
 		} catch (Exception e) {
@@ -109,6 +111,10 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 				if (words.length > 0) {
 					if (new File("/lib/" + words[1]).exists()) {
 						analystELF(new File("/lib/" + words[1]), node);
+					} else if (new File("/usr/lib/" + words[1]).exists()) {
+						analystELF(new File("/usr/lib/" + words[1]), node);
+					} else if (new File("/usr/local/lib/" + words[1]).exists()) {
+						analystELF(new File("/usr/local/lib/" + words[1]), node);
 					}
 				}
 			}
