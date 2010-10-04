@@ -123,7 +123,9 @@ public class Application extends javax.swing.JFrame {
 					jAnalystButton = new JDropDownButton();
 					jToolBar1.add(jAnalystButton);
 					jAnalystButton.setText("Analyst");
-					jAnalystButton.setMaximumSize(new java.awt.Dimension(85, 962));
+					jAnalystButton.setMaximumSize(new java.awt.Dimension(100, 28));
+					jAnalystButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/folder_page.png")));
+					jAnalystButton.setPreferredSize(new java.awt.Dimension(100, 28));
 					jAnalystButton.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							jAnalystButtonActionPerformed(evt);
@@ -135,6 +137,7 @@ public class Application extends javax.swing.JFrame {
 			int x = Setting.getInstance().getX();
 			int y = Setting.getInstance().getY();
 			setLocation(x, y);
+			this.setSize(399, 520);
 
 			setSize(Setting.getInstance().getWidth(), Setting.getInstance().getHeight());
 			jSplitPane1.setDividerLocation(Setting.getInstance().getDivX());

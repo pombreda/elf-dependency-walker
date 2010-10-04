@@ -1,6 +1,6 @@
 <?xml version='1.0' ?>  <Setting>
     <divX>255</divX>
-    <height>618</height>
+    <height>621</height>
     <historyList>
       <historyList>/lib/libaudit.so.1</historyList>
       <historyList>/usr/local/lib/libtokyotyrant.so</historyList>
@@ -14,9 +14,11 @@
       <historyList>/root/libxml-install/lib/libxml2.so</historyList>
       <historyList>/root/zlib-install/lib/libz.so</historyList>
       <historyList>/root/workspace/peter-bochs-debugger/lib/jogl-1.1.1-linux-i586/lib/libjogl.so</historyList>
+      <historyList>/root/Desktop/workspace/peter-bochs-debugger/lib/jogl-1.1.1-linux-i586/lib/libjogl.so</historyList>
+      <historyList>/root/Desktop/workspace/plibc/library/testingLibrary/test.exe</historyList>
     </historyList>
-    <lastOpenPath>/root/workspace/peter-bochs-debugger/lib/jogl-1.1.1-linux-i586/lib</lastOpenPath>
-    <width>1036</width>
+    <lastOpenPath>/root/Desktop/workspace/plibc/library/testingLibrary</lastOpenPath>
+    <width>1035</width>
     <x>167</x>
-    <y>119</y>
+    <y>116</y>
   </Setting>
