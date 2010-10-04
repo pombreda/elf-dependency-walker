@@ -126,7 +126,6 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 					} else if (new File(file.getParent() + "/" + words[1]).exists()) {
 						analystELF(new File(file.getParent() + "/" + words[1]), node);
 					} else {
-						System.out.println("fuck " + file.getParent() + "/" + words[1]);
 						node.child.add(new ELFNode(new File(words[1]), "not found", parent));
 					}
 				}
