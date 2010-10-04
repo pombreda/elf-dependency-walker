@@ -17,10 +17,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI Builder, which is free for non-commercial use. If Jigloo is being used commercially (ie, by a
- * corporation, company or business for any purpose whatever) then you should purchase a license for each developer using Jigloo. Please visit www.cloudgarden.com for details. Use
- * of Jigloo implies acceptance of these licensing terms. A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR ANY
- * CORPORATE OR COMMERCIAL PURPOSE.
+ * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
+ * Builder, which is free for non-commercial use. If Jigloo is being used
+ * commercially (ie, by a corporation, company or business for any purpose
+ * whatever) then you should purchase a license for each developer using Jigloo.
+ * Please visit www.cloudgarden.com for details. Use of Jigloo implies
+ * acceptance of these licensing terms. A COMMERCIAL LICENSE HAS NOT BEEN
+ * PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR
+ * ANY CORPORATE OR COMMERCIAL PURPOSE.
  */
 public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 	private JButton jCancelButton;
@@ -115,6 +119,15 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 						analystELF(new File("/usr/lib/" + words[1]), node);
 					} else if (new File("/usr/local/lib/" + words[1]).exists()) {
 						analystELF(new File("/usr/local/lib/" + words[1]), node);
+					} else if (new File("/lib/" + words[1]).exists()) {
+						analystELF(new File("/lib/" + words[1]), node);
+					} else if (new File("/usr/lib/" + words[1]).exists()) {
+						analystELF(new File("/usr/lib/" + words[1]), node);
+					} else if (new File(file.getParent() + "/" + words[1]).exists()) {
+						analystELF(new File(file.getParent() + "/" + words[1]), node);
+					} else {
+						System.out.println("fuck " + file.getParent() + "/" + words[1]);
+						node.child.add(new ELFNode(new File(words[1]), "not found", parent));
 					}
 				}
 			}
