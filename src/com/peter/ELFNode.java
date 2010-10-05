@@ -10,6 +10,7 @@ import javax.swing.tree.TreeNode;
 
 public class ELFNode implements TreeNode {
 	Icon icon = new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/script.png"));
+	Icon notFoundIcon = new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/cross.png"));
 	File file;
 	String nmResult;
 
@@ -31,7 +32,11 @@ public class ELFNode implements TreeNode {
 	}
 
 	public Icon getIcon() {
-		return icon;
+		if (nmResult.equals("not found")) {
+			return notFoundIcon;
+		} else {
+			return icon;
+		}
 	}
 
 	public String toString() {
