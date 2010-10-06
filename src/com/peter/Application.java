@@ -1,6 +1,7 @@
 package com.peter;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -22,8 +23,11 @@ import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.text.Element;
 
 import com.petersoft.advancedswing.jdropdownbutton.JDropDownButton;
 
@@ -44,6 +48,7 @@ public class Application extends javax.swing.JFrame {
 	private JTree jTree1;
 	private JSplitPane jSplitPane1;
 	private MyTreeModel myTreeModel = new MyTreeModel(null);
+	final JEditorPane lines = new JEditorPane();
 
 	/**
 	 * Auto-generated main method to display this JFrame
@@ -111,7 +116,11 @@ public class Application extends javax.swing.JFrame {
 							{
 								jTextArea1 = new JEditorPane();
 								jScrollPane2.setViewportView(jTextArea1);
-								jTextArea1.setText("");
+								updateLine();
+								lines.setBackground(new Color(230, 230, 230));
+								lines.setEditable(false);
+								jScrollPane2.setRowHeaderView(lines);
+
 							}
 						}
 					}
@@ -195,9 +204,24 @@ public class Application extends javax.swing.JFrame {
 			jTextArea1.setContentType("text/html");
 			jTextArea1.setText(node.getNmResult());
 			jTextArea1.setCaretPosition(0);
+
+			//			updateLine();
 		} catch (Exception ex) {
 
 		}
 	}
 
+	private void updateLine() {
+		String text = "<html><body><pre>";
+		for (int i = 1; i < 1000; i++) {
+			if (i % 10 == 0) {
+				text += "<font color=\"blue\"><strong>" + i + "</strong></font>\n";
+			} else {
+				text += i + "\n";
+			}
+		}
+		text += "</pre></body></html>";
+		lines.setContentType("text/html");
+		lines.setText(text);
+	}
 }
