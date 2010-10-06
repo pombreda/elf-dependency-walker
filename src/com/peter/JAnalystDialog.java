@@ -100,8 +100,29 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 	private ELFNode analystELF(File file, ELFNode parent) {
 		jLabel1.setText(file.getAbsolutePath());
 
-		String result = CommonLib.runCommand("readelf -a " + file.getAbsolutePath());
-		// System.out.println(result);
+		//		String result = "<html><body><pre><font color=\"red\">"
+		//				+ CommonLib.runCommand("readelf -a " + file.getAbsolutePath()).replaceAll("\n\n", "\n\n</font><font color=\"blue\">") + "</font></pre></body></html>";
+
+		String results[] = CommonLib.runCommand("readelf -a " + file.getAbsolutePath()).split("\n\n");
+		String colors[] = { "#000000", "#0000ff", "#ff0000", "#007700", "#ff00ff" };
+
+		String result = "<html><body><pre>";
+		for (int x = 1, count = 0; x < results.length; x++) {
+			//			if ((x + 1) % 2 == 0) {
+			result += "\n\n<font color=\"" + colors[count] + "\">" + results[x] + "</font>";
+			if (count < colors.length - 1) {
+				count++;
+			} else {
+				count = 0;
+			}
+			//			} else {
+			//				result += "\n\n" + results[x];
+			//			}
+		}
+		result += "</pre></body></html>";
+
+		System.out.println(result);
+
 		String lines[] = result.split("\n");
 
 		ELFNode node = new ELFNode(file, result, parent);

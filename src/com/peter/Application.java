@@ -9,6 +9,7 @@ import java.io.File;
 import java.util.LinkedHashSet;
 
 import javax.swing.ImageIcon;
+import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -39,7 +40,7 @@ public class Application extends javax.swing.JFrame {
 	private JScrollPane jScrollPane2;
 	private JDropDownButton jAnalystButton;
 	private JToolBar jToolBar1;
-	private JTextArea jTextArea1;
+	private JEditorPane jTextArea1;
 	private JTree jTree1;
 	private JSplitPane jSplitPane1;
 	private MyTreeModel myTreeModel = new MyTreeModel(null);
@@ -108,7 +109,7 @@ public class Application extends javax.swing.JFrame {
 							jSplitPane1.add(jScrollPane2, JSplitPane.RIGHT);
 							jScrollPane2.setPreferredSize(new java.awt.Dimension(68, 541));
 							{
-								jTextArea1 = new JTextArea();
+								jTextArea1 = new JEditorPane();
 								jScrollPane2.setViewportView(jTextArea1);
 								jTextArea1.setText("");
 							}
@@ -191,7 +192,9 @@ public class Application extends javax.swing.JFrame {
 	private void jTree1ValueChanged(TreeSelectionEvent evt) {
 		try {
 			ELFNode node = (ELFNode) jTree1.getLastSelectedPathComponent();
+			jTextArea1.setContentType("text/html");
 			jTextArea1.setText(node.getNmResult());
+			jTextArea1.setCaretPosition(0);
 		} catch (Exception ex) {
 
 		}
