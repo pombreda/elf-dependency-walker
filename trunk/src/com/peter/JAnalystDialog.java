@@ -15,6 +15,8 @@ import javax.swing.LayoutStyle;
 import com.petersoft.CommonLib;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
@@ -52,6 +54,7 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 				GroupLayout thisLayout = new GroupLayout((JComponent) getContentPane());
 				getContentPane().setLayout(thisLayout);
 				this.setTitle("Analyting");
+
 				this.addWindowListener(new WindowAdapter() {
 					public void windowActivated(WindowEvent evt) {
 						thisWindowActivated(evt);
@@ -120,8 +123,6 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 			//			}
 		}
 		result += "</pre></body></html>";
-
-		System.out.println(result);
 
 		String lines[] = result.split("\n");
 
