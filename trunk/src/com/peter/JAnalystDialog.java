@@ -98,6 +98,7 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 		ELFNode node = analystELF(file, null);
 		((MyTreeModel) jTree.getModel()).setRoot(node);
 		this.jCancelButton.setText("Finished");
+		this.setVisible(false);
 	}
 
 	private ELFNode analystELF(File file, ELFNode parent) {
