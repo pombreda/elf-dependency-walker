@@ -107,12 +107,13 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 		//		String result = "<html><body><pre><font color=\"red\">"
 		//				+ CommonLib.runCommand("readelf -a " + file.getAbsolutePath()).replaceAll("\n\n", "\n\n</font><font color=\"blue\">") + "</font></pre></body></html>";
 
-		String results[] = CommonLib.runCommand("readelf -a " + file.getAbsolutePath()).split("\n\n");
+		String results[] = clearHTML(CommonLib.runCommand("readelf -a " + file.getAbsolutePath()) + CommonLib.runCommand("objdump -dS " + file.getAbsolutePath())).split("\n\n");
 		String colors[] = { "#000000", "#0000ff", "#ff0000", "#007700", "#ff00ff" };
 
 		String result = "<html><body><pre>";
 		for (int x = 1, count = 0; x < results.length; x++) {
 			//			if ((x + 1) % 2 == 0) {
+			System.out.println(results[x]);
 			result += "\n\n<font color=\"" + colors[count] + "\">" + results[x] + "</font>";
 			if (count < colors.length - 1) {
 				count++;
@@ -155,6 +156,10 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 			}
 		}
 		return node;
+	}
+
+	private String clearHTML(String html) {
+		return html.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 	}
 
 	private void thisWindowActivated(WindowEvent evt) {
