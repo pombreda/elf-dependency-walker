@@ -2,14 +2,22 @@ package com.peter;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.io.File;
 import java.util.LinkedHashSet;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
@@ -17,31 +25,33 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import javax.swing.JTree;
+import javax.swing.RepaintManager;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.text.Element;
 
 import com.petersoft.advancedswing.jdropdownbutton.JDropDownButton;
 
 /**
- * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI Builder, which is free for non-commercial use. If Jigloo is being used commercially (ie, by a
- * corporation, company or business for any purpose whatever) then you should purchase a license for each developer using Jigloo. Please visit www.cloudgarden.com for details. Use
- * of Jigloo implies acceptance of these licensing terms. A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR ANY
- * CORPORATE OR COMMERCIAL PURPOSE.
+ * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
+ * Builder, which is free for non-commercial use. If Jigloo is being used
+ * commercially (ie, by a corporation, company or business for any purpose
+ * whatever) then you should purchase a license for each developer using Jigloo.
+ * Please visit www.cloudgarden.com for details. Use of Jigloo implies
+ * acceptance of these licensing terms. A COMMERCIAL LICENSE HAS NOT BEEN
+ * PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR
+ * ANY CORPORATE OR COMMERCIAL PURPOSE.
  */
-public class Application extends javax.swing.JFrame {
+public class Application extends javax.swing.JFrame implements Printable {
 	private JTabbedPane jTabbedPane1;
 	private JPanel jTreePanel;
 	private JScrollPane jScrollPane1;
 	private JScrollPane jScrollPane2;
+	private JButton jPrintButton;
 	private JDropDownButton jAnalystButton;
 	private JToolBar jToolBar1;
 	private JEditorPane jTextArea1;
@@ -143,6 +153,17 @@ public class Application extends javax.swing.JFrame {
 					});
 					addHistoryMenuitems();
 				}
+				{
+					jPrintButton = new JButton();
+					jToolBar1.add(jPrintButton);
+					jPrintButton.setText("Print");
+					jPrintButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/printer.png")));
+					jPrintButton.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							jPrintButtonActionPerformed(evt);
+						}
+					});
+				}
 			}
 			int x = Setting.getInstance().getX();
 			int y = Setting.getInstance().getY();
@@ -223,5 +244,42 @@ public class Application extends javax.swing.JFrame {
 		text += "</pre></body></html>";
 		lines.setContentType("text/html");
 		lines.setText(text);
+	}
+
+	private void jPrintButtonActionPerformed(ActionEvent evt) {
+		PrintUtilities.printComponent(jTextArea1);
+
+		/*PrinterJob printJob = PrinterJob.getPrinterJob();
+		printJob.setPrintable(this);
+		if (printJob.printDialog())
+			try {
+				printJob.print();
+			} catch (PrinterException pe) {
+				System.out.println("Error printing: " + pe);
+			}*/
+	}
+
+	@Override
+	public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+		if (pageIndex > 0) {
+			return (NO_SUCH_PAGE);
+		} else {
+			Graphics2D g2d = (Graphics2D) graphics;
+			g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+			disableDoubleBuffering(jTextArea1);
+			jTextArea1.paint(g2d);
+			enableDoubleBuffering(jTextArea1);
+			return (PAGE_EXISTS);
+		}
+	}
+
+	public static void disableDoubleBuffering(Component c) {
+		RepaintManager currentManager = RepaintManager.currentManager(c);
+		currentManager.setDoubleBufferingEnabled(false);
+	}
+
+	public static void enableDoubleBuffering(Component c) {
+		RepaintManager currentManager = RepaintManager.currentManager(c);
+		currentManager.setDoubleBufferingEnabled(true);
 	}
 }
