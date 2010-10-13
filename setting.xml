@@ -1,0 +1,12 @@
+<?xml version='1.0' ?>  <Setting>
+    <divX>181</divX>
+    <height>744</height>
+    <historyList>
+      <historyList>/usr/bin/gcc</historyList>
+      <historyList>/root/workspace/plibc/library/testingLibrary/test.exe</historyList>
+    </historyList>
+    <lastOpenPath>/root/workspace/plibc/library/testingLibrary</lastOpenPath>
+    <width>1366</width>
+    <x>0</x>
+    <y>0</y>
+  </Setting>
