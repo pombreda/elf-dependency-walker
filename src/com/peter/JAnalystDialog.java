@@ -104,25 +104,33 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 	private ELFNode analystELF(File file, ELFNode parent) {
 		jLabel1.setText(file.getAbsolutePath());
 
-		//		String result = "<html><body><pre><font color=\"red\">"
-		//				+ CommonLib.runCommand("readelf -a " + file.getAbsolutePath()).replaceAll("\n\n", "\n\n</font><font color=\"blue\">") + "</font></pre></body></html>";
+		// String result = "<html><body><pre><font color=\"red\">"
+		// + CommonLib.runCommand("readelf -a " +
+		// file.getAbsolutePath()).replaceAll("\n\n",
+		// "\n\n</font><font color=\"blue\">") + "</font></pre></body></html>";
 
-		String results[] = clearHTML(CommonLib.runCommand("readelf -a " + file.getAbsolutePath()) + CommonLib.runCommand("objdump -dS " + file.getAbsolutePath())).split("\n\n");
+		jLabel1.setText("readelf -a " + file.getAbsolutePath());
+		String results[];
+//		if (file.length() < 100 * 1024 * 1024) {
+//			results = clearHTML(CommonLib.runCommand("readelf -a " + file.getAbsolutePath()) + CommonLib.runCommand("objdump -dS " + file.getAbsolutePath())).split("\n\n");
+//		} else {
+			results = clearHTML(CommonLib.runCommand("readelf -a " + file.getAbsolutePath())).split("\n\n");
+//		}
 		String colors[] = { "#000000", "#0000ff", "#ff0000", "#007700", "#ff00ff" };
-
+		jLabel1.setText("end readelf -a " + file.getAbsolutePath());
 		String result = "<html><body><strong>" + file.getAbsolutePath() + "</strong><br><pre>";
 		for (int x = 1, count = 0; x < results.length; x++) {
-			//			if ((x + 1) % 2 == 0) {
-			System.out.println(results[x]);
+			jLabel1.setText(x + "/" + count);
+			// if ((x + 1) % 2 == 0) {
 			result += "\n\n<font color=\"" + colors[count] + "\">" + results[x] + "</font>";
 			if (count < colors.length - 1) {
 				count++;
 			} else {
 				count = 0;
 			}
-			//			} else {
-			//				result += "\n\n" + results[x];
-			//			}
+			// } else {
+			// result += "\n\n" + results[x];
+			// }
 		}
 		result += "</pre></body></html>";
 
@@ -136,6 +144,7 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 		for (String line : lines) {
 			if (line.toLowerCase().contains("needed")) {
 				String words[] = line.split("[\\[\\]]");
+				jLabel1.setText(line);
 				if (words.length > 0) {
 					if (new File("/lib/" + words[1]).exists()) {
 						analystELF(new File("/lib/" + words[1]), node);
