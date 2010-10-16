@@ -142,7 +142,7 @@ public class Application extends javax.swing.JFrame implements Printable {
 				{
 					jAnalystButton = new JDropDownButton();
 					jToolBar1.add(jAnalystButton);
-					jAnalystButton.setText("Analyst");
+					jAnalystButton.setText("Analyst ");
 					jAnalystButton.setMaximumSize(new java.awt.Dimension(100, 28));
 					jAnalystButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/folder_page.png")));
 					jAnalystButton.setPreferredSize(new java.awt.Dimension(100, 28));
