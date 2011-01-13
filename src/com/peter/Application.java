@@ -73,12 +73,12 @@ public class Application extends javax.swing.JFrame implements Printable {
 	private JEditorPane jTextArea1;
 	private JTree jTree1;
 	private JSplitPane jSplitPane1;
+	private JPanel jCallGraphPreviewPanel;
 	private MyTreeModel myTreeModel = new MyTreeModel(null);
 	final JEditorPane lines = new JEditorPane();
 	mxGraph graph;
 	CallGraphComponent graphComponent;
 	mxGraphOutline graphOutline;
-	JPanel jCallGraphPreviewPanel = new JPanel();
 	JProgressBar jStatusProgressBar = new JProgressBar();
 	JAnalystDialog dialog;
 	final int MAX_NUMBER_OF_VERTEX = 1000;
@@ -154,6 +154,7 @@ public class Application extends javax.swing.JFrame implements Printable {
 							}
 						}
 					}
+
 				}
 				{
 					jGraphPanel = new JPanel();
@@ -289,11 +290,15 @@ public class Application extends javax.swing.JFrame implements Printable {
 		jGraphPanel.add(graphComponent, BorderLayout.CENTER);
 
 		graphOutline = new mxGraphOutline(graphComponent);
-		graphOutline.setBackground(Color.white);
 		graphOutline.setBorder(new LineBorder(Color.LIGHT_GRAY));
+
+		jCallGraphPreviewPanel = new JPanel();
+		BorderLayout jCallGraphPreviewPanelLayout = new BorderLayout();
+		jCallGraphPreviewPanel.setLayout(jCallGraphPreviewPanelLayout);
 		jCallGraphPreviewPanel.removeAll();
 		jCallGraphPreviewPanel.add(graphOutline, BorderLayout.CENTER);
-		jCallGraphPreviewPanel.setPreferredSize(new Dimension(100, 100));
+		jGraphPanel.add(jCallGraphPreviewPanel, BorderLayout.SOUTH);
+		jCallGraphPreviewPanel.setPreferredSize(new Dimension(500, 500));
 	}
 
 	int x = 0;
@@ -314,10 +319,10 @@ public class Application extends javax.swing.JFrame implements Printable {
 			Iterator<ELFNode> ir = childNode.iterator();
 			x++;
 
-			if (parent != null) {
+			if (parent != null && lastPort != null) {
 				//				graph.insertEdge(parent, null, x, lastPort, "edgeStyle=elbowEdgeStyle;elbow=horizontal;" + "exitX=1;exitY=0.5;exitPerimeter=1;entryX=0;entryY=0;entryPerimeter=1;");
 				//graph.insertEdge(parent, null, "", lastPort, ports[0], "edgeStyle=entityRelationEdgeStyle;");
-				graph.insertEdge(parent, null, "", parent, ports[0], "edgeStyle=entityRelationEdgeStyle;");
+				graph.insertEdge(parent, null, "", lastPort, ports[0], "edgeStyle=entityRelationEdgeStyle;");
 			}
 
 			while (ir.hasNext()) {
@@ -341,26 +346,6 @@ public class Application extends javax.swing.JFrame implements Printable {
 			//				newNode = (mxCell) graph.insertVertex(newNode, null, node.getFile().getName(), 0, 0, 100, 30);
 			//			}
 
-			/*jStatusProgressBar.setMaximum(files.size());
-			Set<String> set = files.keySet();
-			Iterator<String> itr = set.iterator();
-			int x = 0;
-			while (itr.hasNext()) {
-				String str = itr.next();
-				mxCell node = (mxCell) graph.insertVertex(parent, null, str, x * (cellHeight + 20), x * (cellHeight + 20), 100, 30);
-
-				mxCell ports[] = addPort(node);
-
-				if (lastPort != null) {
-					graph.insertEdge(parent, null, x, lastPort,
-					//							ports[0],"");
-							"edgeStyle=elbowEdgeStyle;elbow=horizontal;" + "exitX=1;exitY=0.5;exitPerimeter=1;entryX=0;entryY=0;entryPerimeter=1;");
-					graph.insertEdge(parent, null, "", lastPort, ports[0], "edgeStyle=entityRelationEdgeStyle;");
-				}
-				lastPort = ports[1];
-				x++;
-			}
-			jStatusProgressBar.setValue(jStatusProgressBar.getMaximum());*/
 		} finally {
 			graph.getModel().endUpdate();
 		}

@@ -1,12 +1,14 @@
 <?xml version='1.0' ?>  <Setting>
     <divX>181</divX>
-    <height>744</height>
+    <height>824</height>
     <historyList>
-      <historyList>/usr/bin/gcc</historyList>
       <historyList>/root/workspace/plibc/library/testingLibrary/test.exe</historyList>
+      <historyList>/usr/bin/aclocal</historyList>
+      <historyList>/usr/bin/gcc</historyList>
+      <historyList>/usr/bin/akonadi_nntp_resource</historyList>
     </historyList>
-    <lastOpenPath>/root/workspace/plibc/library/testingLibrary</lastOpenPath>
-    <width>1366</width>
-    <x>39</x>
-    <y>14</y>
+    <lastOpenPath>/usr/bin</lastOpenPath>
+    <width>1048</width>
+    <x>177</x>
+    <y>0</y>
   </Setting>
