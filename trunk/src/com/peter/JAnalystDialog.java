@@ -32,7 +32,7 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 	private JLabel jLabel1;
 	private JTree jTree;
 	private File file;
-	public Hashtable<String, File> files;
+	public Hashtable<String, File> files = new Hashtable<String, File>();
 
 	public JAnalystDialog(JFrame frame, JTree jTree, File file) {
 		super(frame, true);
@@ -51,8 +51,7 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 	private void initGUI() {
 		try {
 			{
-				GroupLayout thisLayout = new GroupLayout(
-						(JComponent) getContentPane());
+				GroupLayout thisLayout = new GroupLayout((JComponent) getContentPane());
 				getContentPane().setLayout(thisLayout);
 				this.setTitle("Analyting");
 
@@ -73,42 +72,20 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 				{
 					jLabel1 = new JLabel();
 				}
-				thisLayout
-						.setVerticalGroup(thisLayout
-								.createSequentialGroup()
-								.addContainerGap()
-								.addComponent(jLabel1, 0, 44, Short.MAX_VALUE)
-								.addPreferredGap(
-										LayoutStyle.ComponentPlacement.RELATED)
-								.addComponent(jCancelButton,
-										GroupLayout.PREFERRED_SIZE,
-										GroupLayout.PREFERRED_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-								.addContainerGap());
-				thisLayout
-						.setHorizontalGroup(thisLayout
-								.createSequentialGroup()
-								.addContainerGap()
-								.addGroup(
-										thisLayout
-												.createParallelGroup()
-												.addComponent(
-														jLabel1,
-														GroupLayout.Alignment.LEADING,
-														0, 378, Short.MAX_VALUE)
-												.addGroup(
-														GroupLayout.Alignment.LEADING,
-														thisLayout
-																.createSequentialGroup()
-																.addGap(0,
-																		317,
-																		Short.MAX_VALUE)
-																.addComponent(
-																		jCancelButton,
-																		GroupLayout.PREFERRED_SIZE,
-																		62,
-																		GroupLayout.PREFERRED_SIZE)))
-								.addContainerGap());
+				thisLayout.setVerticalGroup(thisLayout.createSequentialGroup().addContainerGap().addComponent(jLabel1, 0, 44, Short.MAX_VALUE)
+						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(jCancelButton, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE).addContainerGap());
+				thisLayout.setHorizontalGroup(thisLayout
+						.createSequentialGroup()
+						.addContainerGap()
+						.addGroup(
+								thisLayout
+										.createParallelGroup()
+										.addComponent(jLabel1, GroupLayout.Alignment.LEADING, 0, 378, Short.MAX_VALUE)
+										.addGroup(
+												GroupLayout.Alignment.LEADING,
+												thisLayout.createSequentialGroup().addGap(0, 317, Short.MAX_VALUE)
+														.addComponent(jCancelButton, GroupLayout.PREFERRED_SIZE, 62, GroupLayout.PREFERRED_SIZE))).addContainerGap());
 			}
 			this.setSize(418, 126);
 		} catch (Exception e) {
@@ -118,7 +95,7 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 
 	@Override
 	public void run() {
-		files = new Hashtable<String, File>();
+		files.clear();
 		ELFNode node = analystELF(file, null);
 		((MyTreeModel) jTree.getModel()).setRoot(node);
 		this.jCancelButton.setText("Finished");
@@ -126,43 +103,30 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 	}
 
 	private ELFNode analystELF(File file, ELFNode parent) {
+		if (files.contains(file)) {
+			return null;
+		}
 		files.put(file.getName(), file);
 		jLabel1.setText(file.getAbsolutePath());
 
-		// String result = "<html><body><pre><font color=\"red\">"
-		// + CommonLib.runCommand("readelf -a " +
-		// file.getAbsolutePath()).replaceAll("\n\n",
-		// "\n\n</font><font color=\"blue\">") + "</font></pre></body></html>";
 
 		jLabel1.setText("readelf -a " + file.getAbsolutePath());
 		String results[];
-		// if (file.length() < 100 * 1024 * 1024) {
-		// results = clearHTML(CommonLib.runCommand("readelf -a " +
-		// file.getAbsolutePath()) + CommonLib.runCommand("objdump -dS " +
-		// file.getAbsolutePath())).split("\n\n");
-		// } else {
-		results = clearHTML(
-				CommonLib.runCommand("readelf -a " + file.getAbsolutePath()))
-				.split("\n\n");
-		// }
-		String colors[] = { "#000000", "#0000ff", "#ff0000", "#007700",
-				"#ff00ff" };
+
+		results = clearHTML(CommonLib.runCommand("readelf -a " + file.getAbsolutePath())).split("\n\n");
+
+		String colors[] = { "#000000", "#0000ff", "#ff0000", "#007700", "#ff00ff" };
 		jLabel1.setText("end readelf -a " + file.getAbsolutePath());
-		String result = "<html><body><strong>" + file.getAbsolutePath()
-				+ "</strong><br><pre>";
+		String result = "<html><body><strong>" + file.getAbsolutePath() + "</strong><br><pre>";
 		for (int x = 1, count = 0; x < results.length; x++) {
 			jLabel1.setText(x + "/" + count);
-			// if ((x + 1) % 2 == 0) {
-			result += "\n\n<font color=\"" + colors[count] + "\">" + results[x]
-					+ "</font>";
+			result += "\n\n<font color=\"" + colors[count] + "\">" + results[x] + "</font>";
 			if (count < colors.length - 1) {
 				count++;
 			} else {
 				count = 0;
 			}
-			// } else {
-			// result += "\n\n" + results[x];
-			// }
+
 		}
 		result += "</pre></body></html>";
 
@@ -188,13 +152,10 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 						analystELF(new File("/lib/" + words[1]), node);
 					} else if (new File("/usr/lib/" + words[1]).exists()) {
 						analystELF(new File("/usr/lib/" + words[1]), node);
-					} else if (new File(file.getParent() + "/" + words[1])
-							.exists()) {
-						analystELF(new File(file.getParent() + "/" + words[1]),
-								node);
+					} else if (new File(file.getParent() + "/" + words[1]).exists()) {
+						analystELF(new File(file.getParent() + "/" + words[1]), node);
 					} else {
-						node.child.add(new ELFNode(new File(words[1]),
-								"not found", parent));
+						node.child.add(new ELFNode(new File(words[1]), "not found", parent));
 					}
 				}
 			}
