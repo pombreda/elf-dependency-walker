@@ -103,12 +103,23 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 	}
 
 	private ELFNode analystELF(File file, ELFNode parent) {
+		if (file.isDirectory()) {
+			ELFNode mother = null;
+			for (File f : file.listFiles()) {
+				if (mother == null) {
+					mother = analystELF(f, null);
+				} else {
+					mother = analystELF(f, mother);
+				}
+			}
+			return mother;
+		}
 		if (files.contains(file)) {
 			return null;
 		}
+		System.out.println(file);
 		files.put(file.getName(), file);
 		jLabel1.setText(file.getAbsolutePath());
-
 
 		jLabel1.setText("readelf -a " + file.getAbsolutePath());
 		String results[];
@@ -141,7 +152,7 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 			if (line.toLowerCase().contains("needed")) {
 				String words[] = line.split("[\\[\\]]");
 				jLabel1.setText(line);
-				if (words.length > 0) {
+				if (words.length > 1) {
 					if (new File("/lib/" + words[1]).exists()) {
 						analystELF(new File("/lib/" + words[1]), node);
 					} else if (new File("/usr/lib/" + words[1]).exists()) {

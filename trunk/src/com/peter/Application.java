@@ -490,7 +490,20 @@ public class Application extends javax.swing.JFrame implements Printable {
 	}
 
 	private void jAnaystDirectoryButtonActionPerformed(ActionEvent evt) {
-		System.out.println("jAnaystDirectoryButton.actionPerformed, event=" + evt);
-		//TODO add your code for jAnaystDirectoryButton.actionPerformed
+		File file = null;
+		final JFileChooser fc = new JFileChooser(Setting.getInstance().getLastOpenPath());
+		
+		int returnVal = fc.showOpenDialog(this);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			file = fc.getSelectedFile();
+		}
+		if (file != null && file.exists()) {
+			file=new File("/lib");
+			dialog = new JAnalystDialog(this, jTree1, file);
+			dialog.setVisible(true);
+			if (dialog.files != null) {
+				updateJGraphx(myTreeModel);
+			}
+		}
 	}
 }

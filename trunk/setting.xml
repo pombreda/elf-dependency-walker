@@ -1,11 +1,11 @@
 <?xml version='1.0' ?>  <Setting>
-    <divX>181</divX>
+    <divX>419</divX>
     <height>824</height>
     <historyList>
       <historyList>/root/workspace/plibc/library/testingLibrary/test.exe</historyList>
-      <historyList>/usr/bin/aclocal</historyList>
       <historyList>/usr/bin/gcc</historyList>
       <historyList>/usr/bin/akonadi_nntp_resource</historyList>
+      <historyList>/usr/bin/aclocal</historyList>
     </historyList>
     <lastOpenPath>/usr/bin</lastOpenPath>
     <width>1048</width>
