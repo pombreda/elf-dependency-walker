@@ -3,7 +3,6 @@ package com.peter;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
@@ -41,7 +40,14 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
 import com.mxgraph.canvas.mxICanvas;
+import com.mxgraph.layout.mxCompactTreeLayout;
+import com.mxgraph.layout.mxEdgeLabelLayout;
+import com.mxgraph.layout.mxFastOrganicLayout;
+import com.mxgraph.layout.mxOrganicLayout;
+import com.mxgraph.layout.mxParallelEdgeLayout;
+import com.mxgraph.layout.mxStackLayout;
 import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
+import com.mxgraph.layout.orthogonal.mxOrthogonalLayout;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGeometry;
 import com.mxgraph.swing.mxGraphOutline;
@@ -65,8 +71,9 @@ public class Application extends javax.swing.JFrame implements Printable {
 	private JPanel jTreePanel;
 	private JScrollPane jScrollPane1;
 	private JScrollPane jScrollPane2;
+	private JDropDownButton jLayoutButton;
 	private JButton jAnaystDirectoryButton;
-	private JPanel jGraphPanel;
+	private JSplitPane jGraphSplitPane;
 	private JButton jPrintButton;
 	private JDropDownButton jAnalystButton;
 	private JToolBar jToolBar1;
@@ -81,8 +88,7 @@ public class Application extends javax.swing.JFrame implements Printable {
 	mxGraphOutline graphOutline;
 	JProgressBar jStatusProgressBar = new JProgressBar();
 	JAnalystDialog dialog;
-	
-	
+	Object parent;
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
@@ -96,7 +102,8 @@ public class Application extends javax.swing.JFrame implements Printable {
 	public Application() {
 		super();
 		try {
-			UIManager.setLookAndFeel("com.petersoft.white.PetersoftWhiteLookAndFeel");
+			UIManager
+					.setLookAndFeel("com.petersoft.white.PetersoftWhiteLookAndFeel");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -112,7 +119,8 @@ public class Application extends javax.swing.JFrame implements Printable {
 					thisWindowClosing(evt);
 				}
 			});
-			this.setIconImage(new ImageIcon(getClass().getClassLoader().getResource("icons/peter.png")).getImage());
+			this.setIconImage(new ImageIcon(getClass().getClassLoader()
+					.getResource("icons/peter.png")).getImage());
 			{
 				jTabbedPane1 = new JTabbedPane();
 				getContentPane().add(jTabbedPane1, BorderLayout.CENTER);
@@ -127,14 +135,17 @@ public class Application extends javax.swing.JFrame implements Printable {
 						{
 							jScrollPane1 = new JScrollPane();
 							jSplitPane1.add(jScrollPane1, JSplitPane.LEFT);
-							jScrollPane1.setPreferredSize(new java.awt.Dimension(79, 541));
+							jScrollPane1
+									.setPreferredSize(new java.awt.Dimension(
+											79, 541));
 							{
 								jTree1 = new JTree(myTreeModel);
 								jTree1.setShowsRootHandles(true);
 								jTree1.setCellRenderer(new MyTreeRenderer());
 								jScrollPane1.setViewportView(jTree1);
 								jTree1.addTreeSelectionListener(new TreeSelectionListener() {
-									public void valueChanged(TreeSelectionEvent evt) {
+									public void valueChanged(
+											TreeSelectionEvent evt) {
 										jTree1ValueChanged(evt);
 									}
 								});
@@ -143,7 +154,9 @@ public class Application extends javax.swing.JFrame implements Printable {
 						{
 							jScrollPane2 = new JScrollPane();
 							jSplitPane1.add(jScrollPane2, JSplitPane.RIGHT);
-							jScrollPane2.setPreferredSize(new java.awt.Dimension(68, 541));
+							jScrollPane2
+									.setPreferredSize(new java.awt.Dimension(
+											68, 541));
 							{
 								jTextArea1 = new JEditorPane();
 								jScrollPane2.setViewportView(jTextArea1);
@@ -158,10 +171,9 @@ public class Application extends javax.swing.JFrame implements Printable {
 
 				}
 				{
-					jGraphPanel = new JPanel();
-					BorderLayout jGraphPanelLayout = new BorderLayout();
-					jGraphPanel.setLayout(jGraphPanelLayout);
-					jTabbedPane1.addTab("Graph", null, jGraphPanel, null);
+					jGraphSplitPane = new JSplitPane();
+					jTabbedPane1.addTab("Graph", null, jGraphSplitPane, null);
+					jGraphSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
 				}
 			}
 			{
@@ -171,9 +183,13 @@ public class Application extends javax.swing.JFrame implements Printable {
 					jAnalystButton = new JDropDownButton();
 					jToolBar1.add(jAnalystButton);
 					jAnalystButton.setText("Analyst ");
-					jAnalystButton.setMaximumSize(new java.awt.Dimension(100, 28));
-					jAnalystButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/folder_page.png")));
-					jAnalystButton.setPreferredSize(new java.awt.Dimension(100, 28));
+					jAnalystButton.setMaximumSize(new java.awt.Dimension(100,
+							28));
+					jAnalystButton.setIcon(new ImageIcon(getClass()
+							.getClassLoader().getResource(
+									"icons/famfam_icons/folder_page.png")));
+					jAnalystButton.setPreferredSize(new java.awt.Dimension(100,
+							28));
 					jAnalystButton.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							jAnalystButtonActionPerformed(evt);
@@ -185,21 +201,41 @@ public class Application extends javax.swing.JFrame implements Printable {
 					jAnaystDirectoryButton = new JButton();
 					jToolBar1.add(jAnaystDirectoryButton);
 					jAnaystDirectoryButton.setText("Analyst Directory");
-					jAnaystDirectoryButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/folder.png")));
-					jAnaystDirectoryButton.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent evt) {
-							jAnaystDirectoryButtonActionPerformed(evt);
-						}
-					});
+					jAnaystDirectoryButton.setIcon(new ImageIcon(getClass()
+							.getClassLoader().getResource(
+									"icons/famfam_icons/folder.png")));
+					jAnaystDirectoryButton
+							.addActionListener(new ActionListener() {
+								public void actionPerformed(ActionEvent evt) {
+									jAnaystDirectoryButtonActionPerformed(evt);
+								}
+							});
 				}
 				{
 					jPrintButton = new JButton();
 					jToolBar1.add(jPrintButton);
 					jPrintButton.setText("Print");
-					jPrintButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/printer.png")));
+					jPrintButton.setIcon(new ImageIcon(getClass()
+							.getClassLoader().getResource(
+									"icons/famfam_icons/printer.png")));
 					jPrintButton.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							jPrintButtonActionPerformed(evt);
+						}
+					});
+				}
+				{
+					jLayoutButton = new JDropDownButton();
+					jToolBar1.add(jLayoutButton);
+					jLayoutButton
+							.setMaximumSize(new java.awt.Dimension(150, 28));
+					jLayoutButton.setText("Layout");
+					jLayoutButton.setIcon(new ImageIcon(getClass()
+							.getClassLoader().getResource(
+									"icons/famfam_icons/cake.png")));
+					jLayoutButton.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							jLayoutButtonActionPerformed(evt);
 						}
 					});
 				}
@@ -207,9 +243,11 @@ public class Application extends javax.swing.JFrame implements Printable {
 			int x = Setting.getInstance().getX();
 			int y = Setting.getInstance().getY();
 			setLocation(x, y);
-			this.setSize(726, 480);
 
-			setSize(Setting.getInstance().getWidth(), Setting.getInstance().getHeight());
+			setSize(Setting.getInstance().getWidth(), Setting.getInstance()
+					.getHeight());
+
+			addLayoutMenuitems();
 			jSplitPane1.setDividerLocation(Setting.getInstance().getDivX());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -218,8 +256,10 @@ public class Application extends javax.swing.JFrame implements Printable {
 
 	public void updateJGraphx(MyTreeModel model) {
 		graph = new mxGraph() {
-			public void drawState(mxICanvas canvas, mxCellState state, String label) {
-				if (getModel().isVertex(state.getCell()) && canvas instanceof PeterSwingCanvas) {
+			public void drawState(mxICanvas canvas, mxCellState state,
+					String label) {
+				if (getModel().isVertex(state.getCell())
+						&& canvas instanceof PeterSwingCanvas) {
 					PeterSwingCanvas c = (PeterSwingCanvas) canvas;
 					c.drawVertex(state, label);
 				} else {
@@ -241,7 +281,10 @@ public class Application extends javax.swing.JFrame implements Printable {
 			// source and target of an edge
 			public String getToolTipForCell(Object cell) {
 				if (model.isEdge(cell)) {
-					return convertValueToString(model.getTerminal(cell, true)) + " -> " + convertValueToString(model.getTerminal(cell, false));
+					return convertValueToString(model.getTerminal(cell, true))
+							+ " -> "
+							+ convertValueToString(model.getTerminal(cell,
+									false));
 				}
 
 				return super.getToolTipForCell(cell);
@@ -252,7 +295,7 @@ public class Application extends javax.swing.JFrame implements Printable {
 			}
 		};
 		graphComponent = new CallGraphComponent(graph);
-		Object parent = graph.getDefaultParent();
+		parent = graph.getDefaultParent();
 		allNodes.clear();
 		allNodesPort.clear();
 		addCells(parent, (ELFNode) myTreeModel.getRoot(), null);
@@ -284,11 +327,10 @@ public class Application extends javax.swing.JFrame implements Printable {
 		graph.setGridSize(10);
 
 		mxHierarchicalLayout layout = new mxHierarchicalLayout(graph);
-		//		layout.setMinDistanceLimit(100);
 		layout.execute(parent);
 
-		jGraphPanel.removeAll();
-		jGraphPanel.add(graphComponent, BorderLayout.CENTER);
+		// jGraphSplitPane.removeAll();
+		jGraphSplitPane.add(graphComponent, JSplitPane.TOP);
 
 		graphOutline = new mxGraphOutline(graphComponent);
 		graphOutline.setBorder(new LineBorder(Color.LIGHT_GRAY));
@@ -298,8 +340,7 @@ public class Application extends javax.swing.JFrame implements Printable {
 		jCallGraphPreviewPanel.setLayout(jCallGraphPreviewPanelLayout);
 		jCallGraphPreviewPanel.removeAll();
 		jCallGraphPreviewPanel.add(graphOutline, BorderLayout.CENTER);
-		jGraphPanel.add(jCallGraphPreviewPanel, BorderLayout.SOUTH);
-		jCallGraphPreviewPanel.setPreferredSize(new Dimension(500, 500));
+		jGraphSplitPane.add(jCallGraphPreviewPanel, JSplitPane.BOTTOM);
 	}
 
 	int x = 0;
@@ -311,7 +352,8 @@ public class Application extends javax.swing.JFrame implements Printable {
 
 		graph.getModel().beginUpdate();
 		try {
-			mxCell newNode = (mxCell) graph.insertVertex(parent, null, "1:" + node.getFile().getName(), 100, x * 40 + 100, 100, 30);
+			mxCell newNode = (mxCell) graph.insertVertex(parent, null, "1:"
+					+ node.getFile().getName(), 100, x * 40 + 100, 100, 30);
 
 			mxCell ports[] = addPort(newNode);
 			allNodes.put(node.getFile().getName(), node);
@@ -321,31 +363,40 @@ public class Application extends javax.swing.JFrame implements Printable {
 			x++;
 
 			if (parent != null && lastPort != null) {
-				//				graph.insertEdge(parent, null, x, lastPort, "edgeStyle=elbowEdgeStyle;elbow=horizontal;" + "exitX=1;exitY=0.5;exitPerimeter=1;entryX=0;entryY=0;entryPerimeter=1;");
-				//graph.insertEdge(parent, null, "", lastPort, ports[0], "edgeStyle=entityRelationEdgeStyle;");
-				graph.insertEdge(parent, null, "", lastPort, ports[0], "edgeStyle=entityRelationEdgeStyle;");
+				// graph.insertEdge(parent, null, x, lastPort,
+				// "edgeStyle=elbowEdgeStyle;elbow=horizontal;" +
+				// "exitX=1;exitY=0.5;exitPerimeter=1;entryX=0;entryY=0;entryPerimeter=1;");
+				// graph.insertEdge(parent, null, "", lastPort, ports[0],
+				// "edgeStyle=entityRelationEdgeStyle;");
+				graph.insertEdge(parent, null, "", lastPort, ports[0],
+						"edgeStyle=entityRelationEdgeStyle;");
 			}
 
 			while (ir.hasNext()) {
 				ELFNode n = ir.next();
-				//				System.out.println(n.file.getName());
-				//				newNode = (mxCell) graph.insertVertex(parent, null, "2:" + n.file.getName(), 100, x * 40 + 100, 100, 30);
-				//				System.out.println(x * 100 + 100);
-				//				x++;
-				//				mxCell childPorts[] = addPort(newNode);
-				//				graph.insertEdge(parent, null, "", childPorts[1], ports[0], "edgeStyle=entityRelationEdgeStyle;");
+				// System.out.println(n.file.getName());
+				// newNode = (mxCell) graph.insertVertex(parent, null, "2:" +
+				// n.file.getName(), 100, x * 40 + 100, 100, 30);
+				// System.out.println(x * 100 + 100);
+				// x++;
+				// mxCell childPorts[] = addPort(newNode);
+				// graph.insertEdge(parent, null, "", childPorts[1], ports[0],
+				// "edgeStyle=entityRelationEdgeStyle;");
 
 				if (allNodes.get(n.getFile().getName()) == null) {
 					addCells(parent, n, ports[1]);
 				} else {
-					graph.insertEdge(parent, null, "f", ports[1], allNodesPort.get(n.getFile().getName()), "edgeStyle=entityRelationEdgeStyle;");
+					graph.insertEdge(parent, null, "f", ports[1],
+							allNodesPort.get(n.getFile().getName()),
+							"edgeStyle=entityRelationEdgeStyle;");
 				}
 			}
 
-			//			while (en.hasMoreElements()) {
-			//				node = en.nextElement();
-			//				newNode = (mxCell) graph.insertVertex(newNode, null, node.getFile().getName(), 0, 0, 100, 30);
-			//			}
+			// while (en.hasMoreElements()) {
+			// node = en.nextElement();
+			// newNode = (mxCell) graph.insertVertex(newNode, null,
+			// node.getFile().getName(), 0, 0, 100, 30);
+			// }
 
 		} finally {
 			graph.getModel().endUpdate();
@@ -360,7 +411,8 @@ public class Application extends javax.swing.JFrame implements Printable {
 		geo1.setOffset(new mxPoint(-PORT_RADIUS, -PORT_RADIUS));
 		geo1.setRelative(true);
 
-		mxCell port1 = new mxCell(null, geo1, "shape=ellipse;perimter=ellipsePerimeter");
+		mxCell port1 = new mxCell(null, geo1,
+				"shape=ellipse;perimter=ellipsePerimeter");
 		port1.setVertex(true);
 		graph.addCell(port1, node);
 
@@ -368,7 +420,8 @@ public class Application extends javax.swing.JFrame implements Printable {
 		geo2.setOffset(new mxPoint(-PORT_RADIUS, -PORT_RADIUS));
 		geo2.setRelative(true);
 
-		mxCell port2 = new mxCell(null, geo2, "shape=ellipse;perimter=ellipsePerimeter");
+		mxCell port2 = new mxCell(null, geo2,
+				"shape=ellipse;perimter=ellipsePerimeter");
 		port2.setVertex(true);
 		graph.addCell(port2, node);
 		return new mxCell[] { port1, port2 };
@@ -386,24 +439,27 @@ public class Application extends javax.swing.JFrame implements Printable {
 	private void jAnalystButtonActionPerformed(ActionEvent evt) {
 		File file = null;
 		if (jAnalystButton.getEventSource() == null) {
-			final JFileChooser fc = new JFileChooser(Setting.getInstance().getLastOpenPath());
+			final JFileChooser fc = new JFileChooser(Setting.getInstance()
+					.getLastOpenPath());
 			int returnVal = fc.showOpenDialog(this);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				file = fc.getSelectedFile();
 			}
 		} else {
-			file = new File(((JMenuItem) jAnalystButton.getEventSource()).getText());
+			file = new File(
+					((JMenuItem) jAnalystButton.getEventSource()).getText());
 		}
 		if (file != null && file.exists()) {
 			Setting.getInstance().addHistoryList(file.getAbsolutePath());
 			addHistoryMenuitems();
 
 			Setting.getInstance().getHistoryList().add(file.getAbsolutePath());
-			Setting.getInstance().setLastOpenPath(file.getParentFile().getAbsolutePath());
+			Setting.getInstance().setLastOpenPath(
+					file.getParentFile().getAbsolutePath());
 
 			dialog = new JAnalystDialog(this, jTree1, file);
 			dialog.setVisible(true);
-			if (dialog.files != null) {
+			if (dialog.allNodes != null) {
 				updateJGraphx(myTreeModel);
 			}
 		}
@@ -411,12 +467,25 @@ public class Application extends javax.swing.JFrame implements Printable {
 
 	private void addHistoryMenuitems() {
 		jAnalystButton.removeAll();
-		LinkedHashSet<String> historyVector = Setting.getInstance().getHistoryList();
+		LinkedHashSet<String> historyVector = Setting.getInstance()
+				.getHistoryList();
 		for (String str : historyVector) {
 			if (new File(str).exists()) {
 				jAnalystButton.insert(new JMenuItem(str), 0);
 			}
 		}
+	}
+
+	private void addLayoutMenuitems() {
+		jLayoutButton.removeAll();
+		jLayoutButton.add(new JMenuItem("Hierarchical Layout"));
+		jLayoutButton.add(new JMenuItem("Circle Layout"));
+		jLayoutButton.add(new JMenuItem("Compact Tree Layout"));
+		jLayoutButton.add(new JMenuItem("Edge Label Layout"));
+		jLayoutButton.add(new JMenuItem("Fast Organic Layout"));
+		jLayoutButton.add(new JMenuItem("Orthogonal Layout"));
+		jLayoutButton.add(new JMenuItem("Parallel Edge Layout"));
+		jLayoutButton.add(new JMenuItem("Stack Layout"));
 	}
 
 	private void thisWindowClosing(WindowEvent evt) {
@@ -445,7 +514,8 @@ public class Application extends javax.swing.JFrame implements Printable {
 		String text = "<html><body><pre>";
 		for (int i = 1; i < 1000; i++) {
 			if (i % 10 == 0) {
-				text += "<font color=\"blue\"><strong>" + i + "</strong></font>\n";
+				text += "<font color=\"blue\"><strong>" + i
+						+ "</strong></font>\n";
 			} else {
 				text += i + "\n";
 			}
@@ -467,12 +537,14 @@ public class Application extends javax.swing.JFrame implements Printable {
 	}
 
 	@Override
-	public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+	public int print(Graphics graphics, PageFormat pageFormat, int pageIndex)
+			throws PrinterException {
 		if (pageIndex > 0) {
 			return (NO_SUCH_PAGE);
 		} else {
 			Graphics2D g2d = (Graphics2D) graphics;
-			g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+			g2d.translate(pageFormat.getImageableX(),
+					pageFormat.getImageableY());
 			disableDoubleBuffering(jTextArea1);
 			jTextArea1.paint(g2d);
 			enableDoubleBuffering(jTextArea1);
@@ -492,19 +564,50 @@ public class Application extends javax.swing.JFrame implements Printable {
 
 	private void jAnaystDirectoryButtonActionPerformed(ActionEvent evt) {
 		File file = null;
-		final JFileChooser fc = new JFileChooser(Setting.getInstance().getLastOpenPath());
-		
+		final JFileChooser fc = new JFileChooser(Setting.getInstance()
+				.getLastOpenPath());
+
 		int returnVal = fc.showOpenDialog(this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			file = fc.getSelectedFile();
 		}
 		if (file != null && file.exists()) {
-			file=new File("/lib");
+			file = new File("/lib");
 			dialog = new JAnalystDialog(this, jTree1, file);
 			dialog.setVisible(true);
-			if (dialog.files != null) {
+			if (dialog.allNodes != null) {
 				updateJGraphx(myTreeModel);
 			}
+		}
+	}
+
+	private void jLayoutButtonActionPerformed(ActionEvent evt) {
+		String str = ((JMenuItem) jLayoutButton.getEventSource()).getText();
+		jLayoutButton.setText(str);
+		if (str.equals("Hierarchical Layout")) {
+			mxHierarchicalLayout layout = new mxHierarchicalLayout(graph);
+			layout.execute(parent);
+		} else if (str.equals("Circle Layout")) {
+			mxOrganicLayout layout = new mxOrganicLayout(graph);
+			layout.execute(parent);
+		} else if (str.equals("Compact Tree Layout")) {
+			mxCompactTreeLayout layout = new mxCompactTreeLayout(graph);
+			layout.execute(parent);
+		}else if (str.equals("Edge Label Layout")) {
+			mxEdgeLabelLayout layout = new mxEdgeLabelLayout(graph);
+			layout.execute(parent);
+		}else if (str.equals("Fast Organic Layout")) {
+			mxFastOrganicLayout layout = new mxFastOrganicLayout(graph);
+			layout.execute(parent);
+		}else if (str.equals("Orthogonal Layout")) {
+			mxOrthogonalLayout layout = new mxOrthogonalLayout(graph);
+			layout.execute(parent);
+		}else if (str.equals("Parallel Edge Layout")) {
+			mxParallelEdgeLayout layout = new mxParallelEdgeLayout(graph);
+			layout.execute(parent);
+		}else if (str.equals("Stack Layout")) {
+			mxStackLayout layout = new mxStackLayout(graph);
+			layout.execute(parent);
 		}
 	}
 }
