@@ -17,32 +17,19 @@ import javax.swing.LayoutStyle;
 
 import com.petersoft.CommonLib;
 
-/**
- * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
- * Builder, which is free for non-commercial use. If Jigloo is being used
- * commercially (ie, by a corporation, company or business for any purpose
- * whatever) then you should purchase a license for each developer using Jigloo.
- * Please visit www.cloudgarden.com for details. Use of Jigloo implies
- * acceptance of these licensing terms. A COMMERCIAL LICENSE HAS NOT BEEN
- * PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR
- * ANY CORPORATE OR COMMERCIAL PURPOSE.
- */
 public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 	private JButton jCancelButton;
 	private JLabel jLabel1;
 	private JTree jTree;
 	private File file;
 	public Hashtable<String, File> files = new Hashtable<String, File>();
+	final int MAX_NUMBER_OF_VERTEX = 800;
+	int noOfVertex;
 
 	public JAnalystDialog(JFrame frame, JTree jTree, File file) {
 		super(frame, true);
 		this.jTree = jTree;
 		this.file = file;
-
-		// File files[] = new File("/lib").listFiles();
-		// for (File file : files) {
-		// System.out.println(file);
-		// }
 
 		initGUI();
 		CommonLib.centerDialog(this);
@@ -51,7 +38,8 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 	private void initGUI() {
 		try {
 			{
-				GroupLayout thisLayout = new GroupLayout((JComponent) getContentPane());
+				GroupLayout thisLayout = new GroupLayout(
+						(JComponent) getContentPane());
 				getContentPane().setLayout(thisLayout);
 				this.setTitle("Analyting");
 
@@ -72,20 +60,42 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 				{
 					jLabel1 = new JLabel();
 				}
-				thisLayout.setVerticalGroup(thisLayout.createSequentialGroup().addContainerGap().addComponent(jLabel1, 0, 44, Short.MAX_VALUE)
-						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jCancelButton, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE).addContainerGap());
-				thisLayout.setHorizontalGroup(thisLayout
-						.createSequentialGroup()
-						.addContainerGap()
-						.addGroup(
-								thisLayout
-										.createParallelGroup()
-										.addComponent(jLabel1, GroupLayout.Alignment.LEADING, 0, 378, Short.MAX_VALUE)
-										.addGroup(
-												GroupLayout.Alignment.LEADING,
-												thisLayout.createSequentialGroup().addGap(0, 317, Short.MAX_VALUE)
-														.addComponent(jCancelButton, GroupLayout.PREFERRED_SIZE, 62, GroupLayout.PREFERRED_SIZE))).addContainerGap());
+				thisLayout
+						.setVerticalGroup(thisLayout
+								.createSequentialGroup()
+								.addContainerGap()
+								.addComponent(jLabel1, 0, 44, Short.MAX_VALUE)
+								.addPreferredGap(
+										LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(jCancelButton,
+										GroupLayout.PREFERRED_SIZE,
+										GroupLayout.PREFERRED_SIZE,
+										GroupLayout.PREFERRED_SIZE)
+								.addContainerGap());
+				thisLayout
+						.setHorizontalGroup(thisLayout
+								.createSequentialGroup()
+								.addContainerGap()
+								.addGroup(
+										thisLayout
+												.createParallelGroup()
+												.addComponent(
+														jLabel1,
+														GroupLayout.Alignment.LEADING,
+														0, 378, Short.MAX_VALUE)
+												.addGroup(
+														GroupLayout.Alignment.LEADING,
+														thisLayout
+																.createSequentialGroup()
+																.addGap(0,
+																		317,
+																		Short.MAX_VALUE)
+																.addComponent(
+																		jCancelButton,
+																		GroupLayout.PREFERRED_SIZE,
+																		62,
+																		GroupLayout.PREFERRED_SIZE)))
+								.addContainerGap());
 			}
 			this.setSize(418, 126);
 		} catch (Exception e) {
@@ -109,7 +119,7 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 				if (mother == null) {
 					mother = analystELF(f, null);
 				} else {
-					mother = analystELF(f, mother);
+					analystELF(f, mother);
 				}
 			}
 			return mother;
@@ -117,21 +127,33 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 		if (files.contains(file)) {
 			return null;
 		}
-		System.out.println(file);
+		if (file.getPath().startsWith("/lib/modules")) {
+			return null;
+		}
+		noOfVertex++;
+		if (noOfVertex >= MAX_NUMBER_OF_VERTEX) {
+			return parent;
+		}
+		System.out.println(noOfVertex + " " + file);
 		files.put(file.getName(), file);
 		jLabel1.setText(file.getAbsolutePath());
 
 		jLabel1.setText("readelf -a " + file.getAbsolutePath());
 		String results[];
 
-		results = clearHTML(CommonLib.runCommand("readelf -a " + file.getAbsolutePath())).split("\n\n");
+		results = clearHTML(
+				CommonLib.runCommand("readelf -a " + file.getAbsolutePath()))
+				.split("\n\n");
 
-		String colors[] = { "#000000", "#0000ff", "#ff0000", "#007700", "#ff00ff" };
+		String colors[] = { "#000000", "#0000ff", "#ff0000", "#007700",
+				"#ff00ff" };
 		jLabel1.setText("end readelf -a " + file.getAbsolutePath());
-		String result = "<html><body><strong>" + file.getAbsolutePath() + "</strong><br><pre>";
+		String result = "<html><body><strong>" + file.getAbsolutePath()
+				+ "</strong><br><pre>";
 		for (int x = 1, count = 0; x < results.length; x++) {
 			jLabel1.setText(x + "/" + count);
-			result += "\n\n<font color=\"" + colors[count] + "\">" + results[x] + "</font>";
+			result += "\n\n<font color=\"" + colors[count] + "\">" + results[x]
+					+ "</font>";
 			if (count < colors.length - 1) {
 				count++;
 			} else {
@@ -163,10 +185,13 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 						analystELF(new File("/lib/" + words[1]), node);
 					} else if (new File("/usr/lib/" + words[1]).exists()) {
 						analystELF(new File("/usr/lib/" + words[1]), node);
-					} else if (new File(file.getParent() + "/" + words[1]).exists()) {
-						analystELF(new File(file.getParent() + "/" + words[1]), node);
+					} else if (new File(file.getParent() + "/" + words[1])
+							.exists()) {
+						analystELF(new File(file.getParent() + "/" + words[1]),
+								node);
 					} else {
-						node.child.add(new ELFNode(new File(words[1]), "not found", parent));
+						node.child.add(new ELFNode(new File(words[1]),
+								"not found", parent));
 					}
 				}
 			}

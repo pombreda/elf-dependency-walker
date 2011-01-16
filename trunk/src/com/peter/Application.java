@@ -81,7 +81,8 @@ public class Application extends javax.swing.JFrame implements Printable {
 	mxGraphOutline graphOutline;
 	JProgressBar jStatusProgressBar = new JProgressBar();
 	JAnalystDialog dialog;
-	final int MAX_NUMBER_OF_VERTEX = 1000;
+	
+	
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
