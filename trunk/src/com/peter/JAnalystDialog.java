@@ -22,8 +22,8 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 	private JLabel jLabel1;
 	private JTree jTree;
 	private File file;
-	public Hashtable<String, File> files = new Hashtable<String, File>();
-	final int MAX_NUMBER_OF_VERTEX = 800;
+	public Hashtable<String, ELFNode> allNodes = new Hashtable<String, ELFNode>();
+	final int MAX_NUMBER_OF_VERTEX = 2000;
 	int noOfVertex;
 
 	public JAnalystDialog(JFrame frame, JTree jTree, File file) {
@@ -105,7 +105,7 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 
 	@Override
 	public void run() {
-		files.clear();
+		allNodes.clear();
 		ELFNode node = analystELF(file, null);
 		((MyTreeModel) jTree.getModel()).setRoot(node);
 		this.jCancelButton.setText("Finished");
@@ -124,9 +124,9 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 			}
 			return mother;
 		}
-		if (files.contains(file)) {
-			return null;
-		}
+		// if (files.contains(file)) {
+		// return null;
+		// }
 		if (file.getPath().startsWith("/lib/modules")) {
 			return null;
 		}
@@ -134,11 +134,9 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 		if (noOfVertex >= MAX_NUMBER_OF_VERTEX) {
 			return parent;
 		}
-		System.out.println(noOfVertex + " " + file);
-		files.put(file.getName(), file);
-		jLabel1.setText(file.getAbsolutePath());
 
-		jLabel1.setText("readelf -a " + file.getAbsolutePath());
+		jLabel1.setText(noOfVertex + " " + file);
+
 		String results[];
 
 		results = clearHTML(
@@ -147,11 +145,9 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 
 		String colors[] = { "#000000", "#0000ff", "#ff0000", "#007700",
 				"#ff00ff" };
-		jLabel1.setText("end readelf -a " + file.getAbsolutePath());
 		String result = "<html><body><strong>" + file.getAbsolutePath()
 				+ "</strong><br><pre>";
 		for (int x = 1, count = 0; x < results.length; x++) {
-			jLabel1.setText(x + "/" + count);
 			result += "\n\n<font color=\"" + colors[count] + "\">" + results[x]
 					+ "</font>";
 			if (count < colors.length - 1) {
@@ -166,14 +162,19 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 		String lines[] = result.split("\n");
 
 		ELFNode node = new ELFNode(file, result, parent);
+		allNodes.put(file.getName(), node);
 		if (parent != null) {
-			parent.child.add(node);
+			if (allNodes.contains(file)) {
+				parent.child.add(allNodes.get(file.getName()));
+				return null;
+			} else {
+				parent.child.add(node);
+			}
 		}
 
 		for (String line : lines) {
 			if (line.toLowerCase().contains("needed")) {
 				String words[] = line.split("[\\[\\]]");
-				jLabel1.setText(line);
 				if (words.length > 1) {
 					if (new File("/lib/" + words[1]).exists()) {
 						analystELF(new File("/lib/" + words[1]), node);
