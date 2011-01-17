@@ -23,7 +23,7 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 	private JTree jTree;
 	private File file;
 	public Hashtable<String, ELFNode> allNodes = new Hashtable<String, ELFNode>();
-	final int MAX_NUMBER_OF_VERTEX = 2000;
+	final int MAX_NUMBER_OF_VERTEX = 20000000;
 	int noOfVertex;
 
 	public JAnalystDialog(JFrame frame, JTree jTree, File file) {
@@ -38,8 +38,7 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 	private void initGUI() {
 		try {
 			{
-				GroupLayout thisLayout = new GroupLayout(
-						(JComponent) getContentPane());
+				GroupLayout thisLayout = new GroupLayout((JComponent) getContentPane());
 				getContentPane().setLayout(thisLayout);
 				this.setTitle("Analyting");
 
@@ -60,42 +59,20 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 				{
 					jLabel1 = new JLabel();
 				}
-				thisLayout
-						.setVerticalGroup(thisLayout
-								.createSequentialGroup()
-								.addContainerGap()
-								.addComponent(jLabel1, 0, 44, Short.MAX_VALUE)
-								.addPreferredGap(
-										LayoutStyle.ComponentPlacement.RELATED)
-								.addComponent(jCancelButton,
-										GroupLayout.PREFERRED_SIZE,
-										GroupLayout.PREFERRED_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-								.addContainerGap());
-				thisLayout
-						.setHorizontalGroup(thisLayout
-								.createSequentialGroup()
-								.addContainerGap()
-								.addGroup(
-										thisLayout
-												.createParallelGroup()
-												.addComponent(
-														jLabel1,
-														GroupLayout.Alignment.LEADING,
-														0, 378, Short.MAX_VALUE)
-												.addGroup(
-														GroupLayout.Alignment.LEADING,
-														thisLayout
-																.createSequentialGroup()
-																.addGap(0,
-																		317,
-																		Short.MAX_VALUE)
-																.addComponent(
-																		jCancelButton,
-																		GroupLayout.PREFERRED_SIZE,
-																		62,
-																		GroupLayout.PREFERRED_SIZE)))
-								.addContainerGap());
+				thisLayout.setVerticalGroup(thisLayout.createSequentialGroup().addContainerGap().addComponent(jLabel1, 0, 44, Short.MAX_VALUE)
+						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(jCancelButton, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE).addContainerGap());
+				thisLayout.setHorizontalGroup(thisLayout
+						.createSequentialGroup()
+						.addContainerGap()
+						.addGroup(
+								thisLayout
+										.createParallelGroup()
+										.addComponent(jLabel1, GroupLayout.Alignment.LEADING, 0, 378, Short.MAX_VALUE)
+										.addGroup(
+												GroupLayout.Alignment.LEADING,
+												thisLayout.createSequentialGroup().addGap(0, 317, Short.MAX_VALUE)
+														.addComponent(jCancelButton, GroupLayout.PREFERRED_SIZE, 62, GroupLayout.PREFERRED_SIZE))).addContainerGap());
 			}
 			this.setSize(418, 126);
 		} catch (Exception e) {
@@ -139,17 +116,12 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 
 		String results[];
 
-		results = clearHTML(
-				CommonLib.runCommand("readelf -a " + file.getAbsolutePath()))
-				.split("\n\n");
+		results = clearHTML(CommonLib.runCommand("readelf -a " + file.getAbsolutePath())).split("\n\n");
 
-		String colors[] = { "#000000", "#0000ff", "#ff0000", "#007700",
-				"#ff00ff" };
-		String result = "<html><body><strong>" + file.getAbsolutePath()
-				+ "</strong><br><pre>";
+		String colors[] = { "#000000", "#0000ff", "#ff0000", "#007700", "#ff00ff" };
+		String result = "<html><body><strong>" + file.getAbsolutePath() + "</strong><br><pre>";
 		for (int x = 1, count = 0; x < results.length; x++) {
-			result += "\n\n<font color=\"" + colors[count] + "\">" + results[x]
-					+ "</font>";
+			result += "\n\n<font color=\"" + colors[count] + "\">" + results[x] + "</font>";
 			if (count < colors.length - 1) {
 				count++;
 			} else {
@@ -186,13 +158,10 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 						analystELF(new File("/lib/" + words[1]), node);
 					} else if (new File("/usr/lib/" + words[1]).exists()) {
 						analystELF(new File("/usr/lib/" + words[1]), node);
-					} else if (new File(file.getParent() + "/" + words[1])
-							.exists()) {
-						analystELF(new File(file.getParent() + "/" + words[1]),
-								node);
+					} else if (new File(file.getParent() + "/" + words[1]).exists()) {
+						analystELF(new File(file.getParent() + "/" + words[1]), node);
 					} else {
-						node.child.add(new ELFNode(new File(words[1]),
-								"not found", parent));
+						node.child.add(new ELFNode(new File(words[1]), "not found", parent));
 					}
 				}
 			}
