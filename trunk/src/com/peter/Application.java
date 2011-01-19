@@ -40,6 +40,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
 import com.mxgraph.canvas.mxICanvas;
+import com.mxgraph.layout.mxCircleLayout;
 import com.mxgraph.layout.mxCompactTreeLayout;
 import com.mxgraph.layout.mxEdgeLabelLayout;
 import com.mxgraph.layout.mxFastOrganicLayout;
@@ -269,11 +270,15 @@ public class Application extends javax.swing.JFrame implements Printable {
 				return false;
 			}
 		};
+		mxCircleLayout layout = new mxCircleLayout(graph);
+		layout.execute(parent);
 		graphComponent = new CallGraphComponent(graph);
 		parent = graph.getDefaultParent();
 		allNodes.clear();
 		allNodesPort.clear();
+		graph.getModel().beginUpdate();
 		addCells(parent, (ELFNode) myTreeModel.getRoot(), null);
+		graph.getModel().endUpdate();
 		graph.setCellsDisconnectable(false);
 
 		graphComponent.setGridVisible(true);
@@ -301,8 +306,8 @@ public class Application extends javax.swing.JFrame implements Printable {
 		graph.foldCells(false);
 		graph.setGridSize(10);
 
-		mxHierarchicalLayout layout = new mxHierarchicalLayout(graph);
-		layout.execute(parent);
+		//		mxHierarchicalLayout layout = new mxHierarchicalLayout(graph);
+		//		layout.execute(parent);
 
 		// jGraphSplitPane.removeAll();
 		jGraphSplitPane.add(graphComponent, JSplitPane.TOP);
@@ -325,7 +330,6 @@ public class Application extends javax.swing.JFrame implements Printable {
 	private void addCells(Object parent, ELFNode node, mxCell lastPort) {
 		setMarkerMaxAndMinSize();
 
-		graph.getModel().beginUpdate();
 		try {
 			mxCell newNode = (mxCell) graph.insertVertex(parent, null, "1:" + node.getFile().getName(), 100, x * 40 + 100, 100, 30);
 
@@ -337,7 +341,7 @@ public class Application extends javax.swing.JFrame implements Printable {
 			x++;
 
 			if (parent != null && lastPort != null) {
-				graph.insertEdge(parent, null, x, lastPort, ports[0], "edgeStyle=elbowEdgeStyle;elbow=horizontal;"
+				graph.insertEdge(parent, null, "", lastPort, ports[0], "edgeStyle=elbowEdgeStyle;elbow=horizontal;"
 						+ "exitX=1;exitY=0.5;exitPerimeter=1;entryX=0;entryY=0;entryPerimeter=1;");
 				// graph.insertEdge(parent, null, "", lastPort, ports[0],
 				// "edgeStyle=entityRelationEdgeStyle;");
@@ -359,7 +363,7 @@ public class Application extends javax.swing.JFrame implements Printable {
 				if (allNodes.get(n.getFile().getName()) == null) {
 					addCells(parent, n, ports[1]);
 				} else {
-					graph.insertEdge(parent, null, "f", ports[1], allNodesPort.get(n.getFile().getName()), "edgeStyle=entityRelationEdgeStyle;");
+					graph.insertEdge(parent, null, "f", ports[1], allNodesPort.get(n.getFile().getName()), "edgeStyle=topToBottomEdgeStyle;");
 				}
 			}
 
@@ -369,8 +373,8 @@ public class Application extends javax.swing.JFrame implements Printable {
 			// node.getFile().getName(), 0, 0, 100, 30);
 			// }
 
-		} finally {
-			graph.getModel().endUpdate();
+		} catch (Exception ex){
+			
 		}
 	}
 
@@ -445,6 +449,7 @@ public class Application extends javax.swing.JFrame implements Printable {
 		jLayoutButton.removeAll();
 		jLayoutButton.add(new JMenuItem("Hierarchical Layout"));
 		jLayoutButton.add(new JMenuItem("Circle Layout"));
+		jLayoutButton.add(new JMenuItem("Organic Layout"));
 		jLayoutButton.add(new JMenuItem("Compact Tree Layout"));
 		jLayoutButton.add(new JMenuItem("Edge Label Layout"));
 		jLayoutButton.add(new JMenuItem("Fast Organic Layout"));
@@ -550,6 +555,9 @@ public class Application extends javax.swing.JFrame implements Printable {
 				mxHierarchicalLayout layout = new mxHierarchicalLayout(graph);
 				layout.execute(parent);
 			} else if (str.equals("Circle Layout")) {
+				mxCircleLayout layout = new mxCircleLayout(graph);
+				layout.execute(parent);
+			} else if (str.equals("Organic Layout")) {
 				mxOrganicLayout layout = new mxOrganicLayout(graph);
 				layout.execute(parent);
 			} else if (str.equals("Compact Tree Layout")) {

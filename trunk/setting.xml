@@ -1,5 +1,5 @@
 <?xml version='1.0' ?>  <Setting>
-    <divX>419</divX>
+    <divX>379</divX>
     <height>695</height>
     <historyList>
       <historyList>/usr/bin/gcc</historyList>
@@ -14,6 +14,6 @@
     </historyList>
     <lastOpenPath>/usr/bin</lastOpenPath>
     <width>1048</width>
-    <x>159</x>
-    <y>32</y>
+    <x>150</x>
+    <y>51</y>
   </Setting>
