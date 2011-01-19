@@ -584,3 +584,4 @@ public class Application extends javax.swing.JFrame implements Printable {
 		}
 	}
 }
+
