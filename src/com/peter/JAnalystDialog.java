@@ -23,7 +23,7 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 	private JTree jTree;
 	private File file;
 	public Hashtable<String, ELFNode> allNodes = new Hashtable<String, ELFNode>();
-	final int MAX_NUMBER_OF_VERTEX = 20000000;
+	final int MAX_NUMBER_OF_VERTEX = 100;
 	int noOfVertex;
 
 	public JAnalystDialog(JFrame frame, JTree jTree, File file) {
@@ -120,18 +120,19 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 
 		String colors[] = { "#000000", "#0000ff", "#ff0000", "#007700", "#ff00ff" };
 		String result = "<html><body><strong>" + file.getAbsolutePath() + "</strong><br><pre>";
-		for (int x = 1, count = 0; x < results.length; x++) {
-			result += "\n\n<font color=\"" + colors[count] + "\">" + results[x] + "</font>";
-			if (count < colors.length - 1) {
-				count++;
-			} else {
-				count = 0;
-			}
+		System.out.println(results.length);
+//		for (int x = 1, count = 0; x < results.length; x++) {
+//			result += "\n\n<font color=\"" + colors[count] + "\">" + results[x] + "</font>";
+//			if (count < colors.length - 1) {
+//				count++;
+//			} else {
+//				count = 0;
+//			}
+//
+//		}
+//		result += "</pre></body></html>";
 
-		}
-		result += "</pre></body></html>";
-
-		String lines[] = result.split("\n");
+//		String lines[] = result.split("\n");
 
 		ELFNode node = new ELFNode(file, result, parent);
 		allNodes.put(file.getName(), node);
@@ -144,7 +145,7 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 			}
 		}
 
-		for (String line : lines) {
+		for (String line : results) {
 			if (line.toLowerCase().contains("needed")) {
 				String words[] = line.split("[\\[\\]]");
 				if (words.length > 1) {
