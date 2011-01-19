@@ -1,6 +1,6 @@
 <?xml version='1.0' ?>  <Setting>
     <divX>379</divX>
-    <height>695</height>
+    <height>650</height>
     <historyList>
       <historyList>/usr/bin/gcc</historyList>
       <historyList>/root/workspace/plibc/library/testingLibrary/test.exe</historyList>
@@ -15,5 +15,5 @@
     <lastOpenPath>/usr/bin</lastOpenPath>
     <width>1048</width>
     <x>150</x>
-    <y>51</y>
+    <y>25</y>
   </Setting>

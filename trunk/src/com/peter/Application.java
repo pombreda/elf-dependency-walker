@@ -306,8 +306,8 @@ public class Application extends javax.swing.JFrame implements Printable {
 		graph.foldCells(false);
 		graph.setGridSize(10);
 
-		//		mxHierarchicalLayout layout = new mxHierarchicalLayout(graph);
-		//		layout.execute(parent);
+		// mxHierarchicalLayout layout = new mxHierarchicalLayout(graph);
+		// layout.execute(parent);
 
 		// jGraphSplitPane.removeAll();
 		jGraphSplitPane.add(graphComponent, JSplitPane.TOP);
@@ -345,13 +345,19 @@ public class Application extends javax.swing.JFrame implements Printable {
 						+ "exitX=1;exitY=0.5;exitPerimeter=1;entryX=0;entryY=0;entryPerimeter=1;");
 				// graph.insertEdge(parent, null, "", lastPort, ports[0],
 				// "edgeStyle=entityRelationEdgeStyle;");
-				//				graph.insertEdge(parent, null, "", lastPort, ports[0], "edgeStyle=entityRelationEdgeStyle;");
-				//				graph.insertEdge(parent, null, "", lastPort, ports[0]);
+				// graph.insertEdge(parent, null, "", lastPort, ports[0],
+				// "edgeStyle=entityRelationEdgeStyle;");
+				// graph.insertEdge(parent, null, "", lastPort, ports[0]);
 			}
-
+			boolean a = false;
+			if (node.getFile().getName().contains("readline")) {
+				a = true;
+			}
 			while (ir.hasNext()) {
 				ELFNode n = ir.next();
-				// System.out.println(n.file.getName());
+				if (a) {
+					System.out.println(n.file.getName());
+				}
 				// newNode = (mxCell) graph.insertVertex(parent, null, "2:" +
 				// n.file.getName(), 100, x * 40 + 100, 100, 30);
 				// System.out.println(x * 100 + 100);
@@ -373,8 +379,8 @@ public class Application extends javax.swing.JFrame implements Printable {
 			// node.getFile().getName(), 0, 0, 100, 30);
 			// }
 
-		} catch (Exception ex){
-			
+		} catch (Exception ex) {
+
 		}
 	}
 
@@ -584,4 +590,3 @@ public class Application extends javax.swing.JFrame implements Printable {
 		}
 	}
 }
-
