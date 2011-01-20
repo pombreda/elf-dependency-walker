@@ -12,12 +12,12 @@ public class ELFNode implements TreeNode {
 	Icon icon = new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/script.png"));
 	Icon notFoundIcon = new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/cross.png"));
 	File file;
+	String nmResult;
+	boolean notFound;
 
 	public File getFile() {
 		return file;
 	}
-
-	String nmResult;
 
 	public String getNmResult() {
 		return nmResult;
@@ -30,14 +30,15 @@ public class ELFNode implements TreeNode {
 	ELFNode parent;
 	public LinkedHashSet<ELFNode> child = new LinkedHashSet<ELFNode>();
 
-	public ELFNode(File file, String result, ELFNode parent) {
+	public ELFNode(File file, String result, ELFNode parent, boolean notFound) {
 		this.file = file;
 		this.parent = parent;
 		this.nmResult = result;
+		this.notFound = notFound;
 	}
 
 	public Icon getIcon() {
-		if (nmResult.equals("not found")) {
+		if (notFound) {
 			return notFoundIcon;
 		} else {
 			return icon;

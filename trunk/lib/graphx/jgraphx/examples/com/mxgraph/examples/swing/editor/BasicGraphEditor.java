@@ -850,6 +850,7 @@ public class BasicGraphEditor extends JPanel
 			}
 			else if (ident.equals("verticalTree"))
 			{
+				System.out.println("peter vertical tree");
 				layout = new mxCompactTreeLayout(graph, false);
 			}
 			else if (ident.equals("horizontalTree"))
