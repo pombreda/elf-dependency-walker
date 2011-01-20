@@ -1,6 +1,6 @@
 <?xml version='1.0' ?>  <Setting>
     <divX>216</divX>
-    <height>650</height>
+    <height>423</height>
     <historyList>
       <historyList>/usr/bin/gcc</historyList>
       <historyList>/root/workspace/plibc/library/testingLibrary/test.exe</historyList>
@@ -13,7 +13,7 @@
       <historyList>/usr/bin/abrt-backtrace</historyList>
     </historyList>
     <lastOpenPath>/usr/bin</lastOpenPath>
-    <width>1048</width>
-    <x>152</x>
+    <width>1037</width>
+    <x>163</x>
     <y>25</y>
   </Setting>

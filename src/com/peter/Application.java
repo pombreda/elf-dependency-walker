@@ -605,14 +605,11 @@ public class Application extends javax.swing.JFrame implements Printable {
 			final mxGraph graph = graphComponent.getGraph();
 			Object cell = graph.getSelectionCell();
 
-			if (cell == null
-					|| graph.getModel().getChildCount(cell) == 0)
-			{
+			if (cell == null || graph.getModel().getChildCount(cell) == 0) {
 				cell = graph.getDefaultParent();
 			}
 			graph.getModel().beginUpdate();
-			
-			
+
 			String str = ((JMenuItem) jLayoutButton.getEventSource()).getText();
 			jLayoutButton.setText(str);
 			if (str.equals("Hierarchical Layout")) {
@@ -621,11 +618,8 @@ public class Application extends javax.swing.JFrame implements Printable {
 			} else if (str.equals("Circle Layout")) {
 				mxCircleLayout layout = new mxCircleLayout(graph);
 				layout.execute(cell);
-				//graph.getModel().endUpdate();
-				
-				
-				
-				
+				// graph.getModel().endUpdate();
+
 			} else if (str.equals("Organic Layout")) {
 				mxOrganicLayout layout = new mxOrganicLayout(graph);
 				layout.execute(parent);
@@ -650,15 +644,12 @@ public class Application extends javax.swing.JFrame implements Printable {
 			} else {
 				System.out.println("no this layout");
 			}
-			
-			mxMorphing morph = new mxMorphing(graphComponent, 20,
-					1.2, 20);
 
-			morph.addListener(mxEvent.DONE, new mxIEventListener()
-			{
+			mxMorphing morph = new mxMorphing(graphComponent, 20, 1.2, 20);
 
-				public void invoke(Object sender, mxEventObject evt)
-				{
+			morph.addListener(mxEvent.DONE, new mxIEventListener() {
+
+				public void invoke(Object sender, mxEventObject evt) {
 					graph.getModel().endUpdate();
 				}
 
@@ -683,6 +674,11 @@ public class Application extends javax.swing.JFrame implements Printable {
 	}
 
 	private void jSaveToPngButtonActionPerformed(ActionEvent evt) {
-		saveImage(this.graphComponent, new File("/fuck.png"));
+		final JFileChooser fc = new JFileChooser(Setting.getInstance().getLastOpenPath());
+		int returnVal = fc.showSaveDialog(this);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			saveImage(this.graphComponent, fc.getSelectedFile());
+		}
+
 	}
 }
