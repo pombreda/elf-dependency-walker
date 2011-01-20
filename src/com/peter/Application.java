@@ -3,6 +3,8 @@ package com.peter;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
@@ -11,14 +13,18 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.io.File;
+import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 
+import javax.imageio.ImageIO;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
@@ -52,9 +58,14 @@ import com.mxgraph.layout.orthogonal.mxOrthogonalLayout;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGeometry;
 import com.mxgraph.swing.mxGraphOutline;
+import com.mxgraph.swing.util.mxMorphing;
+import com.mxgraph.util.mxEvent;
+import com.mxgraph.util.mxEventObject;
 import com.mxgraph.util.mxPoint;
+import com.mxgraph.util.mxEventSource.mxIEventListener;
 import com.mxgraph.view.mxCellState;
 import com.mxgraph.view.mxGraph;
+import com.petersoft.CommonLib;
 import com.petersoft.advancedswing.jdropdownbutton.JDropDownButton;
 
 /**
@@ -81,7 +92,9 @@ public class Application extends javax.swing.JFrame implements Printable {
 	private JEditorPane jTextArea1;
 	private JTree jTree1;
 	private JSplitPane jSplitPane1;
-	private JPanel jCallGraphPreviewPanel;
+	private JButton jSaveToPngButton;
+	private JPanel jPanel1;
+	private JPanel jCallGraphPreviewPanel = new JPanel();
 	private MyTreeModel myTreeModel = new MyTreeModel(null);
 	final JEditorPane lines = new JEditorPane();
 	mxGraph graph;
@@ -167,7 +180,6 @@ public class Application extends javax.swing.JFrame implements Printable {
 				{
 					jGraphSplitPane = new JSplitPane();
 					jTabbedPane1.addTab("Graph", null, jGraphSplitPane, null);
-					jGraphSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
 				}
 			}
 			{
@@ -213,7 +225,7 @@ public class Application extends javax.swing.JFrame implements Printable {
 					jLayoutButton = new JDropDownButton();
 					jToolBar1.add(jLayoutButton);
 					jLayoutButton.setMaximumSize(new java.awt.Dimension(180, 28));
-					jLayoutButton.setText("Layout");
+					jLayoutButton.setText("Hierarchical Layout");
 					jLayoutButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/cake.png")));
 					jLayoutButton.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
@@ -270,15 +282,11 @@ public class Application extends javax.swing.JFrame implements Printable {
 				return false;
 			}
 		};
-		mxCircleLayout layout = new mxCircleLayout(graph);
-		layout.execute(parent);
 		graphComponent = new CallGraphComponent(graph);
 		parent = graph.getDefaultParent();
 		allNodes.clear();
 		allNodesPort.clear();
-		graph.getModel().beginUpdate();
 		addCells(parent, (ELFNode) myTreeModel.getRoot(), null);
-		graph.getModel().endUpdate();
 		graph.setCellsDisconnectable(false);
 
 		graphComponent.setGridVisible(true);
@@ -310,17 +318,40 @@ public class Application extends javax.swing.JFrame implements Printable {
 		// layout.execute(parent);
 
 		// jGraphSplitPane.removeAll();
-		jGraphSplitPane.add(graphComponent, JSplitPane.TOP);
+		jGraphSplitPane.add(graphComponent, JSplitPane.RIGHT);
+		{
+			jPanel1 = new JPanel();
+			BoxLayout jPanel1Layout = new BoxLayout(jPanel1, javax.swing.BoxLayout.Y_AXIS);
+			jPanel1.setLayout(jPanel1Layout);
+			jGraphSplitPane.add(jPanel1, JSplitPane.LEFT);
+			jPanel1.setPreferredSize(new java.awt.Dimension(100, 535));
+			jPanel1.add(jCallGraphPreviewPanel);
+		}
 
 		graphOutline = new mxGraphOutline(graphComponent);
 		graphOutline.setBorder(new LineBorder(Color.LIGHT_GRAY));
 
-		jCallGraphPreviewPanel = new JPanel();
 		BorderLayout jCallGraphPreviewPanelLayout = new BorderLayout();
 		jCallGraphPreviewPanel.setLayout(jCallGraphPreviewPanelLayout);
 		jCallGraphPreviewPanel.removeAll();
 		jCallGraphPreviewPanel.add(graphOutline, BorderLayout.CENTER);
-		jGraphSplitPane.add(jCallGraphPreviewPanel, JSplitPane.BOTTOM);
+		jCallGraphPreviewPanel.setPreferredSize(new Dimension(100, 100));
+		{
+			jSaveToPngButton = new JButton();
+			jPanel1.add(jSaveToPngButton);
+			jSaveToPngButton.setText("Save to PNG");
+			jSaveToPngButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/disk.png")));
+			jSaveToPngButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					jSaveToPngButtonActionPerformed(evt);
+				}
+			});
+		}
+
+		graph.getModel().beginUpdate();
+		mxHierarchicalLayout layout = new mxHierarchicalLayout(graph);
+		layout.execute(parent);
+		graph.getModel().endUpdate();
 	}
 
 	int x = 0;
@@ -341,13 +372,12 @@ public class Application extends javax.swing.JFrame implements Printable {
 			x++;
 
 			if (parent != null && lastPort != null) {
-				graph.insertEdge(parent, null, "", lastPort, ports[0], "edgeStyle=elbowEdgeStyle;elbow=horizontal;"
-						+ "exitX=1;exitY=0.5;exitPerimeter=1;entryX=0;entryY=0;entryPerimeter=1;");
 				// graph.insertEdge(parent, null, "", lastPort, ports[0],
-				// "edgeStyle=entityRelationEdgeStyle;");
-				// graph.insertEdge(parent, null, "", lastPort, ports[0],
-				// "edgeStyle=entityRelationEdgeStyle;");
-				// graph.insertEdge(parent, null, "", lastPort, ports[0]);
+				// "edgeStyle=elbowEdgeStyle;elbow=horizontal;"
+				// +
+				// "exitX=1;exitY=0.5;exitPerimeter=1;entryX=0;entryY=0;entryPerimeter=1;");
+
+				graph.insertEdge(parent, null, "", lastPort, ports[0], "edgeStyle=topToBottomEdgeStyle;");
 			}
 			boolean a = false;
 			if (node.getFile().getName().contains("readline")) {
@@ -369,7 +399,7 @@ public class Application extends javax.swing.JFrame implements Printable {
 				if (allNodes.get(n.getFile().getName()) == null) {
 					addCells(parent, n, ports[1]);
 				} else {
-					graph.insertEdge(parent, null, "f", ports[1], allNodesPort.get(n.getFile().getName()), "edgeStyle=topToBottomEdgeStyle;");
+					graph.insertEdge(parent, null, "", ports[1], allNodesPort.get(n.getFile().getName()), "edgeStyle=topToBottomEdgeStyle;");
 				}
 			}
 
@@ -477,6 +507,26 @@ public class Application extends javax.swing.JFrame implements Printable {
 		try {
 			ELFNode node = (ELFNode) jTree1.getLastSelectedPathComponent();
 			jTextArea1.setContentType("text/html");
+			if (node.getNmResult() == null) {
+				File file = node.getFile();
+				String results[] = clearHTML(CommonLib.runCommand("readelf -a " + file.getAbsolutePath())).split("\n\n");
+
+				String colors[] = { "#000000", "#0000ff", "#ff0000", "#007700", "#ff00ff" };
+				String result = "<html><body><strong>" + file.getAbsolutePath() + "</strong><br><pre>";
+
+				for (int x = 1, count = 0; x < results.length; x++) {
+					result += "\n\n<font color=\"" + colors[count] + "\">" + results[x] + "</font>";
+					if (count < colors.length - 1) {
+						count++;
+					} else {
+						count = 0;
+					}
+
+				}
+				result += "</pre></body></html>";
+				node.setNmResult(result);
+			}
+
 			jTextArea1.setText(node.getNmResult());
 			jTextArea1.setCaretPosition(0);
 
@@ -484,6 +534,10 @@ public class Application extends javax.swing.JFrame implements Printable {
 		} catch (Exception ex) {
 
 		}
+	}
+
+	private String clearHTML(String html) {
+		return html.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 	}
 
 	private void updateLine() {
@@ -536,25 +590,29 @@ public class Application extends javax.swing.JFrame implements Printable {
 	}
 
 	private void jAnaystDirectoryButtonActionPerformed(ActionEvent evt) {
-		File file = null;
 		final JFileChooser fc = new JFileChooser(Setting.getInstance().getLastOpenPath());
-
 		int returnVal = fc.showOpenDialog(this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			file = fc.getSelectedFile();
-		}
-		if (file != null && file.exists()) {
-			file = new File("/lib");
-			dialog = new JAnalystDialog(this, jTree1, file);
-			dialog.setVisible(true);
-			if (dialog.allNodes != null) {
-				updateJGraphx(myTreeModel);
-			}
+			Setting.getInstance().setLastOpenPath(fc.getSelectedFile().getParentFile().getAbsolutePath());
+			JAnalystDialog d = new JAnalystDialog(this, jTree1, fc.getSelectedFile());
+			d.setVisible(true);
+			updateJGraphx(myTreeModel);
 		}
 	}
 
 	private void jLayoutButtonActionPerformed(ActionEvent evt) {
 		if (parent != null) {
+			final mxGraph graph = graphComponent.getGraph();
+			Object cell = graph.getSelectionCell();
+
+			if (cell == null
+					|| graph.getModel().getChildCount(cell) == 0)
+			{
+				cell = graph.getDefaultParent();
+			}
+			graph.getModel().beginUpdate();
+			
+			
 			String str = ((JMenuItem) jLayoutButton.getEventSource()).getText();
 			jLayoutButton.setText(str);
 			if (str.equals("Hierarchical Layout")) {
@@ -562,7 +620,12 @@ public class Application extends javax.swing.JFrame implements Printable {
 				layout.execute(parent);
 			} else if (str.equals("Circle Layout")) {
 				mxCircleLayout layout = new mxCircleLayout(graph);
-				layout.execute(parent);
+				layout.execute(cell);
+				//graph.getModel().endUpdate();
+				
+				
+				
+				
 			} else if (str.equals("Organic Layout")) {
 				mxOrganicLayout layout = new mxOrganicLayout(graph);
 				layout.execute(parent);
@@ -587,6 +650,39 @@ public class Application extends javax.swing.JFrame implements Printable {
 			} else {
 				System.out.println("no this layout");
 			}
+			
+			mxMorphing morph = new mxMorphing(graphComponent, 20,
+					1.2, 20);
+
+			morph.addListener(mxEvent.DONE, new mxIEventListener()
+			{
+
+				public void invoke(Object sender, mxEventObject evt)
+				{
+					graph.getModel().endUpdate();
+				}
+
+			});
+
+			morph.startAnimation();
 		}
+	}
+
+	public static boolean saveImage(Container container, File file) {
+		final BufferedImage image = new BufferedImage(container.getWidth(), container.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		Graphics gr = image.getGraphics();
+		container.printAll(gr);
+		gr.dispose();
+		try {
+			ImageIO.write(image, "PNG", file);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
+	private void jSaveToPngButtonActionPerformed(ActionEvent evt) {
+		saveImage(this.graphComponent, new File("/fuck.png"));
 	}
 }

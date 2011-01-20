@@ -23,7 +23,7 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 	private JTree jTree;
 	private File file;
 	public Hashtable<String, ELFNode> allNodes = new Hashtable<String, ELFNode>();
-	final int MAX_NUMBER_OF_VERTEX = 200;
+	final int MAX_NUMBER_OF_VERTEX = 1000000;
 	int noOfVertex;
 
 	public JAnalystDialog(JFrame frame, JTree jTree, File file) {
@@ -101,48 +101,28 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 			}
 			return mother;
 		}
-		// if (files.contains(file)) {
-		// return null;
-		// }
-		if (file.getPath().startsWith("/lib/modules")) {
-			return null;
-		}
-		noOfVertex++;
+
 		if (noOfVertex >= MAX_NUMBER_OF_VERTEX) {
 			return parent;
 		}
-
-		jLabel1.setText(noOfVertex + " " + file);
+		if (allNodes.get(file.getName()) == null) {
+			noOfVertex++;
+			jLabel1.setText(noOfVertex + " " + file);
+		}
 
 		String results[];
 
-		results = clearHTML(CommonLib.runCommand("readelf -a " + file.getAbsolutePath())).split("\n");
+		results = CommonLib.runCommand("readelf -a " + file.getAbsolutePath()).split("\n");
 
-		String colors[] = { "#000000", "#0000ff", "#ff0000", "#007700", "#ff00ff" };
-		String result = "<html><body><strong>" + file.getAbsolutePath() + "</strong><br><pre>";
+		ELFNode node = new ELFNode(file, null, parent, false);
 
-		// for (int x = 1, count = 0; x < results.length; x++) {
-		// result += "\n\n<font color=\"" + colors[count] + "\">" + results[x] +
-		// "</font>";
-		// if (count < colors.length - 1) {
-		// count++;
-		// } else {
-		// count = 0;
-		// }
-		//
-		// }
-		// result += "</pre></body></html>";
-
-		// String lines[] = result.split("\n");
-
-		ELFNode node = new ELFNode(file, result, parent);
-		allNodes.put(file.getName(), node);
 		if (parent != null) {
-			if (allNodes.contains(file)) {
+			if (allNodes.get(file.getName()) != null) {
 				parent.child.add(allNodes.get(file.getName()));
 				return null;
 			} else {
 				parent.child.add(node);
+				allNodes.put(file.getName(), node);
 			}
 		}
 		for (String line : results) {
@@ -162,16 +142,12 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 					} else if (new File(file.getParent() + "/" + words[1]).exists()) {
 						analystELF(new File(file.getParent() + "/" + words[1]), node);
 					} else {
-						node.child.add(new ELFNode(new File(words[1]), "not found", parent));
+						node.child.add(new ELFNode(new File(words[1]), "", parent, true));
 					}
 				}
 			}
 		}
 		return node;
-	}
-
-	private String clearHTML(String html) {
-		return html.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 	}
 
 	private void thisWindowActivated(WindowEvent evt) {
