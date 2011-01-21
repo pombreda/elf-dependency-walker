@@ -61,8 +61,8 @@ import com.mxgraph.swing.mxGraphOutline;
 import com.mxgraph.swing.util.mxMorphing;
 import com.mxgraph.util.mxEvent;
 import com.mxgraph.util.mxEventObject;
-import com.mxgraph.util.mxPoint;
 import com.mxgraph.util.mxEventSource.mxIEventListener;
+import com.mxgraph.util.mxPoint;
 import com.mxgraph.view.mxCellState;
 import com.mxgraph.view.mxGraph;
 import com.petersoft.CommonLib;
@@ -282,37 +282,39 @@ public class Application extends javax.swing.JFrame implements Printable {
 				return false;
 			}
 		};
-		graphComponent = new CallGraphComponent(graph);
+
 		parent = graph.getDefaultParent();
 		allNodes.clear();
 		allNodesPort.clear();
 		addCells(parent, (ELFNode) myTreeModel.getRoot(), null);
+
 		graph.setCellsDisconnectable(false);
+		graphComponent = new CallGraphComponent(graph);
+		//		setMarkerMaxAndMinSize();
+		//		graphComponent.setGridVisible(true);
+		//		graphComponent.setGridColor(Color.lightGray);
+		//		graphComponent.setBackground(Color.white);
+		//		graphComponent.getViewport().setOpaque(false);
+		//		graphComponent.setBackground(Color.WHITE);
+		//		graphComponent.setConnectable(false);
+		//		graphComponent.getGraphControl().addMouseListener(new MouseAdapter() {
+		//			public void mouseReleased(MouseEvent e) {
+		//				Object cell = graphComponent.getCellAt(e.getX(), e.getY());
+		//
+		//				if (cell != null) {
+		//					String label = graph.getLabel(cell);
+		//					if (label.contains("->")) {
+		//						cellClientEvent(label);
+		//					}
+		//				}
+		//			}
+		//		});
 
-		graphComponent.setGridVisible(true);
-		graphComponent.setGridColor(Color.lightGray);
-		graphComponent.setBackground(Color.white);
-		graphComponent.getViewport().setOpaque(false);
-		graphComponent.setBackground(Color.WHITE);
-		graphComponent.setConnectable(false);
-		graphComponent.getGraphControl().addMouseListener(new MouseAdapter() {
-			public void mouseReleased(MouseEvent e) {
-				Object cell = graphComponent.getCellAt(e.getX(), e.getY());
-
-				if (cell != null) {
-					String label = graph.getLabel(cell);
-					if (label.contains("->")) {
-						cellClientEvent(label);
-					}
-				}
-			}
-		});
-
-		graph.setCellsResizable(false);
-		graph.setCellsMovable(false);
-		graph.setCellsEditable(false);
-		graph.foldCells(false);
-		graph.setGridSize(10);
+		//		graph.setCellsResizable(false);
+		//		graph.setCellsMovable(false);
+		//		graph.setCellsEditable(false);
+		//		graph.foldCells(false);
+		//		graph.setGridSize(10);
 
 		// mxHierarchicalLayout layout = new mxHierarchicalLayout(graph);
 		// layout.execute(parent);
@@ -348,10 +350,10 @@ public class Application extends javax.swing.JFrame implements Printable {
 			});
 		}
 
-		graph.getModel().beginUpdate();
-		mxHierarchicalLayout layout = new mxHierarchicalLayout(graph);
-		layout.execute(parent);
-		graph.getModel().endUpdate();
+		//		graph.getModel().beginUpdate();
+		//		mxHierarchicalLayout layout = new mxHierarchicalLayout(graph);
+		//		layout.execute(parent);
+		//		graph.getModel().endUpdate();
 	}
 
 	int x = 0;
@@ -359,7 +361,6 @@ public class Application extends javax.swing.JFrame implements Printable {
 	Hashtable<String, mxCell> allNodesPort = new Hashtable<String, mxCell>();
 
 	private void addCells(Object parent, ELFNode node, mxCell lastPort) {
-		setMarkerMaxAndMinSize();
 
 		try {
 			mxCell newNode = (mxCell) graph.insertVertex(parent, null, "1:" + node.getFile().getName(), 100, x * 40 + 100, 100, 30);
@@ -614,7 +615,7 @@ public class Application extends javax.swing.JFrame implements Printable {
 			jLayoutButton.setText(str);
 			if (str.equals("Hierarchical Layout")) {
 				mxHierarchicalLayout layout = new mxHierarchicalLayout(graph);
-				layout.execute(parent);
+				layout.execute(cell);
 			} else if (str.equals("Circle Layout")) {
 				mxCircleLayout layout = new mxCircleLayout(graph);
 				layout.execute(cell);
@@ -622,25 +623,25 @@ public class Application extends javax.swing.JFrame implements Printable {
 
 			} else if (str.equals("Organic Layout")) {
 				mxOrganicLayout layout = new mxOrganicLayout(graph);
-				layout.execute(parent);
+				layout.execute(cell);
 			} else if (str.equals("Compact Tree Layout")) {
-				mxCompactTreeLayout layout = new mxCompactTreeLayout(graph);
-				layout.execute(parent);
+				mxCompactTreeLayout layout = new mxCompactTreeLayout(graph, false);
+				layout.execute(cell);
 			} else if (str.equals("Edge Label Layout")) {
 				mxEdgeLabelLayout layout = new mxEdgeLabelLayout(graph);
-				layout.execute(parent);
+				layout.execute(cell);
 			} else if (str.equals("Fast Organic Layout")) {
 				mxFastOrganicLayout layout = new mxFastOrganicLayout(graph);
-				layout.execute(parent);
+				layout.execute(cell);
 			} else if (str.equals("Orthogonal Layout")) {
 				mxOrthogonalLayout layout = new mxOrthogonalLayout(graph);
-				layout.execute(parent);
+				layout.execute(cell);
 			} else if (str.equals("Parallel Edge Layout")) {
 				mxParallelEdgeLayout layout = new mxParallelEdgeLayout(graph);
-				layout.execute(parent);
+				layout.execute(cell);
 			} else if (str.equals("Stack Layout")) {
 				mxStackLayout layout = new mxStackLayout(graph);
-				layout.execute(parent);
+				layout.execute(cell);
 			} else {
 				System.out.println("no this layout");
 			}
