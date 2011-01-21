@@ -286,35 +286,36 @@ public class Application extends javax.swing.JFrame implements Printable {
 		parent = graph.getDefaultParent();
 		allNodes.clear();
 		allNodesPort.clear();
-		addCells(parent, (ELFNode) myTreeModel.getRoot(), null);
+		addCells(parent, (ELFNode) myTreeModel.getRoot(), null, null);
 
 		graph.setCellsDisconnectable(false);
 		graphComponent = new CallGraphComponent(graph);
-		//		setMarkerMaxAndMinSize();
-		//		graphComponent.setGridVisible(true);
-		//		graphComponent.setGridColor(Color.lightGray);
-		//		graphComponent.setBackground(Color.white);
-		//		graphComponent.getViewport().setOpaque(false);
-		//		graphComponent.setBackground(Color.WHITE);
-		//		graphComponent.setConnectable(false);
-		//		graphComponent.getGraphControl().addMouseListener(new MouseAdapter() {
-		//			public void mouseReleased(MouseEvent e) {
-		//				Object cell = graphComponent.getCellAt(e.getX(), e.getY());
+		// setMarkerMaxAndMinSize();
+		// graphComponent.setGridVisible(true);
+		// graphComponent.setGridColor(Color.lightGray);
+		// graphComponent.setBackground(Color.white);
+		// graphComponent.getViewport().setOpaque(false);
+		// graphComponent.setBackground(Color.WHITE);
+		// graphComponent.setConnectable(false);
+		// graphComponent.getGraphControl().addMouseListener(new MouseAdapter()
+		// {
+		// public void mouseReleased(MouseEvent e) {
+		// Object cell = graphComponent.getCellAt(e.getX(), e.getY());
 		//
-		//				if (cell != null) {
-		//					String label = graph.getLabel(cell);
-		//					if (label.contains("->")) {
-		//						cellClientEvent(label);
-		//					}
-		//				}
-		//			}
-		//		});
+		// if (cell != null) {
+		// String label = graph.getLabel(cell);
+		// if (label.contains("->")) {
+		// cellClientEvent(label);
+		// }
+		// }
+		// }
+		// });
 
-		//		graph.setCellsResizable(false);
-		//		graph.setCellsMovable(false);
-		//		graph.setCellsEditable(false);
-		//		graph.foldCells(false);
-		//		graph.setGridSize(10);
+		// graph.setCellsResizable(false);
+		// graph.setCellsMovable(false);
+		// graph.setCellsEditable(false);
+		// graph.foldCells(false);
+		// graph.setGridSize(10);
 
 		// mxHierarchicalLayout layout = new mxHierarchicalLayout(graph);
 		// layout.execute(parent);
@@ -350,18 +351,17 @@ public class Application extends javax.swing.JFrame implements Printable {
 			});
 		}
 
-		//		graph.getModel().beginUpdate();
-		//		mxHierarchicalLayout layout = new mxHierarchicalLayout(graph);
-		//		layout.execute(parent);
-		//		graph.getModel().endUpdate();
+		// graph.getModel().beginUpdate();
+		// mxHierarchicalLayout layout = new mxHierarchicalLayout(graph);
+		// layout.execute(parent);
+		// graph.getModel().endUpdate();
 	}
 
 	int x = 0;
 	Hashtable<String, ELFNode> allNodes = new Hashtable<String, ELFNode>();
 	Hashtable<String, mxCell> allNodesPort = new Hashtable<String, mxCell>();
 
-	private void addCells(Object parent, ELFNode node, mxCell lastPort) {
-
+	private void addCells(Object parent, ELFNode node, Object lastVertex, mxCell lastPort) {
 		try {
 			mxCell newNode = (mxCell) graph.insertVertex(parent, null, "1:" + node.getFile().getName(), 100, x * 40 + 100, 100, 30);
 
@@ -372,44 +372,17 @@ public class Application extends javax.swing.JFrame implements Printable {
 			Iterator<ELFNode> ir = childNode.iterator();
 			x++;
 
-			if (parent != null && lastPort != null) {
-				// graph.insertEdge(parent, null, "", lastPort, ports[0],
-				// "edgeStyle=elbowEdgeStyle;elbow=horizontal;"
-				// +
-				// "exitX=1;exitY=0.5;exitPerimeter=1;entryX=0;entryY=0;entryPerimeter=1;");
-
-				graph.insertEdge(parent, null, "", lastPort, ports[0], "edgeStyle=topToBottomEdgeStyle;");
-			}
-			boolean a = false;
-			if (node.getFile().getName().contains("readline")) {
-				a = true;
+			if (parent != null && lastVertex != null) {
+				graph.insertEdge(parent, null, "", lastVertex, newNode);
 			}
 			while (ir.hasNext()) {
 				ELFNode n = ir.next();
-				if (a) {
-					System.out.println(n.file.getName());
-				}
-				// newNode = (mxCell) graph.insertVertex(parent, null, "2:" +
-				// n.file.getName(), 100, x * 40 + 100, 100, 30);
-				// System.out.println(x * 100 + 100);
-				// x++;
-				// mxCell childPorts[] = addPort(newNode);
-				// graph.insertEdge(parent, null, "", childPorts[1], ports[0],
-				// "edgeStyle=entityRelationEdgeStyle;");
-
 				if (allNodes.get(n.getFile().getName()) == null) {
-					addCells(parent, n, ports[1]);
+					addCells(parent, n, newNode, ports[1]);
 				} else {
-					graph.insertEdge(parent, null, "", ports[1], allNodesPort.get(n.getFile().getName()), "edgeStyle=topToBottomEdgeStyle;");
+					graph.insertEdge(parent, null, "", lastVertex, n);
 				}
 			}
-
-			// while (en.hasMoreElements()) {
-			// node = en.nextElement();
-			// newNode = (mxCell) graph.insertVertex(newNode, null,
-			// node.getFile().getName(), 0, 0, 100, 30);
-			// }
-
 		} catch (Exception ex) {
 
 		}
@@ -595,7 +568,7 @@ public class Application extends javax.swing.JFrame implements Printable {
 		int returnVal = fc.showOpenDialog(this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			Setting.getInstance().setLastOpenPath(fc.getSelectedFile().getParentFile().getAbsolutePath());
-			JAnalystDialog d = new JAnalystDialog(this, jTree1, fc.getSelectedFile());
+			JAnalystDialog d = new JAnalystDialog(this, jTree1, fc.getSelectedFile().getParentFile());
 			d.setVisible(true);
 			updateJGraphx(myTreeModel);
 		}
