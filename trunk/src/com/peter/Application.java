@@ -357,13 +357,13 @@ public class Application extends javax.swing.JFrame implements Printable {
 	}
 
 	int x = 0;
-	Hashtable<String, ELFNode> allNodes = new Hashtable<String, ELFNode>();
+	Hashtable<String, mxCell> allNodes = new Hashtable<String, mxCell>();
 
 	private void addCells(Object parent, ELFNode node, Object lastVertex) {
 		try {
 			mxCell newNode = (mxCell) graph.insertVertex(parent, null, node.getFile().getName(), 100, x * 40 + 100, 100, 30);
 
-			allNodes.put(node.getFile().getName(), node);
+			allNodes.put(node.getFile().getName(), newNode);
 			LinkedHashSet<ELFNode> childNode = node.child;
 			Iterator<ELFNode> ir = childNode.iterator();
 			x++;
