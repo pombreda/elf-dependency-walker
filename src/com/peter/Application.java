@@ -285,8 +285,7 @@ public class Application extends javax.swing.JFrame implements Printable {
 
 		parent = graph.getDefaultParent();
 		allNodes.clear();
-		allNodesPort.clear();
-		addCells(parent, (ELFNode) myTreeModel.getRoot(), null, null);
+		addCells(parent, (ELFNode) myTreeModel.getRoot(), null);
 
 		graph.setCellsDisconnectable(false);
 		graphComponent = new CallGraphComponent(graph);
@@ -359,15 +358,12 @@ public class Application extends javax.swing.JFrame implements Printable {
 
 	int x = 0;
 	Hashtable<String, ELFNode> allNodes = new Hashtable<String, ELFNode>();
-	Hashtable<String, mxCell> allNodesPort = new Hashtable<String, mxCell>();
 
-	private void addCells(Object parent, ELFNode node, Object lastVertex, mxCell lastPort) {
+	private void addCells(Object parent, ELFNode node, Object lastVertex) {
 		try {
-			mxCell newNode = (mxCell) graph.insertVertex(parent, null, "1:" + node.getFile().getName(), 100, x * 40 + 100, 100, 30);
+			mxCell newNode = (mxCell) graph.insertVertex(parent, null, node.getFile().getName(), 100, x * 40 + 100, 100, 30);
 
-			mxCell ports[] = addPort(newNode);
 			allNodes.put(node.getFile().getName(), node);
-			allNodesPort.put(node.getFile().getName(), ports[1]);
 			LinkedHashSet<ELFNode> childNode = node.child;
 			Iterator<ELFNode> ir = childNode.iterator();
 			x++;
@@ -378,13 +374,17 @@ public class Application extends javax.swing.JFrame implements Printable {
 			while (ir.hasNext()) {
 				ELFNode n = ir.next();
 				if (allNodes.get(n.getFile().getName()) == null) {
-					addCells(parent, n, newNode, ports[1]);
+					addCells(parent, n, newNode);
 				} else {
-					graph.insertEdge(parent, null, "", lastVertex, n);
+					try {
+						graph.insertEdge(parent, null, "", newNode, allNodes.get(n.getFile().getName()));
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
 				}
 			}
 		} catch (Exception ex) {
-
+			ex.printStackTrace();
 		}
 	}
 

@@ -23,8 +23,10 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 	private JTree jTree;
 	private File file;
 	public Hashtable<String, ELFNode> allNodes = new Hashtable<String, ELFNode>();
-	final int MAX_NUMBER_OF_VERTEX = 500;
+	final int MAX_NUMBER_OF_VERTEX = 50;
 	int noOfVertex;
+
+	private String onlyInTheseDirectories[] = { "/lib64", "/usr/lib64", "/usr/local/lib64" };
 
 	public JAnalystDialog(JFrame frame, JTree jTree, File file) {
 		super(frame, true);
@@ -126,23 +128,36 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 			}
 		}
 		for (String line : results) {
-			if (line.toLowerCase().contains("needed")) {
-				String words[] = line.split("[\\[\\]]");
-				if (words.length > 1) {
-					if (new File("/lib/" + words[1]).exists()) {
-						analystELF(new File("/lib/" + words[1]), node);
-					} else if (new File("/usr/lib/" + words[1]).exists()) {
-						analystELF(new File("/usr/lib/" + words[1]), node);
-					} else if (new File("/usr/local/lib/" + words[1]).exists()) {
-						analystELF(new File("/usr/local/lib/" + words[1]), node);
-					} else if (new File("/lib/" + words[1]).exists()) {
-						analystELF(new File("/lib/" + words[1]), node);
-					} else if (new File("/usr/lib/" + words[1]).exists()) {
-						analystELF(new File("/usr/lib/" + words[1]), node);
-					} else if (new File(file.getParent() + "/" + words[1]).exists()) {
-						analystELF(new File(file.getParent() + "/" + words[1]), node);
-					} else {
-						node.child.add(new ELFNode(new File(words[1]), "", parent, true));
+			String words[] = line.split("[\\[\\]]");
+			if (words.length > 1 && line.toLowerCase().contains("needed")) {
+				boolean match = false;
+				File childFile = null;
+				if (new File(file.getParent() + "/" + words[1]).exists()) {
+					childFile = new File(file.getParent() + "/" + words[1]);
+				} else if (new File("/lib/" + words[1]).exists()) {
+					childFile = new File("/lib/" + words[1]);
+				} else if (new File("/usr/lib/" + words[1]).exists()) {
+					childFile = new File("/usr/lib/" + words[1]);
+				} else if (new File("/usr/local/lib/" + words[1]).exists()) {
+					childFile = new File("/usr/local/lib/" + words[1]);
+				} else if (new File("/lib64/" + words[1]).exists()) {
+					childFile = new File("/lib64/" + words[1]);
+				} else if (new File("/usr/lib64/" + words[1]).exists()) {
+					childFile = new File("/usr/lib64/" + words[1]);
+				} else if (new File("/usr/local/lib64/" + words[1]).exists()) {
+					childFile = new File("/usr/local/lib64/" + words[1]);
+				} else {
+					node.child.add(new ELFNode(new File(words[1]), "", parent, true));
+				}
+				if (childFile != null) {
+					for (String s : onlyInTheseDirectories) {
+						if (childFile.getAbsolutePath().startsWith(s)) {
+							match = true;
+							break;
+						}
+					}
+					if (match) {
+						analystELF(childFile, node);
 					}
 				}
 			}
