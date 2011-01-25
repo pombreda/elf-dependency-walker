@@ -38,9 +38,4 @@ public class PeterSwingCanvas extends mxInteractiveCanvas {
 				true);
 	}
 
-	public void drawBackground() {
-		g.setColor(Color.red);
-		g.fillRect(0, 0, graphComponent.getWidth(), graphComponent.getHeight());
-	}
-
 }
