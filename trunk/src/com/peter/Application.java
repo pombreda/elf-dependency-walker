@@ -369,7 +369,7 @@ public class Application extends javax.swing.JFrame implements Printable {
 			x++;
 
 			if (parent != null && lastVertex != null) {
-				graph.insertEdge(parent, null, "", lastVertex, newNode);
+				graph.insertEdge(parent, null, "", lastVertex, newNode, "edgeStyle=entityRelationEdgeStyle;");
 			}
 			while (ir.hasNext()) {
 				ELFNode n = ir.next();
@@ -377,7 +377,7 @@ public class Application extends javax.swing.JFrame implements Printable {
 					addCells(parent, n, newNode);
 				} else {
 					try {
-						graph.insertEdge(parent, null, "", newNode, allNodes.get(n.getFile().getName()));
+						graph.insertEdge(parent, null, "", newNode, allNodes.get(n.getFile().getName()), "edgeStyle=entityRelationEdgeStyle;");
 					} catch (Exception ex) {
 						ex.printStackTrace();
 					}
@@ -592,8 +592,6 @@ public class Application extends javax.swing.JFrame implements Printable {
 			} else if (str.equals("Circle Layout")) {
 				mxCircleLayout layout = new mxCircleLayout(graph);
 				layout.execute(cell);
-				// graph.getModel().endUpdate();
-
 			} else if (str.equals("Organic Layout")) {
 				mxOrganicLayout layout = new mxOrganicLayout(graph);
 				layout.execute(cell);
@@ -651,7 +649,7 @@ public class Application extends javax.swing.JFrame implements Printable {
 		final JFileChooser fc = new JFileChooser(Setting.getInstance().getLastOpenPath());
 		int returnVal = fc.showSaveDialog(this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			saveImage(this.graphComponent, fc.getSelectedFile());
+			saveImage(this.graphComponent.getGraphControl(), fc.getSelectedFile());
 		}
 
 	}
