@@ -26,7 +26,7 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 	final int MAX_NUMBER_OF_VERTEX = 50;
 	int noOfVertex;
 
-	private String onlyInTheseDirectories[] = { "/lib64", "/usr/lib64", "/usr/local/lib64" };
+	private String onlyInTheseDirectories[] = { "/lib", "/usr/lib", "/usr/local/lib","/lib64", "/usr/lib64", "/usr/local/lib64" };
 
 	public JAnalystDialog(JFrame frame, JTree jTree, File file) {
 		super(frame, true);

@@ -59,6 +59,7 @@ import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGeometry;
 import com.mxgraph.swing.mxGraphOutline;
 import com.mxgraph.swing.util.mxMorphing;
+import com.mxgraph.util.mxConstants;
 import com.mxgraph.util.mxEvent;
 import com.mxgraph.util.mxEventObject;
 import com.mxgraph.util.mxEventSource.mxIEventListener;
@@ -369,7 +370,7 @@ public class Application extends javax.swing.JFrame implements Printable {
 			x++;
 
 			if (parent != null && lastVertex != null) {
-				graph.insertEdge(parent, null, "", lastVertex, newNode, "edgeStyle=entityRelationEdgeStyle;");
+				graph.insertEdge(parent, null, "", lastVertex, newNode, mxConstants.STYLE_STROKECOLOR+"=red;edgeStyle=elbowEdgeStyle;");
 			}
 			while (ir.hasNext()) {
 				ELFNode n = ir.next();
@@ -377,7 +378,7 @@ public class Application extends javax.swing.JFrame implements Printable {
 					addCells(parent, n, newNode);
 				} else {
 					try {
-						graph.insertEdge(parent, null, "", newNode, allNodes.get(n.getFile().getName()), "edgeStyle=entityRelationEdgeStyle;");
+						graph.insertEdge(parent, null, "", newNode, allNodes.get(n.getFile().getName()));//, "edgeStyle=elbowEdgeStyle;");
 					} catch (Exception ex) {
 						ex.printStackTrace();
 					}
@@ -591,6 +592,7 @@ public class Application extends javax.swing.JFrame implements Printable {
 				layout.execute(cell);
 			} else if (str.equals("Circle Layout")) {
 				mxCircleLayout layout = new mxCircleLayout(graph);
+				layout.setDisableEdgeStyle(false);
 				layout.execute(cell);
 			} else if (str.equals("Organic Layout")) {
 				mxOrganicLayout layout = new mxOrganicLayout(graph);
