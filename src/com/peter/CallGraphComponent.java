@@ -57,7 +57,7 @@ public class CallGraphComponent extends mxGraphComponent {
 //			int wordWidth = fm.stringWidth("Address  ");
 //			g2.drawString("Address", minX, minY - 10);
 
-			int width = (int) ((markerEnd - markerOffset) / addressPerPixel);
+//			int width = (int) ((markerEnd - markerOffset) / addressPerPixel);
 
 //			for (int x = 0; x <= width; x += pixelPerMarker) {
 //				float positionX = x;

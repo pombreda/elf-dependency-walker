@@ -15,6 +15,6 @@
 	<classpathentry kind="lib" path="lib/jgraph.jar"/>
 	<classpathentry kind="lib" path="lib/poi-3.5-FINAL-20090928.jar"/>
 	<classpathentry kind="lib" path="lib/TableLayout.jar"/>
-	<classpathentry kind="lib" path="lib/graphx/jgraphx/lib/jgraphx.jar"/>
+	<classpathentry kind="lib" path="lib/graphx/jgraphx/lib/jgraphx.jar" sourcepath="lib/graphx/jgraphx/src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
