@@ -23,7 +23,7 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 	private JTree jTree;
 	private File file;
 	public Hashtable<String, ELFNode> allNodes = new Hashtable<String, ELFNode>();
-	final int MAX_NUMBER_OF_VERTEX = 50;
+	final int MAX_NUMBER_OF_VERTEX = 50000;
 	int noOfVertex;
 
 	private String onlyInTheseDirectories[] = { "/lib", "/usr/lib", "/usr/local/lib","/lib64", "/usr/lib64", "/usr/local/lib64" };

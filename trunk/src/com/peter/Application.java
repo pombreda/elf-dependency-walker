@@ -9,8 +9,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -22,6 +20,7 @@ import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
@@ -359,9 +358,12 @@ public class Application extends javax.swing.JFrame implements Printable {
 
 	int x = 0;
 	Hashtable<String, mxCell> allNodes = new Hashtable<String, mxCell>();
+	Random numGen = new Random();
 
 	private void addCells(Object parent, ELFNode node, Object lastVertex) {
 		try {
+			Color aColor = new Color(numGen.nextInt(256), numGen.nextInt(256), numGen.nextInt(256));
+			String hexStr = Integer.toHexString(aColor.getRGB());
 			mxCell newNode = (mxCell) graph.insertVertex(parent, null, node.getFile().getName(), 100, x * 40 + 100, 100, 30);
 
 			allNodes.put(node.getFile().getName(), newNode);
@@ -370,7 +372,7 @@ public class Application extends javax.swing.JFrame implements Printable {
 			x++;
 
 			if (parent != null && lastVertex != null) {
-				graph.insertEdge(parent, null, "", lastVertex, newNode, mxConstants.STYLE_STROKECOLOR+"=red;edgeStyle=elbowEdgeStyle;");
+				graph.insertEdge(parent, null, "", lastVertex, newNode, mxConstants.STYLE_STROKECOLOR + "=#" + hexStr + ";edgeStyle=elbowEdgeStyle;");
 			}
 			while (ir.hasNext()) {
 				ELFNode n = ir.next();
@@ -378,7 +380,8 @@ public class Application extends javax.swing.JFrame implements Printable {
 					addCells(parent, n, newNode);
 				} else {
 					try {
-						graph.insertEdge(parent, null, "", newNode, allNodes.get(n.getFile().getName()));//, "edgeStyle=elbowEdgeStyle;");
+						graph.insertEdge(parent, null, "", newNode, allNodes.get(n.getFile().getName()), mxConstants.STYLE_STROKECOLOR + "=#" + hexStr
+								+ ";edgeStyle=elbowEdgeStyle;");
 					} catch (Exception ex) {
 						ex.printStackTrace();
 					}
