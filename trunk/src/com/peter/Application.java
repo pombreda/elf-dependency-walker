@@ -569,10 +569,11 @@ public class Application extends javax.swing.JFrame implements Printable {
 
 	private void jAnaystDirectoryButtonActionPerformed(ActionEvent evt) {
 		final JFileChooser fc = new JFileChooser(Setting.getInstance().getLastOpenPath());
+		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		int returnVal = fc.showOpenDialog(this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			Setting.getInstance().setLastOpenPath(fc.getSelectedFile().getParentFile().getAbsolutePath());
-			JAnalystDialog d = new JAnalystDialog(this, jTree1, fc.getSelectedFile().getParentFile());
+			Setting.getInstance().setLastOpenPath(fc.getSelectedFile().getAbsolutePath());
+			JAnalystDialog d = new JAnalystDialog(this, jTree1, fc.getSelectedFile());
 			d.setVisible(true);
 			updateJGraphx(myTreeModel);
 		}

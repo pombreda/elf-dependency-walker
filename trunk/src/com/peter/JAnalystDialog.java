@@ -23,10 +23,10 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 	private JTree jTree;
 	private File file;
 	public Hashtable<String, ELFNode> allNodes = new Hashtable<String, ELFNode>();
-	final int MAX_NUMBER_OF_VERTEX = 50000;
+	final int MAX_NUMBER_OF_VERTEX = 100;
 	int noOfVertex;
 
-	private String onlyInTheseDirectories[] = { "/lib", "/usr/lib", "/usr/local/lib","/lib64", "/usr/lib64", "/usr/local/lib64" };
+	private String onlyInTheseDirectories[] = { "/lib", "/usr/lib", "/usr/local/lib", "/lib64", "/usr/lib64", "/usr/local/lib64" };
 
 	public JAnalystDialog(JFrame frame, JTree jTree, File file) {
 		super(frame, true);
@@ -85,31 +85,28 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 	@Override
 	public void run() {
 		allNodes.clear();
-		ELFNode node = analystELF(file, null);
+		ELFNode node;
+		if (file.isFile()) {
+			node = analystELF(file, null);
+		} else {
+			node = new ELFNode(file, null, null, true);
+			for (File f : file.listFiles()) {
+				analystELF(f, node);
+			}
+		}
 		((MyTreeModel) jTree.getModel()).setRoot(node);
 		this.jCancelButton.setText("Finished");
 		this.setVisible(false);
 	}
 
 	private ELFNode analystELF(File file, ELFNode parent) {
-		if (file.isDirectory()) {
-			ELFNode mother = null;
-			for (File f : file.listFiles()) {
-				if (mother == null) {
-					mother = analystELF(f, null);
-				} else {
-					analystELF(f, mother);
-				}
-			}
-			return mother;
+		if (noOfVertex >= MAX_NUMBER_OF_VERTEX) {
+			return null;
 		}
 
-		if (noOfVertex >= MAX_NUMBER_OF_VERTEX) {
-			return parent;
-		}
 		if (allNodes.get(file.getName()) == null) {
 			noOfVertex++;
-			jLabel1.setText(noOfVertex + " " + file);
+			jLabel1.setText(noOfVertex + " " + file.getName());
 		}
 
 		String results[];
