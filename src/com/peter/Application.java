@@ -364,7 +364,7 @@ public class Application extends javax.swing.JFrame implements Printable {
 		try {
 			Color aColor = new Color(numGen.nextInt(256), numGen.nextInt(256), numGen.nextInt(256));
 			String hexStr = Integer.toHexString(aColor.getRGB());
-			mxCell newNode = (mxCell) graph.insertVertex(parent, null, node.getFile().getName(), 100, x * 40 + 100, 100, 30);
+			mxCell newNode = (mxCell) graph.insertVertex(parent, null, node.getFile().getName(), 100, x * 40 + 100, 200, 30);
 
 			allNodes.put(node.getFile().getName(), newNode);
 			LinkedHashSet<ELFNode> childNode = node.child;
