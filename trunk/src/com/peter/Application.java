@@ -93,6 +93,7 @@ public class Application extends javax.swing.JFrame implements Printable {
 	private JTree jTree1;
 	private JSplitPane jSplitPane1;
 	private JButton jSaveToPngButton;
+	private JPanel jPanel2;
 	private JPanel jPanel1;
 	private JPanel jCallGraphPreviewPanel = new JPanel();
 	private MyTreeModel myTreeModel = new MyTreeModel(null);
@@ -134,104 +135,111 @@ public class Application extends javax.swing.JFrame implements Printable {
 			});
 			this.setIconImage(new ImageIcon(getClass().getClassLoader().getResource("icons/peter.png")).getImage());
 			{
-				jTabbedPane1 = new JTabbedPane();
-				getContentPane().add(jTabbedPane1, BorderLayout.CENTER);
+				jPanel2 = new JPanel();
+				BorderLayout jPanel2Layout = new BorderLayout();
+				jPanel2.setLayout(jPanel2Layout);
+				getContentPane().add(jPanel2, BorderLayout.CENTER);
+				jPanel2.setPreferredSize(new java.awt.Dimension(469, 571));
 				{
-					jTreePanel = new JPanel();
-					BorderLayout jTreePanelLayout = new BorderLayout();
-					jTreePanel.setLayout(jTreePanelLayout);
-					jTabbedPane1.addTab("Tree", null, jTreePanel, null);
+					jToolBar1 = new JToolBar();
+					jPanel2.add(jToolBar1, BorderLayout.NORTH);
 					{
-						jSplitPane1 = new JSplitPane();
-						jTreePanel.add(jSplitPane1, BorderLayout.CENTER);
-						{
-							jScrollPane1 = new JScrollPane();
-							jSplitPane1.add(jScrollPane1, JSplitPane.LEFT);
-							jScrollPane1.setPreferredSize(new java.awt.Dimension(79, 541));
-							{
-								jTree1 = new JTree(myTreeModel);
-								jTree1.setShowsRootHandles(true);
-								jTree1.setCellRenderer(new MyTreeRenderer());
-								jScrollPane1.setViewportView(jTree1);
-								jTree1.addTreeSelectionListener(new TreeSelectionListener() {
-									public void valueChanged(TreeSelectionEvent evt) {
-										jTree1ValueChanged(evt);
-									}
-								});
+						jAnalystButton = new JDropDownButton();
+						jToolBar1.add(jAnalystButton);
+						jAnalystButton.setText("Analyst ");
+						jAnalystButton.setMaximumSize(new java.awt.Dimension(100, 28));
+						jAnalystButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/folder_page.png")));
+						jAnalystButton.setPreferredSize(new java.awt.Dimension(100, 28));
+						jAnalystButton.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent evt) {
+								jAnalystButtonActionPerformed(evt);
 							}
-						}
-						{
-							jScrollPane2 = new JScrollPane();
-							jSplitPane1.add(jScrollPane2, JSplitPane.RIGHT);
-							jScrollPane2.setPreferredSize(new java.awt.Dimension(68, 541));
-							{
-								jTextArea1 = new JEditorPane();
-								jScrollPane2.setViewportView(jTextArea1);
-								updateLine();
-								lines.setBackground(new Color(230, 230, 230));
-								lines.setEditable(false);
-								jScrollPane2.setRowHeaderView(lines);
-
-							}
-						}
+						});
+						addHistoryMenuitems();
 					}
-
+					{
+						jAnaystDirectoryButton = new JButton();
+						jToolBar1.add(jAnaystDirectoryButton);
+						jAnaystDirectoryButton.setText("Analyst Directory");
+						jAnaystDirectoryButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/folder.png")));
+						jAnaystDirectoryButton.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent evt) {
+								jAnaystDirectoryButtonActionPerformed(evt);
+							}
+						});
+					}
+					{
+						jPrintButton = new JButton();
+						jToolBar1.add(jPrintButton);
+						jPrintButton.setText("Print");
+						jPrintButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/printer.png")));
+						jPrintButton.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent evt) {
+								jPrintButtonActionPerformed(evt);
+							}
+						});
+					}
+					{
+						jLayoutButton = new JDropDownButton();
+						jToolBar1.add(jLayoutButton);
+						jLayoutButton.setMaximumSize(new java.awt.Dimension(180, 28));
+						jLayoutButton.setText("Hierarchical Layout");
+						jLayoutButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/cake.png")));
+						jLayoutButton.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent evt) {
+								jLayoutButtonActionPerformed(evt);
+							}
+						});
+					}
 				}
 				{
-					jGraphSplitPane = new JSplitPane();
-					jTabbedPane1.addTab("Graph", null, jGraphSplitPane, null);
-				}
-			}
-			{
-				jToolBar1 = new JToolBar();
-				getContentPane().add(jToolBar1, BorderLayout.NORTH);
-				{
-					jAnalystButton = new JDropDownButton();
-					jToolBar1.add(jAnalystButton);
-					jAnalystButton.setText("Analyst ");
-					jAnalystButton.setMaximumSize(new java.awt.Dimension(100, 28));
-					jAnalystButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/folder_page.png")));
-					jAnalystButton.setPreferredSize(new java.awt.Dimension(100, 28));
-					jAnalystButton.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent evt) {
-							jAnalystButtonActionPerformed(evt);
+					jTabbedPane1 = new JTabbedPane();
+					jPanel2.add(jTabbedPane1, BorderLayout.CENTER);
+					{
+						jTreePanel = new JPanel();
+						BorderLayout jTreePanelLayout = new BorderLayout();
+						jTreePanel.setLayout(jTreePanelLayout);
+						jTabbedPane1.addTab("Tree", null, jTreePanel, null);
+						{
+							jSplitPane1 = new JSplitPane();
+							jTreePanel.add(jSplitPane1, BorderLayout.CENTER);
+							{
+								jScrollPane1 = new JScrollPane();
+								jSplitPane1.add(jScrollPane1, JSplitPane.LEFT);
+								jScrollPane1.setPreferredSize(new java.awt.Dimension(79, 541));
+								{
+									jTree1 = new JTree(myTreeModel);
+									jTree1.setShowsRootHandles(true);
+									jTree1.setCellRenderer(new MyTreeRenderer());
+									jScrollPane1.setViewportView(jTree1);
+									jTree1.addTreeSelectionListener(new TreeSelectionListener() {
+										public void valueChanged(TreeSelectionEvent evt) {
+											jTree1ValueChanged(evt);
+										}
+									});
+								}
+							}
+							{
+								jScrollPane2 = new JScrollPane();
+								jSplitPane1.add(jScrollPane2, JSplitPane.RIGHT);
+								jScrollPane2.setPreferredSize(new java.awt.Dimension(68, 541));
+								{
+									jTextArea1 = new JEditorPane();
+									jScrollPane2.setViewportView(jTextArea1);
+									updateLine();
+									lines.setBackground(new Color(230, 230, 230));
+									lines.setEditable(false);
+									jScrollPane2.setRowHeaderView(lines);
+									
+								}
+							}
 						}
-					});
-					addHistoryMenuitems();
-				}
-				{
-					jAnaystDirectoryButton = new JButton();
-					jToolBar1.add(jAnaystDirectoryButton);
-					jAnaystDirectoryButton.setText("Analyst Directory");
-					jAnaystDirectoryButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/folder.png")));
-					jAnaystDirectoryButton.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent evt) {
-							jAnaystDirectoryButtonActionPerformed(evt);
-						}
-					});
-				}
-				{
-					jPrintButton = new JButton();
-					jToolBar1.add(jPrintButton);
-					jPrintButton.setText("Print");
-					jPrintButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/printer.png")));
-					jPrintButton.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent evt) {
-							jPrintButtonActionPerformed(evt);
-						}
-					});
-				}
-				{
-					jLayoutButton = new JDropDownButton();
-					jToolBar1.add(jLayoutButton);
-					jLayoutButton.setMaximumSize(new java.awt.Dimension(180, 28));
-					jLayoutButton.setText("Hierarchical Layout");
-					jLayoutButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/cake.png")));
-					jLayoutButton.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent evt) {
-							jLayoutButtonActionPerformed(evt);
-						}
-					});
+						
+					}
+					{
+						jGraphSplitPane = new JSplitPane();
+						jTabbedPane1.addTab("Graph", null, jGraphSplitPane, null);
+					}
 				}
 			}
 			int x = Setting.getInstance().getX();
