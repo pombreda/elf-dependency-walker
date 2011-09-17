@@ -1,6 +1,6 @@
 <?xml version='1.0' ?>  <Setting>
     <divX>216</divX>
-    <height>650</height>
+    <height>595</height>
     <historyList>
       <historyList>/usr/bin/gcc</historyList>
       <historyList>/root/workspace/plibc/library/testingLibrary/test.exe
@@ -14,8 +14,8 @@
       <historyList>/usr/bin/abrt-backtrace</historyList>
       <historyList>/usr/bin/ziptorrent</historyList>
     </historyList>
-    <lastOpenPath>/usr/bin</lastOpenPath>
-    <width>1280</width>
+    <lastOpenPath>/bin</lastOpenPath>
+    <width>1018</width>
     <x>195</x>
     <y>148</y>
   </Setting>
