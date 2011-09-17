@@ -28,6 +28,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -69,16 +70,12 @@ import com.petersoft.CommonLib;
 import com.petersoft.advancedswing.jdropdownbutton.JDropDownButton;
 
 /**
- * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
- * Builder, which is free for non-commercial use. If Jigloo is being used
- * commercially (ie, by a corporation, company or business for any purpose
- * whatever) then you should purchase a license for each developer using Jigloo.
- * Please visit www.cloudgarden.com for details. Use of Jigloo implies
- * acceptance of these licensing terms. A COMMERCIAL LICENSE HAS NOT BEEN
- * PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR
- * ANY CORPORATE OR COMMERCIAL PURPOSE.
+ * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI Builder, which is free for non-commercial use. If Jigloo is being used commercially (ie, by a
+ * corporation, company or business for any purpose whatever) then you should purchase a license for each developer using Jigloo. Please visit www.cloudgarden.com for details. Use
+ * of Jigloo implies acceptance of these licensing terms. A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR ANY
+ * CORPORATE OR COMMERCIAL PURPOSE.
  */
-public class Application extends javax.swing.JFrame implements Printable {
+public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Printable {
 	private JTabbedPane jTabbedPane1;
 	private JPanel jTreePanel;
 	private JScrollPane jScrollPane1;
@@ -103,6 +100,7 @@ public class Application extends javax.swing.JFrame implements Printable {
 	JProgressBar jStatusProgressBar = new JProgressBar();
 	JAnalystDialog dialog;
 	Object parent;
+	JFrame jframe;
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
@@ -113,8 +111,9 @@ public class Application extends javax.swing.JFrame implements Printable {
 		});
 	}
 
-	public Application() {
+	public ElfDependencyWalkerPanel(JFrame jframe) {
 		super();
+		this.jframe = jframe;
 		try {
 			UIManager.setLookAndFeel("com.petersoft.white.PetersoftWhiteLookAndFeel");
 		} catch (Exception e) {
@@ -125,17 +124,11 @@ public class Application extends javax.swing.JFrame implements Printable {
 
 	private void initGUI() {
 		try {
-			setTitle("Elf Dependency Walker " + Global.version);
-			this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-			this.addWindowListener(new WindowAdapter() {
-				public void windowClosing(WindowEvent evt) {
-					thisWindowClosing(evt);
-				}
-			});
-			this.setIconImage(new ImageIcon(getClass().getClassLoader().getResource("icons/peter.png")).getImage());
+			BorderLayout thisLayout = new BorderLayout();
+			this.setLayout(thisLayout);
 			{
 				jTabbedPane1 = new JTabbedPane();
-				getContentPane().add(jTabbedPane1, BorderLayout.CENTER);
+				this.add(jTabbedPane1, BorderLayout.CENTER);
 				{
 					jTreePanel = new JPanel();
 					BorderLayout jTreePanelLayout = new BorderLayout();
@@ -184,7 +177,7 @@ public class Application extends javax.swing.JFrame implements Printable {
 			}
 			{
 				jToolBar1 = new JToolBar();
-				getContentPane().add(jToolBar1, BorderLayout.NORTH);
+				this.add(jToolBar1, BorderLayout.NORTH);
 				{
 					jAnalystButton = new JDropDownButton();
 					jToolBar1.add(jAnalystButton);
@@ -441,7 +434,7 @@ public class Application extends javax.swing.JFrame implements Printable {
 			Setting.getInstance().getHistoryList().add(file.getAbsolutePath());
 			Setting.getInstance().setLastOpenPath(file.getParentFile().getAbsolutePath());
 
-			dialog = new JAnalystDialog(this, jTree1, file);
+			dialog = new JAnalystDialog(jframe, jTree1, file);
 			dialog.setVisible(true);
 			if (dialog.allNodes != null) {
 				updateJGraphx(myTreeModel);
@@ -536,9 +529,7 @@ public class Application extends javax.swing.JFrame implements Printable {
 		PrintUtilities.printComponent(jTextArea1);
 
 		/*
-		 * PrinterJob printJob = PrinterJob.getPrinterJob();
-		 * printJob.setPrintable(this); if (printJob.printDialog()) try {
-		 * printJob.print(); } catch (PrinterException pe) {
+		 * PrinterJob printJob = PrinterJob.getPrinterJob(); printJob.setPrintable(this); if (printJob.printDialog()) try { printJob.print(); } catch (PrinterException pe) {
 		 * System.out.println("Error printing: " + pe); }
 		 */
 	}
@@ -573,7 +564,7 @@ public class Application extends javax.swing.JFrame implements Printable {
 		int returnVal = fc.showOpenDialog(this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			Setting.getInstance().setLastOpenPath(fc.getSelectedFile().getAbsolutePath());
-			JAnalystDialog d = new JAnalystDialog(this, jTree1, fc.getSelectedFile());
+			JAnalystDialog d = new JAnalystDialog(jframe, jTree1, fc.getSelectedFile());
 			d.setVisible(true);
 			updateJGraphx(myTreeModel);
 		}
