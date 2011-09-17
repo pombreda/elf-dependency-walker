@@ -1,22 +1,21 @@
-<?xml version='1.0' ?>
-<Setting>
-	<divX>216</divX>
-	<height>650</height>
-	<historyList>
-		<historyList>/usr/bin/gcc</historyList>
-		<historyList>/root/workspace/plibc/library/testingLibrary/test.exe
+<?xml version='1.0' ?>  <Setting>
+    <divX>216</divX>
+    <height>650</height>
+    <historyList>
+      <historyList>/usr/bin/gcc</historyList>
+      <historyList>/root/workspace/plibc/library/testingLibrary/test.exe
 		</historyList>
-		<historyList>/usr/bin/akonadi_nntp_resource</historyList>
-		<historyList>/usr/bin/dos2unix</historyList>
-		<historyList>/usr/bin/pamtouil</historyList>
-		<historyList>/usr/bin/ulockmgr_server</historyList>
-		<historyList>/usr/bin/aclocal</historyList>
-		<historyList>/usr/bin/abrt-applet</historyList>
-		<historyList>/usr/bin/ziptorrent</historyList>
-		<historyList>/usr/bin/abrt-backtrace</historyList>
-	</historyList>
-	<lastOpenPath>/lib64</lastOpenPath>
-	<width>1280</width>
-	<x>0</x>
-	<y>25</y>
-</Setting>
+      <historyList>/usr/bin/akonadi_nntp_resource</historyList>
+      <historyList>/usr/bin/dos2unix</historyList>
+      <historyList>/usr/bin/pamtouil</historyList>
+      <historyList>/usr/bin/ulockmgr_server</historyList>
+      <historyList>/usr/bin/aclocal</historyList>
+      <historyList>/usr/bin/abrt-applet</historyList>
+      <historyList>/usr/bin/abrt-backtrace</historyList>
+      <historyList>/usr/bin/ziptorrent</historyList>
+    </historyList>
+    <lastOpenPath>/usr/bin</lastOpenPath>
+    <width>1280</width>
+    <x>195</x>
+    <y>148</y>
+  </Setting>
