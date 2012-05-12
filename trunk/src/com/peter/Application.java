@@ -34,7 +34,7 @@ public class Application extends javax.swing.JFrame {
 	public Application() {
 		super();
 		try {
-			UIManager.setLookAndFeel("com.petersoft.white.PetersoftWhiteLookAndFeel");
+			UIManager.setLookAndFeel("com.peterswing.white.PeterSwingWhiteLookAndFeel");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

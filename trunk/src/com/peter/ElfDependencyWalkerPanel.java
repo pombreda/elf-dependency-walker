@@ -9,7 +9,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
@@ -40,7 +39,6 @@ import javax.swing.JTree;
 import javax.swing.RepaintManager;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -66,8 +64,8 @@ import com.mxgraph.util.mxEventSource.mxIEventListener;
 import com.mxgraph.util.mxPoint;
 import com.mxgraph.view.mxCellState;
 import com.mxgraph.view.mxGraph;
-import com.petersoft.CommonLib;
-import com.petersoft.advancedswing.jdropdownbutton.JDropDownButton;
+import com.peterswing.CommonLib;
+import com.peterswing.advancedswing.jdropdownbutton.JDropDownButton;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI Builder, which is free for non-commercial use. If Jigloo is being used commercially (ie, by a
@@ -114,11 +112,6 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	public ElfDependencyWalkerPanel(JFrame jframe) {
 		super();
 		this.jframe = jframe;
-		try {
-			UIManager.setLookAndFeel("com.petersoft.white.PetersoftWhiteLookAndFeel");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		initGUI();
 	}
 

@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/PetersoftJavaStyle2"/>
 	<classpathentry kind="lib" path="lib/commons-beanutils-1.8.2.jar"/>
 	<classpathentry kind="lib" path="lib/commons-betwixt-0.8.jar"/>
 	<classpathentry kind="lib" path="lib/commons-collections-3.2.1.jar"/>
@@ -16,5 +15,6 @@
 	<classpathentry kind="lib" path="lib/poi-3.5-FINAL-20090928.jar"/>
 	<classpathentry kind="lib" path="lib/TableLayout.jar"/>
 	<classpathentry kind="lib" path="lib/graphx/jgraphx/lib/jgraphx.jar" sourcepath="lib/graphx/jgraphx/src"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Peter-swing"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
