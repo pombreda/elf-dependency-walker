@@ -15,7 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JTree;
 import javax.swing.LayoutStyle;
 
-import com.petersoft.CommonLib;
+import com.peterswing.CommonLib;
 
 public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 	private JButton jCancelButton;
