@@ -129,6 +129,14 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 			if (words.length > 1 && line.toLowerCase().contains("needed")) {
 				boolean match = false;
 				File childFile = null;
+				Setting setting = Setting.getInstance();
+				for (String s : setting.getLookupDirectory()) {
+					if (new File(new File(s) + "/" + words[1]).exists()) {
+						childFile = new File(file.getParent() + "/" + words[1]);
+						break;
+					}
+				}
+				/*
 				if (new File(file.getParent() + "/" + words[1]).exists()) {
 					childFile = new File(file.getParent() + "/" + words[1]);
 				} else if (new File("/lib/" + words[1]).exists()) {
@@ -146,6 +154,7 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 				} else {
 					node.child.add(new ELFNode(new File(words[1]), "", parent, true));
 				}
+				*/
 				if (childFile != null) {
 					for (String s : onlyInTheseDirectories) {
 						if (childFile.getAbsolutePath().startsWith(s)) {

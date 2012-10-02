@@ -15,6 +15,13 @@
       <historyList>/usr/bin/ziptorrent</historyList>
     </historyList>
     <lastOpenPath>/bin</lastOpenPath>
+    <lookupDirectory>
+      <lookupDirectory>/usr</lookupDirectory>
+      <lookupDirectory>/usr/lib</lookupDirectory>
+      <lookupDirectory>/lib</lookupDirectory>
+      <lookupDirectory>/usr/local/lib</lookupDirectory>
+      <lookupDirectory>peter</lookupDirectory>
+    </lookupDirectory>
     <width>1018</width>
     <x>195</x>
     <y>148</y>
