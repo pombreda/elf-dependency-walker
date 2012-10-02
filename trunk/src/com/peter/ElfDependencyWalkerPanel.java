@@ -103,7 +103,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				Application inst = new Application();
+				ElfDependencyWalker inst = new ElfDependencyWalker();
 				inst.setVisible(true);
 			}
 		});
