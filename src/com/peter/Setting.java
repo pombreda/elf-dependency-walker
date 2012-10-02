@@ -18,6 +18,15 @@ public class Setting {
 	private int divX;
 	private String lastOpenPath;
 	private LinkedHashSet<String> historyList = new LinkedHashSet<String>();
+	private LinkedHashSet<String> lookupDirectory = new LinkedHashSet<String>();
+
+	public LinkedHashSet<String> getLookupDirectory() {
+		return lookupDirectory;
+	}
+
+	public void setLookupDirectory(LinkedHashSet<String> lookupDirectory) {
+		this.lookupDirectory = lookupDirectory;
+	}
 
 	public LinkedHashSet<String> getHistoryList() {
 		return historyList;

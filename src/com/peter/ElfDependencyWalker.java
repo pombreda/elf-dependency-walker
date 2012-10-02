@@ -17,7 +17,7 @@ import com.mxgraph.view.mxGraph;
  * of Jigloo implies acceptance of these licensing terms. A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR ANY
  * CORPORATE OR COMMERCIAL PURPOSE.
  */
-public class Application extends javax.swing.JFrame {
+public class ElfDependencyWalker extends javax.swing.JFrame {
 	mxGraph graph;
 	private ElfDependencyWalkerPanel elfDependencyWalkerPanel;
 	Object parent;
@@ -25,13 +25,13 @@ public class Application extends javax.swing.JFrame {
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				Application inst = new Application();
+				ElfDependencyWalker inst = new ElfDependencyWalker();
 				inst.setVisible(true);
 			}
 		});
 	}
 
-	public Application() {
+	public ElfDependencyWalker() {
 		super();
 		try {
 			UIManager.setLookAndFeel("com.peterswing.white.PeterSwingWhiteLookAndFeel");
