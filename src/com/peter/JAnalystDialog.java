@@ -131,8 +131,8 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 				File childFile = null;
 				Setting setting = Setting.getInstance();
 				for (String s : setting.getLookupDirectory()) {
-					if (new File(new File(s) + "/" + words[1]).exists()) {
-						childFile = new File(file.getParent() + "/" + words[1]);
+					if (new File(s + "/" + words[1]).exists()) {
+						childFile = new File(s + "/" + words[1]);
 						break;
 					}
 				}

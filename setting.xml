@@ -13,16 +13,13 @@
       <historyList>/usr/bin/abrt-applet</historyList>
       <historyList>/usr/bin/abrt-backtrace</historyList>
       <historyList>/usr/bin/ziptorrent</historyList>
+      <historyList>/bin/arch</historyList>
+      <historyList>/bin/dmesg</historyList>
+      <historyList>/bin/egrep</historyList>
     </historyList>
     <lastOpenPath>/bin</lastOpenPath>
-    <lookupDirectory>
-      <lookupDirectory>/usr</lookupDirectory>
-      <lookupDirectory>/usr/lib</lookupDirectory>
-      <lookupDirectory>/lib</lookupDirectory>
-      <lookupDirectory>/usr/local/lib</lookupDirectory>
-      <lookupDirectory>peter</lookupDirectory>
-    </lookupDirectory>
+    <lookupDirectory/>
     <width>1018</width>
-    <x>195</x>
-    <y>148</y>
+    <x>585</x>
+    <y>41</y>
   </Setting>
