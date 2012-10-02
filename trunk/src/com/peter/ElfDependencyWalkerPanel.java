@@ -68,10 +68,14 @@ import com.peterswing.CommonLib;
 import com.peterswing.advancedswing.jdropdownbutton.JDropDownButton;
 
 /**
- * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI Builder, which is free for non-commercial use. If Jigloo is being used commercially (ie, by a
- * corporation, company or business for any purpose whatever) then you should purchase a license for each developer using Jigloo. Please visit www.cloudgarden.com for details. Use
- * of Jigloo implies acceptance of these licensing terms. A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR ANY
- * CORPORATE OR COMMERCIAL PURPOSE.
+ * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
+ * Builder, which is free for non-commercial use. If Jigloo is being used
+ * commercially (ie, by a corporation, company or business for any purpose
+ * whatever) then you should purchase a license for each developer using Jigloo.
+ * Please visit www.cloudgarden.com for details. Use of Jigloo implies
+ * acceptance of these licensing terms. A COMMERCIAL LICENSE HAS NOT BEEN
+ * PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR
+ * ANY CORPORATE OR COMMERCIAL PURPOSE.
  */
 public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Printable {
 	private JTabbedPane jTabbedPane1;
@@ -88,6 +92,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	private JTree jTree1;
 	private JSplitPane jSplitPane1;
 	private JButton jSaveToPngButton;
+	private JButton settingButton;
 	private JPanel jPanel1;
 	private JPanel jCallGraphPreviewPanel = new JPanel();
 	private MyTreeModel myTreeModel = new MyTreeModel(null);
@@ -219,10 +224,21 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 						}
 					});
 				}
+				{
+					settingButton = new JButton();
+					jToolBar1.add(settingButton);
+					settingButton.setText("Setting");
+					settingButton.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							settingButtonActionPerformed(evt);
+						}
+					});
+				}
 			}
 			int x = Setting.getInstance().getX();
 			int y = Setting.getInstance().getY();
 			setLocation(x, y);
+			this.setPreferredSize(new java.awt.Dimension(679, 607));
 
 			setSize(Setting.getInstance().getWidth(), Setting.getInstance().getHeight());
 
@@ -642,5 +658,11 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			saveImage(this.graphComponent.getGraphControl(), fc.getSelectedFile());
 		}
 
+	}
+
+	private void settingButtonActionPerformed(ActionEvent evt) {
+		SettingDialog settingDialog = new SettingDialog(jframe, true);
+		settingDialog.setLocationRelativeTo(null);
+		settingDialog.setVisible(true);
 	}
 }

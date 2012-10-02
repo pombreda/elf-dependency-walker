@@ -1,12 +1,12 @@
 #Fat Jar Configuration File
-#Fri Jun 11 22:37:06 GMT+08:00 2010
+#Tue Oct 02 23:33:28 CST 2012
 onejar.license.required=true
 manifest.classpath=
 manifest.removesigners=true
 onejar.checkbox=false
 jarname=elf-dependency-walker.jar
 manifest.mergeall=true
-manifest.mainclass=com.peter.Application
+manifest.mainclass=com.peter.ElfDependencyWalker
 manifest.file=<createnew>
 jarname.isextern=false
 onejar.expand=

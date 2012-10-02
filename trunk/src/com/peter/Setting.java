@@ -24,10 +24,6 @@ public class Setting {
 		return lookupDirectory;
 	}
 
-	public void setLookupDirectory(LinkedHashSet<String> lookupDirectory) {
-		this.lookupDirectory = lookupDirectory;
-	}
-
 	public LinkedHashSet<String> getHistoryList() {
 		return historyList;
 	}
@@ -162,6 +158,13 @@ public class Setting {
 		historyList.remove(str);
 		if (str != null) {
 			historyList.add(str);
+		}
+	}
+
+	public void addLookupDirectory(String str) {
+		lookupDirectory.remove(str);
+		if (str != null) {
+			lookupDirectory.add(str);
 		}
 	}
 
