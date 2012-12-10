@@ -6,6 +6,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.Hashtable;
+import java.util.Vector;
 
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
@@ -28,6 +29,8 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 	int noOfVertex;
 
 	private String onlyInTheseDirectories[] = { "/lib", "/usr/lib", "/usr/local/lib", "/lib64", "/usr/lib64", "/usr/local/lib64" };
+
+	Vector<String> parsedFiles = new Vector<String>();
 
 	public JAnalystDialog(JFrame frame, JTree jTree, File files[]) {
 		super(frame, true);
@@ -89,6 +92,7 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 		ELFNode node = null;
 		//		ELFNode rootNode = null;
 		ELFNode root = new ELFNode(new File("Peter"), null, true);
+		parsedFiles.clear();
 		for (File file : files) {
 			if (file.isFile()) {
 				node = analystELF(file);
@@ -152,16 +156,13 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 					}
 				}
 				if (childFile != null) {
-					//					for (String s : onlyInTheseDirectories) {
-					//						if (childFile.getAbsolutePath().startsWith(s)) {
-					//							match = true;
-					//							break;
-					//						}
-					//					}
-					//					if (match) {
+					if (parsedFiles.contains(file.getName() + "-" + childFile.getName())) {
+						continue;
+					} else {
+						parsedFiles.add(file.getName() + "-" + childFile.getName());
+					}
 					ELFNode node = analystELF(childFile);
 					currentNode.child.add(node);
-					//					}
 				}
 			}
 		}
