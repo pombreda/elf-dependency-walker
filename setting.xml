@@ -1,6 +1,6 @@
 <?xml version='1.0' ?>  <Setting>
     <divX>216</divX>
-    <height>595</height>
+    <height>852</height>
     <historyList>
       <historyList>/usr/bin/gcc</historyList>
       <historyList>/root/workspace/plibc/library/testingLibrary/test.exe
@@ -14,12 +14,19 @@
       <historyList>/usr/bin/abrt-backtrace</historyList>
       <historyList>/usr/bin/ziptorrent</historyList>
       <historyList>/bin/arch</historyList>
+      <historyList>/usr/local/bin/gvim</historyList>
+      <historyList>/usr/bin/ls</historyList>
       <historyList>/bin/dmesg</historyList>
       <historyList>/bin/egrep</historyList>
     </historyList>
     <lastOpenPath>/bin</lastOpenPath>
-    <lookupDirectory/>
-    <width>1018</width>
-    <x>585</x>
-    <y>41</y>
+    <lookupDirectory>
+      <lookupDirectory>/usr</lookupDirectory>
+      <lookupDirectory>/usr/lib</lookupDirectory>
+      <lookupDirectory>/lib</lookupDirectory>
+      <lookupDirectory>/usr/local/lib</lookupDirectory>
+    </lookupDirectory>
+    <width>1440</width>
+    <x>0</x>
+    <y>24</y>
   </Setting>

@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTree;
 import javax.swing.LayoutStyle;
 
@@ -67,14 +68,14 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 				thisLayout.setHorizontalGroup(thisLayout
 						.createSequentialGroup()
 						.addContainerGap()
-						.addGroup(
-								thisLayout
-										.createParallelGroup()
-										.addComponent(jLabel1, GroupLayout.Alignment.LEADING, 0, 378, Short.MAX_VALUE)
-										.addGroup(
-												GroupLayout.Alignment.LEADING,
-												thisLayout.createSequentialGroup().addGap(0, 317, Short.MAX_VALUE)
-														.addComponent(jCancelButton, GroupLayout.PREFERRED_SIZE, 62, GroupLayout.PREFERRED_SIZE))).addContainerGap());
+						.addGroup(thisLayout
+								.createParallelGroup()
+								.addComponent(jLabel1, GroupLayout.Alignment.LEADING, 0, 378, Short.MAX_VALUE)
+								.addGroup(GroupLayout.Alignment.LEADING,
+										thisLayout.createSequentialGroup()
+												.addGap(0, 317, Short.MAX_VALUE)
+												.addComponent(jCancelButton, GroupLayout.PREFERRED_SIZE, 62,
+														GroupLayout.PREFERRED_SIZE))).addContainerGap());
 			}
 			this.setSize(418, 126);
 		} catch (Exception e) {
@@ -100,6 +101,11 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 	}
 
 	private ELFNode analystELF(File file, ELFNode parent) {
+		Setting setting = Setting.getInstance();
+		if (setting.getLookupDirectory().size() == 0) {
+			JOptionPane.showMessageDialog(this, "Lookup directory empty, please set them in setting!!!");
+			return null;
+		}
 		if (noOfVertex >= MAX_NUMBER_OF_VERTEX) {
 			return null;
 		}
@@ -129,7 +135,7 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 			if (words.length > 1 && line.toLowerCase().contains("needed")) {
 				boolean match = false;
 				File childFile = null;
-				Setting setting = Setting.getInstance();
+
 				for (String s : setting.getLookupDirectory()) {
 					if (new File(s + "/" + words[1]).exists()) {
 						childFile = new File(s + "/" + words[1]);
