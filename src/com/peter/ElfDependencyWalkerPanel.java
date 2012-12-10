@@ -538,7 +538,9 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		PrintUtilities.printComponent(jTextArea1);
 
 		/*
-		 * PrinterJob printJob = PrinterJob.getPrinterJob(); printJob.setPrintable(this); if (printJob.printDialog()) try { printJob.print(); } catch (PrinterException pe) {
+		 * PrinterJob printJob = PrinterJob.getPrinterJob();
+		 * printJob.setPrintable(this); if (printJob.printDialog()) try {
+		 * printJob.print(); } catch (PrinterException pe) {
 		 * System.out.println("Error printing: " + pe); }
 		 */
 	}
@@ -589,6 +591,9 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			}
 			graph.getModel().beginUpdate();
 
+			if (jLayoutButton.getEventSource() == null) {
+				return;
+			}
 			String str = ((JMenuItem) jLayoutButton.getEventSource()).getText();
 			jLayoutButton.setText(str);
 			if (str.equals("Hierarchical Layout")) {
