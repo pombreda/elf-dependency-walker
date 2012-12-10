@@ -43,7 +43,7 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 			{
 				GroupLayout thisLayout = new GroupLayout((JComponent) getContentPane());
 				getContentPane().setLayout(thisLayout);
-				this.setTitle("Analyting");
+				this.setTitle("Analyzing");
 
 				this.addWindowListener(new WindowAdapter() {
 					public void windowActivated(WindowEvent evt) {

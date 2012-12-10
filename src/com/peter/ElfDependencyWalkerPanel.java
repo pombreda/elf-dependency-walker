@@ -92,6 +92,8 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	private JTree jTree1;
 	private JSplitPane jSplitPane1;
 	private JButton jSaveToPngButton;
+	private JButton zoomOutButton;
+	private JButton zoomInButton;
 	private JButton settingButton;
 	private JPanel jPanel1;
 	private JPanel jCallGraphPreviewPanel = new JPanel();
@@ -231,6 +233,26 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 					settingButton.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							settingButtonActionPerformed(evt);
+						}
+					});
+				}
+				{
+					zoomInButton = new JButton();
+					jToolBar1.add(zoomInButton);
+					zoomInButton.setText("Zoom in");
+					zoomInButton.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							zoomInButtonActionPerformed(evt);
+						}
+					});
+				}
+				{
+					zoomOutButton = new JButton();
+					jToolBar1.add(zoomOutButton);
+					zoomOutButton.setText("Zoom out");
+					zoomOutButton.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							zoomOutButtonActionPerformed(evt);
 						}
 					});
 				}
@@ -669,5 +691,13 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		SettingDialog settingDialog = new SettingDialog(jframe, true);
 		settingDialog.setLocationRelativeTo(null);
 		settingDialog.setVisible(true);
+	}
+
+	private void zoomInButtonActionPerformed(ActionEvent evt) {
+		graphComponent.zoomIn();
+	}
+
+	private void zoomOutButtonActionPerformed(ActionEvent evt) {
+		graphComponent.zoomOut();
 	}
 }
