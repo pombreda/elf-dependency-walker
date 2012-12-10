@@ -107,6 +107,9 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	JAnalystDialog dialog;
 	Object parent;
 	JFrame jframe;
+	int x = 0;
+	Hashtable<String, mxCell> allNodes = new Hashtable<String, mxCell>();
+	Random numGen = new Random();
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
@@ -320,7 +323,12 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 
 		parent = graph.getDefaultParent();
 		allNodes.clear();
-		addCells(parent, (ELFNode) myTreeModel.getRoot(), null);
+		//		addCells(parent, ((ELFNode) myTreeModel.getRoot()), null);
+		Iterator<ELFNode> ir = ((ELFNode) myTreeModel.getRoot()).child.iterator();
+		while (ir.hasNext()) {
+			ELFNode n = ir.next();
+			addCells(parent, n, null);
+		}
 
 		graph.setCellsDisconnectable(false);
 		graphComponent = new CallGraphComponent(graph);
@@ -391,42 +399,54 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		// graph.getModel().endUpdate();
 	}
 
-	int x = 0;
-	Hashtable<String, mxCell> allNodes = new Hashtable<String, mxCell>();
-	Random numGen = new Random();
-
 	private void addCells(Object parent, ELFNode node, Object lastVertex) {
 		try {
 			Color aColor = new Color(numGen.nextInt(256), numGen.nextInt(256), numGen.nextInt(256));
 			String hexStr = Integer.toHexString(aColor.getRGB());
-			mxCell newNode;
-			String name = node.getFile().getName();
-			if (name.toLowerCase().contains(".a.") || name.toLowerCase().contains(".so.") || name.toLowerCase().contains(".a")) {
-				newNode = (mxCell) graph.insertVertex(parent, null, name, 100, x * 40 + 100, 150, 30, mxConstants.STYLE_FILLCOLOR + "=#fff29b");
-			} else {
-				newNode = (mxCell) graph.insertVertex(parent, null, name, 100, x * 40 + 100, 150, 30);
-			}
-			allNodes.put(node.getFile().getName(), newNode);
-			LinkedHashSet<ELFNode> childNode = node.child;
-			Iterator<ELFNode> ir = childNode.iterator();
-			x++;
-
-			if (parent != null && lastVertex != null) {
-				graph.insertEdge(parent, null, "", lastVertex, newNode, mxConstants.STYLE_STROKECOLOR + "=#" + hexStr + ";edgeStyle=elbowEdgeStyle;");
-			}
-			while (ir.hasNext()) {
-				ELFNode n = ir.next();
-				if (allNodes.get(n.getFile().getName()) == null) {
-					addCells(parent, n, newNode);
+			if (allNodes.get(node.getFile().getName()) == null) {
+				mxCell newNode;
+				String name = node.getFile().getName();
+				if (name.toLowerCase().contains(".a.") || name.toLowerCase().contains(".so.") || name.toLowerCase().contains(".a")) {
+					newNode = (mxCell) graph.insertVertex(parent, null, name, 100, x * 40 + 100, 150, 30, mxConstants.STYLE_FILLCOLOR + "=#fff29b");
 				} else {
-					try {
-						graph.insertEdge(parent, null, "", newNode, allNodes.get(n.getFile().getName()), mxConstants.STYLE_STROKECOLOR + "=#" + hexStr
-								+ ";edgeStyle=elbowEdgeStyle;");
-					} catch (Exception ex) {
-						ex.printStackTrace();
-					}
+					newNode = (mxCell) graph.insertVertex(parent, null, name, 100, x * 40 + 100, 150, 30);
+				}
+				allNodes.put(node.getFile().getName(), newNode);
+				LinkedHashSet<ELFNode> childNode = node.child;
+				Iterator<ELFNode> ir = childNode.iterator();
+				x++;
+
+				if (lastVertex != null && lastVertex != newNode) {
+					graph.insertEdge(parent, null, "", lastVertex, newNode, mxConstants.STYLE_STROKECOLOR + "=#" + hexStr + ";edgeStyle=elbowEdgeStyle;");
+				}
+				while (ir.hasNext()) {
+					ELFNode n = ir.next();
+					addCells(parent, n, newNode);
+				}
+
+			} else {
+				if (lastVertex != null && lastVertex != allNodes.get(node.getFile().getName())) {
+					graph.insertEdge(parent, null, "", lastVertex, allNodes.get(node.getFile().getName()), mxConstants.STYLE_STROKECOLOR + "=#" + hexStr
+							+ ";edgeStyle=elbowEdgeStyle;");
 				}
 			}
+
+			//			if (parent != null && lastVertex != null) {
+			//				graph.insertEdge(parent, null, "", lastVertex, newNode, mxConstants.STYLE_STROKECOLOR + "=#" + hexStr + ";edgeStyle=elbowEdgeStyle;");
+			//			}
+			//			while (ir.hasNext()) {
+			//				ELFNode n = ir.next();
+			//				if (allNodes.get(n.getFile().getName()) == null) {
+			//					addCells(parent, n, newNode);
+			//				} else {
+			//					try {
+			//						graph.insertEdge(parent, null, "", newNode, allNodes.get(n.getFile().getName()), mxConstants.STYLE_STROKECOLOR + "=#" + hexStr
+			//								+ ";edgeStyle=elbowEdgeStyle;");
+			//					} catch (Exception ex) {
+			//						ex.printStackTrace();
+			//					}
+			//				}
+			//			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -632,10 +652,12 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			}
 			graph.getModel().beginUpdate();
 
+			String str;
 			if (jLayoutButton.getEventSource() == null) {
-				return;
+				str = "Hierarchical Layout";
+			} else {
+				str = ((JMenuItem) jLayoutButton.getEventSource()).getText();
 			}
-			String str = ((JMenuItem) jLayoutButton.getEventSource()).getText();
 			jLayoutButton.setText(str);
 			if (str.equals("Hierarchical Layout")) {
 				mxHierarchicalLayout layout = new mxHierarchicalLayout(graph);

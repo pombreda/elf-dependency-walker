@@ -1,23 +1,14 @@
 <?xml version='1.0' ?>  <Setting>
-    <divX>216</divX>
-    <height>640</height>
+    <divX>400</divX>
+    <height>1002</height>
     <historyList>
-      <historyList>/usr/bin/gcc</historyList>
-      <historyList>/root/workspace/plibc/library/testingLibrary/test.exe
-		</historyList>
-      <historyList>/usr/bin/akonadi_nntp_resource</historyList>
-      <historyList>/usr/bin/dos2unix</historyList>
-      <historyList>/usr/bin/pamtouil</historyList>
-      <historyList>/usr/bin/abrt-applet</historyList>
-      <historyList>/usr/bin/abrt-backtrace</historyList>
-      <historyList>/usr/bin/ziptorrent</historyList>
-      <historyList>/bin/arch</historyList>
-      <historyList>/usr/local/bin/gvim</historyList>
-      <historyList>/bin/dmesg</historyList>
-      <historyList>/bin/egrep</historyList>
-      <historyList>/usr/bin/aclocal</historyList>
-      <historyList>/usr/bin/ulockmgr_server</historyList>
-      <historyList>/usr/bin/ls</historyList>
+      <historyList>/usr/bin/HEAD</historyList>
+      <historyList>/bin/bunzip2</historyList>
+      <historyList>/bin/ls</historyList>
+      <historyList>/bin/bzdiff</historyList>
+      <historyList>/bin/dd</historyList>
+      <historyList>/usr/bin/java</historyList>
+      <historyList>/usr/bin/ssh</historyList>
     </historyList>
     <lastOpenPath>/usr/bin</lastOpenPath>
     <lookupDirectory>
@@ -25,8 +16,9 @@
       <lookupDirectory>/usr/lib</lookupDirectory>
       <lookupDirectory>/lib</lookupDirectory>
       <lookupDirectory>/usr/local/lib</lookupDirectory>
+      <lookupDirectory>/lib/i386-linux-gnu/</lookupDirectory>
     </lookupDirectory>
-    <width>1209</width>
-    <x>89</x>
-    <y>60</y>
+    <width>1680</width>
+    <x>0</x>
+    <y>24</y>
   </Setting>
