@@ -13,9 +13,9 @@ public class ELFNode implements TreeNode {
 	Icon directoryIcon = new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/folder.png"));
 	Icon notFoundIcon = new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/cross.png"));
 	File file;
+
 	String nmResult;
 	boolean notFound;
-	ELFNode parent;
 	public LinkedHashSet<ELFNode> child = new LinkedHashSet<ELFNode>();
 
 	public File getFile() {
@@ -30,9 +30,8 @@ public class ELFNode implements TreeNode {
 		this.nmResult = nmResult;
 	}
 
-	public ELFNode(File file, String result, ELFNode parent, boolean notFound) {
+	public ELFNode(File file, String result, boolean notFound) {
 		this.file = file;
-		this.parent = parent;
 		this.nmResult = result;
 		this.notFound = notFound;
 	}
@@ -87,7 +86,7 @@ public class ELFNode implements TreeNode {
 
 	@Override
 	public TreeNode getParent() {
-		return parent;
+		return null;
 	}
 
 	@Override

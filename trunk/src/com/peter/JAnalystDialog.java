@@ -68,14 +68,14 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 				thisLayout.setHorizontalGroup(thisLayout
 						.createSequentialGroup()
 						.addContainerGap()
-						.addGroup(thisLayout
-								.createParallelGroup()
-								.addComponent(jLabel1, GroupLayout.Alignment.LEADING, 0, 378, Short.MAX_VALUE)
-								.addGroup(GroupLayout.Alignment.LEADING,
-										thisLayout.createSequentialGroup()
-												.addGap(0, 317, Short.MAX_VALUE)
-												.addComponent(jCancelButton, GroupLayout.PREFERRED_SIZE, 62,
-														GroupLayout.PREFERRED_SIZE))).addContainerGap());
+						.addGroup(
+								thisLayout
+										.createParallelGroup()
+										.addComponent(jLabel1, GroupLayout.Alignment.LEADING, 0, 378, Short.MAX_VALUE)
+										.addGroup(
+												GroupLayout.Alignment.LEADING,
+												thisLayout.createSequentialGroup().addGap(0, 317, Short.MAX_VALUE)
+														.addComponent(jCancelButton, GroupLayout.PREFERRED_SIZE, 62, GroupLayout.PREFERRED_SIZE))).addContainerGap());
 			}
 			this.setSize(418, 126);
 		} catch (Exception e) {
@@ -87,28 +87,31 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 	public void run() {
 		allNodes.clear();
 		ELFNode node = null;
+		//		ELFNode rootNode = null;
+		ELFNode root = new ELFNode(new File("Peter"), null, true);
 		for (File file : files) {
 			if (file.isFile()) {
-				if (node == null) {
-					node = analystELF(file, null);
-				} else {
-					analystELF(file, node);
-				}
+				node = analystELF(file);
+				root.child.add(node);
 			} else {
-				node = new ELFNode(file, null, null, true);
+				//node = new ELFNode(file, null, null, true);
 				for (File f : file.listFiles()) {
-					analystELF(f, node);
+					node = analystELF(f);
+					root.child.add(node);
 				}
 			}
+			//			if (rootNode == null) {
+			//				rootNode = node;
+			//			}
 		}
 		if (node != null) {
-			((MyTreeModel) jTree.getModel()).setRoot(node);
+			((MyTreeModel) jTree.getModel()).setRoot(root);
 		}
 		this.jCancelButton.setText("Finished");
 		this.setVisible(false);
 	}
 
-	private ELFNode analystELF(File file, ELFNode parent) {
+	private ELFNode analystELF(File file) {
 		Setting setting = Setting.getInstance();
 		if (setting.getLookupDirectory().size() == 0) {
 			JOptionPane.showMessageDialog(this, "Lookup directory empty, please set them in setting!!!");
@@ -123,25 +126,23 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 			jLabel1.setText(noOfVertex + " " + file.getName());
 		}
 
-		String results[];
+		String results[] = CommonLib.runCommand("readelf -a " + file.getAbsolutePath()).split("\n");
 
-		results = CommonLib.runCommand("readelf -a " + file.getAbsolutePath()).split("\n");
+		ELFNode currentNode = new ELFNode(file, null, false);
 
-		ELFNode node = new ELFNode(file, null, parent, false);
-
-		if (parent != null) {
-			if (allNodes.get(file.getName()) != null) {
-				parent.child.add(allNodes.get(file.getName()));
-				return null;
-			} else {
-				parent.child.add(node);
-				allNodes.put(file.getName(), node);
-			}
-		}
+		//		if (parent != null) {
+		//			if (allNodes.get(file.getName()) != null) {
+		//				parent.child.add(allNodes.get(file.getName()));
+		//				return null;
+		//			} else {
+		//				parent.child.add(node);
+		//				allNodes.put(file.getName(), node);
+		//			}
+		//		}
 		for (String line : results) {
 			String words[] = line.split("[\\[\\]]");
 			if (words.length > 1 && line.toLowerCase().contains("needed")) {
-				boolean match = false;
+				//				boolean match = false;
 				File childFile = null;
 
 				for (String s : setting.getLookupDirectory()) {
@@ -150,39 +151,21 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 						break;
 					}
 				}
-				/*
-				if (new File(file.getParent() + "/" + words[1]).exists()) {
-					childFile = new File(file.getParent() + "/" + words[1]);
-				} else if (new File("/lib/" + words[1]).exists()) {
-					childFile = new File("/lib/" + words[1]);
-				} else if (new File("/usr/lib/" + words[1]).exists()) {
-					childFile = new File("/usr/lib/" + words[1]);
-				} else if (new File("/usr/local/lib/" + words[1]).exists()) {
-					childFile = new File("/usr/local/lib/" + words[1]);
-				} else if (new File("/lib64/" + words[1]).exists()) {
-					childFile = new File("/lib64/" + words[1]);
-				} else if (new File("/usr/lib64/" + words[1]).exists()) {
-					childFile = new File("/usr/lib64/" + words[1]);
-				} else if (new File("/usr/local/lib64/" + words[1]).exists()) {
-					childFile = new File("/usr/local/lib64/" + words[1]);
-				} else {
-					node.child.add(new ELFNode(new File(words[1]), "", parent, true));
-				}
-				*/
 				if (childFile != null) {
-					for (String s : onlyInTheseDirectories) {
-						if (childFile.getAbsolutePath().startsWith(s)) {
-							match = true;
-							break;
-						}
-					}
-					if (match) {
-						analystELF(childFile, node);
-					}
+					//					for (String s : onlyInTheseDirectories) {
+					//						if (childFile.getAbsolutePath().startsWith(s)) {
+					//							match = true;
+					//							break;
+					//						}
+					//					}
+					//					if (match) {
+					ELFNode node = analystELF(childFile);
+					currentNode.child.add(node);
+					//					}
 				}
 			}
 		}
-		return node;
+		return currentNode;
 	}
 
 	private void thisWindowActivated(WindowEvent evt) {
