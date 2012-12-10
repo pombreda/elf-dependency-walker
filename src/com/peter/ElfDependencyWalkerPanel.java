@@ -92,6 +92,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	private JTree jTree1;
 	private JSplitPane jSplitPane1;
 	private JButton jSaveToPngButton;
+	private JButton zoom100Button;
 	private JButton zoomOutButton;
 	private JButton zoomInButton;
 	private JButton settingButton;
@@ -256,6 +257,16 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 						}
 					});
 				}
+				{
+					zoom100Button = new JButton();
+					jToolBar1.add(zoom100Button);
+					zoom100Button.setText("100%");
+					zoom100Button.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							zoom100ButtonActionPerformed(evt);
+						}
+					});
+				}
 			}
 			int x = Setting.getInstance().getX();
 			int y = Setting.getInstance().getY();
@@ -279,7 +290,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 					c.drawVertex(state, label);
 				} else {
 					// draw edge, at least
-					super.drawState(canvas, state, label);
+					//					super.drawState(canvas, state, label);
 				}
 			}
 
@@ -388,8 +399,13 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		try {
 			Color aColor = new Color(numGen.nextInt(256), numGen.nextInt(256), numGen.nextInt(256));
 			String hexStr = Integer.toHexString(aColor.getRGB());
-			mxCell newNode = (mxCell) graph.insertVertex(parent, null, node.getFile().getName(), 100, x * 40 + 100, 200, 30);
-
+			mxCell newNode;
+			String name = node.getFile().getName();
+			if (name.toLowerCase().contains(".a.") || name.toLowerCase().contains(".so.") || name.toLowerCase().contains(".a")) {
+				newNode = (mxCell) graph.insertVertex(parent, null, name, 100, x * 40 + 100, 150, 30, mxConstants.STYLE_FILLCOLOR + "=#fff29b");
+			} else {
+				newNode = (mxCell) graph.insertVertex(parent, null, name, 100, x * 40 + 100, 150, 30);
+			}
 			allNodes.put(node.getFile().getName(), newNode);
 			LinkedHashSet<ELFNode> childNode = node.child;
 			Iterator<ELFNode> ir = childNode.iterator();
@@ -448,24 +464,26 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	}
 
 	private void jAnalystButtonActionPerformed(ActionEvent evt) {
-		File file = null;
+		File files[] = null;
 		if (jAnalystButton.getEventSource() == null) {
 			final JFileChooser fc = new JFileChooser(Setting.getInstance().getLastOpenPath());
+			fc.setMultiSelectionEnabled(true);
 			int returnVal = fc.showOpenDialog(this);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				file = fc.getSelectedFile();
+				files = fc.getSelectedFiles();
 			}
 		} else {
-			file = new File(((JMenuItem) jAnalystButton.getEventSource()).getText());
+			files = new File[1];
+			files[0] = new File(((JMenuItem) jAnalystButton.getEventSource()).getText());
 		}
-		if (file != null && file.exists()) {
-			Setting.getInstance().addHistoryList(file.getAbsolutePath());
-			addHistoryMenuitems();
-
-			Setting.getInstance().getHistoryList().add(file.getAbsolutePath());
-			Setting.getInstance().setLastOpenPath(file.getParentFile().getAbsolutePath());
-
-			dialog = new JAnalystDialog(jframe, jTree1, file);
+		if (files != null) {
+			if (files.length == 1) {
+				Setting.getInstance().addHistoryList(files[0].getAbsolutePath());
+				addHistoryMenuitems();
+				Setting.getInstance().getHistoryList().add(files[0].getAbsolutePath());
+				Setting.getInstance().setLastOpenPath(files[0].getParentFile().getAbsolutePath());
+			}
+			dialog = new JAnalystDialog(jframe, jTree1, files);
 			dialog.setVisible(true);
 			if (dialog.allNodes != null) {
 				updateJGraphx(myTreeModel);
@@ -593,11 +611,12 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 
 	private void jAnaystDirectoryButtonActionPerformed(ActionEvent evt) {
 		final JFileChooser fc = new JFileChooser(Setting.getInstance().getLastOpenPath());
+		fc.setMultiSelectionEnabled(true);
 		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		int returnVal = fc.showOpenDialog(this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			Setting.getInstance().setLastOpenPath(fc.getSelectedFile().getAbsolutePath());
-			JAnalystDialog d = new JAnalystDialog(jframe, jTree1, fc.getSelectedFile());
+			JAnalystDialog d = new JAnalystDialog(jframe, jTree1, fc.getSelectedFiles());
 			d.setVisible(true);
 			updateJGraphx(myTreeModel);
 		}
@@ -694,10 +713,20 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	}
 
 	private void zoomInButtonActionPerformed(ActionEvent evt) {
-		graphComponent.zoomIn();
+		if (graphComponent != null) {
+			graphComponent.zoomIn();
+		}
 	}
 
 	private void zoomOutButtonActionPerformed(ActionEvent evt) {
-		graphComponent.zoomOut();
+		if (graphComponent != null) {
+			graphComponent.zoomOut();
+		}
+	}
+
+	private void zoom100ButtonActionPerformed(ActionEvent evt) {
+		if (graphComponent != null) {
+			graphComponent.zoomActual();
+		}
 	}
 }

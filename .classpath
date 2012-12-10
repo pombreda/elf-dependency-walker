@@ -11,10 +11,9 @@
 	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/forms-1.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/ini4j-0.5.1.jar"/>
-	<classpathentry kind="lib" path="lib/jgraph.jar"/>
 	<classpathentry kind="lib" path="lib/poi-3.5-FINAL-20090928.jar"/>
 	<classpathentry kind="lib" path="lib/TableLayout.jar"/>
-	<classpathentry kind="lib" path="lib/graphx/jgraphx/lib/jgraphx.jar" sourcepath="lib/graphx/jgraphx/src"/>
+	<classpathentry kind="lib" path="lib/graphx/jgraphx-1.10.4.0/lib/jgraphx.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Peter-swing"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
