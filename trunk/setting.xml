@@ -1,6 +1,6 @@
 <?xml version='1.0' ?>  <Setting>
     <divX>400</divX>
-    <height>1002</height>
+    <height>852</height>
     <historyList>
       <historyList>/usr/bin/HEAD</historyList>
       <historyList>/bin/bunzip2</historyList>
@@ -9,11 +9,14 @@
       <historyList>/bin/dd</historyList>
       <historyList>/usr/bin/java</historyList>
       <historyList>/usr/bin/ssh</historyList>
-      <historyList>/usr/bin/yelp</historyList>
-      <historyList>/usr/bin/yes</historyList>
       <historyList>/root/Downloads/eclipse/eclipse</historyList>
+      <historyList>/usr/bin/yes</historyList>
+      <historyList>/usr/bin/yelp</historyList>
+      <historyList>/usr/bin/pilot-foto-treo600</historyList>
+      <historyList>/opt/google/chrome/chrome</historyList>
+      <historyList>/usr/bin/qemu-kvm</historyList>
     </historyList>
-    <lastOpenPath>/bin</lastOpenPath>
+    <lastOpenPath>/usr/bin</lastOpenPath>
     <lookupDirectory>
       <lookupDirectory>/usr</lookupDirectory>
       <lookupDirectory>/usr/lib</lookupDirectory>
@@ -21,7 +24,7 @@
       <lookupDirectory>/usr/local/lib</lookupDirectory>
       <lookupDirectory>/lib/i386-linux-gnu/</lookupDirectory>
     </lookupDirectory>
-    <width>1680</width>
+    <width>1440</width>
     <x>0</x>
     <y>24</y>
   </Setting>
