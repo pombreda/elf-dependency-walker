@@ -111,15 +111,6 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	Hashtable<String, mxCell> allNodes = new Hashtable<String, mxCell>();
 	Random numGen = new Random();
 
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				ElfDependencyWalker inst = new ElfDependencyWalker();
-				inst.setVisible(true);
-			}
-		});
-	}
-
 	public ElfDependencyWalkerPanel(JFrame jframe) {
 		super();
 		this.jframe = jframe;
