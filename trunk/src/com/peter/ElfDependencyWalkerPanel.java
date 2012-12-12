@@ -14,7 +14,9 @@ import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -37,8 +39,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.JTree;
 import javax.swing.RepaintManager;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -92,6 +92,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	private JTree jTree1;
 	private JSplitPane jSplitPane1;
 	private JButton jSaveToPngButton;
+	private JButton dotButton;
 	private JButton zoom100Button;
 	private JButton zoomOutButton;
 	private JButton zoomInButton;
@@ -261,11 +262,21 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 						}
 					});
 				}
+				{
+					dotButton = new JButton();
+					jToolBar1.add(dotButton);
+					dotButton.setText("dot");
+					dotButton.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							dotButtonActionPerformed(evt);
+						}
+					});
+				}
 			}
 			int x = Setting.getInstance().getX();
 			int y = Setting.getInstance().getY();
 			setLocation(x, y);
-			this.setPreferredSize(new java.awt.Dimension(679, 607));
+			this.setPreferredSize(new java.awt.Dimension(775, 607));
 
 			setSize(Setting.getInstance().getWidth(), Setting.getInstance().getHeight());
 
@@ -525,15 +536,6 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		jLayoutButton.add(new JMenuItem("Stack Layout"));
 	}
 
-	private void thisWindowClosing(WindowEvent evt) {
-		Setting.getInstance().setWidth(this.getWidth());
-		Setting.getInstance().setHeight(this.getHeight());
-		Setting.getInstance().setX(this.getLocation().x);
-		Setting.getInstance().setY(this.getLocation().y);
-		Setting.getInstance().setDivX(jSplitPane1.getDividerLocation());
-		Setting.getInstance().save();
-	}
-
 	private void jTree1ValueChanged(TreeSelectionEvent evt) {
 		try {
 			ELFNode node = (ELFNode) jTree1.getLastSelectedPathComponent();
@@ -740,6 +742,38 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	private void zoom100ButtonActionPerformed(ActionEvent evt) {
 		if (graphComponent != null) {
 			graphComponent.zoomActual();
+		}
+	}
+
+	private void dotButtonActionPerformed(ActionEvent evt) {
+		try {
+			File file = new File("elf.dot");
+			BufferedWriter of = new BufferedWriter(new FileWriter(file));
+			of.write("digraph G{\n");
+			addDotCells(of, (ELFNode) myTreeModel.getRoot());
+			of.write("}\n");
+			of.close();
+			CommonLib.runCommand("dot -Tpng " + file.getName() + " -o elf.png");
+			//file.delete();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+
+	private void addDotCells(BufferedWriter writer, ELFNode node) throws IOException {
+		Iterator<ELFNode> ir = node.child.iterator();
+		writer.write("\"" + node.file.getName() + "\" [shape=box];\n");
+		//		Color aColor = new Color(numGen.nextInt(256), numGen.nextInt(256), numGen.nextInt(256));
+		//		String hexStr = Integer.toHexString(aColor.getRGB());
+
+		float r = numGen.nextFloat();
+		float g = numGen.nextFloat();
+		float b = numGen.nextFloat();
+
+		while (ir.hasNext()) {
+			ELFNode childNode = ir.next();
+			writer.write("\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\" [color=\"" + r + " ," + g + ", " + b + "\"];\n");
+			addDotCells(writer, childNode);
 		}
 	}
 }
