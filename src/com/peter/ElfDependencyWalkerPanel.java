@@ -66,6 +66,8 @@ import com.mxgraph.view.mxCellState;
 import com.mxgraph.view.mxGraph;
 import com.peterswing.CommonLib;
 import com.peterswing.advancedswing.jdropdownbutton.JDropDownButton;
+import javax.swing.JLabel;
+import javax.swing.JTable;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
@@ -110,7 +112,13 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	JFrame jframe;
 	int x = 0;
 	Hashtable<String, mxCell> allNodes = new Hashtable<String, mxCell>();
+	Hashtable<String, String> allNodesEdgeColor = new Hashtable<String, String>();
 	Random numGen = new Random();
+	private JPanel panel;
+	private JScrollPane scrollPane;
+	private JLabel dotLabel;
+	private JPanel panel_1;
+	private JButton btnSavePng;
 
 	public ElfDependencyWalkerPanel(JFrame jframe) {
 		super();
@@ -282,8 +290,42 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 
 			addLayoutMenuitems();
 			jSplitPane1.setDividerLocation(Setting.getInstance().getDivX());
+			{
+				panel = new JPanel();
+				jTabbedPane1.addTab("Dot", null, panel, null);
+				panel.setLayout(new BorderLayout(0, 0));
+				{
+					scrollPane = new JScrollPane();
+					panel.add(scrollPane, BorderLayout.CENTER);
+					{
+						dotLabel = new JLabel("");
+						scrollPane.setViewportView(dotLabel);
+					}
+				}
+				{
+					panel_1 = new JPanel();
+					panel.add(panel_1, BorderLayout.NORTH);
+					{
+						btnSavePng = new JButton("Save png");
+						btnSavePng.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								saveDotToPng();
+							}
+						});
+						panel_1.add(btnSavePng);
+					}
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	protected void saveDotToPng() {
+		final JFileChooser fc = new JFileChooser(Setting.getInstance().getLastOpenPath());
+		int returnVal = fc.showSaveDialog(this);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			saveImage(dotLabel, fc.getSelectedFile());
 		}
 	}
 
@@ -325,7 +367,6 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 
 		parent = graph.getDefaultParent();
 		allNodes.clear();
-		//		addCells(parent, ((ELFNode) myTreeModel.getRoot()), null);
 		Iterator<ELFNode> ir = ((ELFNode) myTreeModel.getRoot()).child.iterator();
 		while (ir.hasNext()) {
 			ELFNode n = ir.next();
@@ -334,37 +375,6 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 
 		graph.setCellsDisconnectable(false);
 		graphComponent = new CallGraphComponent(graph);
-		// setMarkerMaxAndMinSize();
-		// graphComponent.setGridVisible(true);
-		// graphComponent.setGridColor(Color.lightGray);
-		// graphComponent.setBackground(Color.white);
-		// graphComponent.getViewport().setOpaque(false);
-		// graphComponent.setBackground(Color.WHITE);
-		// graphComponent.setConnectable(false);
-		// graphComponent.getGraphControl().addMouseListener(new MouseAdapter()
-		// {
-		// public void mouseReleased(MouseEvent e) {
-		// Object cell = graphComponent.getCellAt(e.getX(), e.getY());
-		//
-		// if (cell != null) {
-		// String label = graph.getLabel(cell);
-		// if (label.contains("->")) {
-		// cellClientEvent(label);
-		// }
-		// }
-		// }
-		// });
-
-		// graph.setCellsResizable(false);
-		// graph.setCellsMovable(false);
-		// graph.setCellsEditable(false);
-		// graph.foldCells(false);
-		// graph.setGridSize(10);
-
-		// mxHierarchicalLayout layout = new mxHierarchicalLayout(graph);
-		// layout.execute(parent);
-
-		// jGraphSplitPane.removeAll();
 		jGraphSplitPane.add(graphComponent, JSplitPane.RIGHT);
 		{
 			jPanel1 = new JPanel();
@@ -386,7 +396,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		{
 			jSaveToPngButton = new JButton();
 			jPanel1.add(jSaveToPngButton);
-			jSaveToPngButton.setText("Save to PNG");
+			jSaveToPngButton.setText("Save png");
 			jSaveToPngButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/disk.png")));
 			jSaveToPngButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent evt) {
@@ -394,17 +404,25 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 				}
 			});
 		}
-
-		// graph.getModel().beginUpdate();
-		// mxHierarchicalLayout layout = new mxHierarchicalLayout(graph);
-		// layout.execute(parent);
-		// graph.getModel().endUpdate();
 	}
 
-	private void addCells(Object parent, ELFNode node, Object lastVertex) {
+	String getRandomColor() {
+		Color aColor = new Color(numGen.nextInt(256), numGen.nextInt(256), numGen.nextInt(256));
+		String hexStr = Integer.toHexString(aColor.getRGB());
+		return hexStr;
+	}
+
+	String getEdgeColor(String edgeIDStr) {
+		String hexStr = allNodesEdgeColor.get(edgeIDStr);
+		if (hexStr == null) {
+			hexStr = getRandomColor();
+			allNodesEdgeColor.put(edgeIDStr, hexStr);
+		}
+		return hexStr;
+	}
+
+	private void addCells(Object parent, ELFNode node, mxCell lastVertex) {
 		try {
-			Color aColor = new Color(numGen.nextInt(256), numGen.nextInt(256), numGen.nextInt(256));
-			String hexStr = Integer.toHexString(aColor.getRGB());
 			if (allNodes.get(node.getFile().getName()) == null) {
 				mxCell newNode;
 				String name = node.getFile().getName();
@@ -419,6 +437,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 				x++;
 
 				if (lastVertex != null && lastVertex != newNode) {
+					String hexStr = getEdgeColor(lastVertex.getValue().toString());
 					graph.insertEdge(parent, null, "", lastVertex, newNode, mxConstants.STYLE_STROKECOLOR + "=#" + hexStr + ";edgeStyle=elbowEdgeStyle;");
 				}
 				while (ir.hasNext()) {
@@ -428,27 +447,11 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 
 			} else {
 				if (lastVertex != null && lastVertex != allNodes.get(node.getFile().getName())) {
+					String hexStr = getEdgeColor(lastVertex.getValue().toString());
 					graph.insertEdge(parent, null, "", lastVertex, allNodes.get(node.getFile().getName()), mxConstants.STYLE_STROKECOLOR + "=#" + hexStr
 							+ ";edgeStyle=elbowEdgeStyle;");
 				}
 			}
-
-			//			if (parent != null && lastVertex != null) {
-			//				graph.insertEdge(parent, null, "", lastVertex, newNode, mxConstants.STYLE_STROKECOLOR + "=#" + hexStr + ";edgeStyle=elbowEdgeStyle;");
-			//			}
-			//			while (ir.hasNext()) {
-			//				ELFNode n = ir.next();
-			//				if (allNodes.get(n.getFile().getName()) == null) {
-			//					addCells(parent, n, newNode);
-			//				} else {
-			//					try {
-			//						graph.insertEdge(parent, null, "", newNode, allNodes.get(n.getFile().getName()), mxConstants.STYLE_STROKECOLOR + "=#" + hexStr
-			//								+ ";edgeStyle=elbowEdgeStyle;");
-			//					} catch (Exception ex) {
-			//						ex.printStackTrace();
-			//					}
-			//				}
-			//			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -511,6 +514,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 				updateJGraphx(myTreeModel);
 			}
 		}
+		dotButtonActionPerformed(null);
 	}
 
 	private void addHistoryMenuitems() {
@@ -589,13 +593,6 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 
 	private void jPrintButtonActionPerformed(ActionEvent evt) {
 		PrintUtilities.printComponent(jTextArea1);
-
-		/*
-		 * PrinterJob printJob = PrinterJob.getPrinterJob();
-		 * printJob.setPrintable(this); if (printJob.printDialog()) try {
-		 * printJob.print(); } catch (PrinterException pe) {
-		 * System.out.println("Error printing: " + pe); }
-		 */
 	}
 
 	@Override
@@ -685,16 +682,14 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			}
 
 			mxMorphing morph = new mxMorphing(graphComponent, 20, 1.2, 20);
-
 			morph.addListener(mxEvent.DONE, new mxIEventListener() {
-
 				public void invoke(Object sender, mxEventObject evt) {
 					graph.getModel().endUpdate();
 				}
-
 			});
 
 			morph.startAnimation();
+			jTabbedPane1.setSelectedIndex(1);
 		}
 	}
 
@@ -718,7 +713,6 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			saveImage(this.graphComponent.getGraphControl(), fc.getSelectedFile());
 		}
-
 	}
 
 	private void settingButtonActionPerformed(ActionEvent evt) {
@@ -754,7 +748,14 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			of.write("}\n");
 			of.close();
 			CommonLib.runCommand("dot -Tpng " + file.getName() + " -o elf.png");
-			//file.delete();
+			file.delete();
+			ImageIcon icon = new ImageIcon("elf.png");
+			icon.getImage().flush();
+			dotLabel.setIcon(icon);
+			dotLabel.revalidate();
+			scrollPane.getViewport().remove(dotLabel);
+			scrollPane.getViewport().add(dotLabel);
+			jTabbedPane1.setSelectedIndex(2);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -763,8 +764,6 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	private void addDotCells(BufferedWriter writer, ELFNode node) throws IOException {
 		Iterator<ELFNode> ir = node.child.iterator();
 		writer.write("\"" + node.file.getName() + "\" [shape=box];\n");
-		//		Color aColor = new Color(numGen.nextInt(256), numGen.nextInt(256), numGen.nextInt(256));
-		//		String hexStr = Integer.toHexString(aColor.getRGB());
 
 		float r = numGen.nextFloat();
 		float g = numGen.nextFloat();
