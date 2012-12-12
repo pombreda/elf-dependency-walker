@@ -95,6 +95,7 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 		ELFNode root = new ELFNode(new File("Peter"), null, true);
 		parsedFiles.clear();
 		for (File file : files) {
+			System.out.println(file.getAbsolutePath());
 			if (file.isFile()) {
 				node = analystELF(file);
 				root.child.add(node);
