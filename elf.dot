@@ -1,0 +1,25 @@
+digraph G{
+"Peter" [shape=box];
+"Peter" -> "java" [color="0.6913191 ,0.97850883, 0.74981755"];
+"java" [shape=box];
+"java" -> "libpthread.so.0" [color="0.27845222 ,0.69569254, 0.5982519"];
+"libpthread.so.0" [shape=box];
+"libpthread.so.0" -> "libc.so.6" [color="0.1993193 ,0.80390763, 0.51247334"];
+"libc.so.6" [shape=box];
+"libc.so.6" -> "ld-linux.so.2" [color="0.45795232 ,0.82678723, 0.091333926"];
+"ld-linux.so.2" [shape=box];
+"libpthread.so.0" -> "ld-linux.so.2" [color="0.1993193 ,0.80390763, 0.51247334"];
+"ld-linux.so.2" [shape=box];
+"java" -> "libz.so.1" [color="0.27845222 ,0.69569254, 0.5982519"];
+"libz.so.1" [shape=box];
+"libz.so.1" -> "libc.so.6" [color="0.4435184 ,0.30152035, 0.77627647"];
+"libc.so.6" [shape=box];
+"java" -> "libdl.so.2" [color="0.27845222 ,0.69569254, 0.5982519"];
+"libdl.so.2" [shape=box];
+"libdl.so.2" -> "libc.so.6" [color="0.5456687 ,0.9321201, 0.9889541"];
+"libc.so.6" [shape=box];
+"libdl.so.2" -> "ld-linux.so.2" [color="0.5456687 ,0.9321201, 0.9889541"];
+"ld-linux.so.2" [shape=box];
+"java" -> "libc.so.6" [color="0.27845222 ,0.69569254, 0.5982519"];
+"libc.so.6" [shape=box];
+}
