@@ -20,6 +20,7 @@ import javax.swing.LayoutStyle;
 import com.peterswing.CommonLib;
 
 public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
+	//$hide>>$
 	private JButton jCancelButton;
 	private JLabel jLabel1;
 	private JTree jTree;
@@ -176,4 +177,5 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 	private void jCancelButtonActionPerformed(ActionEvent evt) {
 		this.setVisible(false);
 	}
+	//$hide<<$
 }
