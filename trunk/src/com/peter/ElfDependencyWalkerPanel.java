@@ -510,9 +510,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			}
 			dialog = new JAnalystDialog(jframe, jTree1, files);
 			dialog.setVisible(true);
-			if (dialog.allNodes != null) {
-				updateJGraphx(myTreeModel);
-			}
+			updateJGraphx(myTreeModel);
 		}
 		dotButtonActionPerformed(null);
 	}
@@ -763,7 +761,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 
 	private void addDotCells(BufferedWriter writer, ELFNode node) throws IOException {
 		Iterator<ELFNode> ir = node.child.iterator();
-		writer.write("\"" + node.file.getName() + "\" [shape=box];\n");
+		writer.write("\"" + node.file.getName() + "\" [shape=box fontsize=8 width=0.2 height=0.1];\n");
 
 		float r = numGen.nextFloat();
 		float g = numGen.nextFloat();
