@@ -330,6 +330,9 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	}
 
 	public void updateJGraphx(MyTreeModel model) {
+		if (1 < 2) {
+			return;
+		}
 		graph = new mxGraph() {
 			public void drawState(mxICanvas canvas, mxCellState state, String label) {
 				if (getModel().isVertex(state.getCell()) && canvas instanceof PeterSwingCanvas) {
@@ -511,8 +514,8 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			dialog = new JAnalystDialog(jframe, jTree1, files);
 			dialog.setVisible(true);
 			updateJGraphx(myTreeModel);
+			dotButtonActionPerformed(null);
 		}
-		dotButtonActionPerformed(null);
 	}
 
 	private void addHistoryMenuitems() {
@@ -627,6 +630,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			JAnalystDialog d = new JAnalystDialog(jframe, jTree1, fc.getSelectedFiles());
 			d.setVisible(true);
 			updateJGraphx(myTreeModel);
+			dotButtonActionPerformed(null);
 		}
 	}
 
