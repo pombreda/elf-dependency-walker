@@ -25,7 +25,7 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 	private JLabel jLabel1;
 	private JTree jTree;
 	private File files[];
-	public Hashtable<String, ELFNode> allNodes = new Hashtable<String, ELFNode>();
+	//public Hashtable<String, ELFNode> allNodes = new Hashtable<String, ELFNode>();
 	final int MAX_NUMBER_OF_VERTEX = 100000000;
 	int noOfVertex;
 
@@ -89,9 +89,9 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 
 	@Override
 	public void run() {
-		allNodes.clear();
+		//		allNodes.clear();
+		noOfVertex = 0;
 		ELFNode node = null;
-		//		ELFNode rootNode = null;
 		ELFNode root = new ELFNode(new File("Peter"), null, true);
 		parsedFiles.clear();
 		for (File file : files) {
@@ -100,15 +100,13 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 				node = analystELF(file);
 				root.child.add(node);
 			} else {
-				//node = new ELFNode(file, null, null, true);
 				for (File f : file.listFiles()) {
 					node = analystELF(f);
-					root.child.add(node);
+					if (node.file.isFile()) {
+						root.child.add(node);
+					}
 				}
 			}
-			//			if (rootNode == null) {
-			//				rootNode = node;
-			//			}
 		}
 		if (node != null) {
 			((MyTreeModel) jTree.getModel()).setRoot(root);
@@ -127,24 +125,9 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 			return null;
 		}
 
-		if (allNodes.get(file.getName()) == null) {
-			noOfVertex++;
-			jLabel1.setText(noOfVertex + " " + file.getName());
-		}
-
 		String results[] = CommonLib.runCommand("readelf -a " + file.getAbsolutePath()).split("\n");
 
 		ELFNode currentNode = new ELFNode(file, null, false);
-
-		//		if (parent != null) {
-		//			if (allNodes.get(file.getName()) != null) {
-		//				parent.child.add(allNodes.get(file.getName()));
-		//				return null;
-		//			} else {
-		//				parent.child.add(node);
-		//				allNodes.put(file.getName(), node);
-		//			}
-		//		}
 		for (String line : results) {
 			String words[] = line.split("[\\[\\]]");
 			if (words.length > 1 && line.toLowerCase().contains("needed")) {
@@ -164,7 +147,11 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 						parsedFiles.add(file.getName() + "-" + childFile.getName());
 					}
 					ELFNode node = analystELF(childFile);
-					currentNode.child.add(node);
+					if (node.file.isFile()) {
+						currentNode.child.add(node);
+						jLabel1.setText(noOfVertex + " " + file.getName());
+						noOfVertex++;
+					}
 				}
 			}
 		}
