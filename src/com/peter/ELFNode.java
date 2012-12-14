@@ -2,13 +2,14 @@ package com.peter;
 
 import java.io.File;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.tree.TreeNode;
 
-public class ELFNode implements TreeNode {
+public class ELFNode implements TreeNode, Comparable {
 	Icon icon = new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/script.png"));
 	Icon directoryIcon = new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/folder.png"));
 	Icon notFoundIcon = new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/cross.png"));
@@ -16,7 +17,15 @@ public class ELFNode implements TreeNode {
 
 	String nmResult;
 	boolean notFound;
+	ELFNode parent;
 	public LinkedHashSet<ELFNode> child = new LinkedHashSet<ELFNode>();
+
+	public ELFNode(ELFNode parent, File file, String result, boolean notFound) {
+		this.parent = parent;
+		this.file = file;
+		this.nmResult = result;
+		this.notFound = notFound;
+	}
 
 	public File getFile() {
 		return file;
@@ -28,12 +37,6 @@ public class ELFNode implements TreeNode {
 
 	public void setNmResult(String nmResult) {
 		this.nmResult = nmResult;
-	}
-
-	public ELFNode(File file, String result, boolean notFound) {
-		this.file = file;
-		this.nmResult = result;
-		this.notFound = notFound;
 	}
 
 	public Icon getIcon() {
@@ -86,7 +89,7 @@ public class ELFNode implements TreeNode {
 
 	@Override
 	public TreeNode getParent() {
-		return null;
+		return parent;
 	}
 
 	@Override
@@ -94,4 +97,24 @@ public class ELFNode implements TreeNode {
 		return getChildCount() == 0;
 	}
 
+	public int getLevel() {
+		int level = 0;
+		ELFNode parentNode = parent;
+		System.out.print("            ");
+		System.out.print("  " + file.getName());
+		while (parentNode != null) {
+			System.out.print(", " + parentNode.file.getName());
+			parentNode = parentNode.parent;
+
+			level++;
+		}
+		System.out.print(", " + level);
+		System.out.println();
+		return level;
+	}
+
+	@Override
+	public int compareTo(Object o) {
+		return file.compareTo(((ELFNode) o).file);
+	}
 }

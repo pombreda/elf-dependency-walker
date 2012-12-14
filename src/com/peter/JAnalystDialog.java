@@ -20,12 +20,10 @@ import javax.swing.LayoutStyle;
 import com.peterswing.CommonLib;
 
 public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
-	//$hide>>$
 	private JButton jCancelButton;
 	private JLabel jLabel1;
 	private JTree jTree;
 	private File files[];
-	//public Hashtable<String, ELFNode> allNodes = new Hashtable<String, ELFNode>();
 	final int MAX_NUMBER_OF_VERTEX = 100000000;
 	int noOfVertex;
 
@@ -89,19 +87,17 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 
 	@Override
 	public void run() {
-		//		allNodes.clear();
 		noOfVertex = 0;
 		ELFNode node = null;
-		ELFNode root = new ELFNode(new File("Peter"), null, true);
+		ELFNode root = new ELFNode(null, new File("Peter"), null, true);
 		parsedFiles.clear();
 		for (File file : files) {
-			System.out.println(file.getAbsolutePath());
 			if (file.isFile()) {
-				node = analystELF(file);
+				node = analystELF(root, file);
 				root.child.add(node);
 			} else {
 				for (File f : file.listFiles()) {
-					node = analystELF(f);
+					node = analystELF(root, f);
 					if (node.file.isFile()) {
 						root.child.add(node);
 					}
@@ -115,7 +111,7 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 		this.setVisible(false);
 	}
 
-	private ELFNode analystELF(File file) {
+	private ELFNode analystELF(ELFNode parent, File file) {
 		Setting setting = Setting.getInstance();
 		if (setting.getLookupDirectory().size() == 0) {
 			JOptionPane.showMessageDialog(this, "Lookup directory empty, please set them in setting!!!");
@@ -125,13 +121,12 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 			return null;
 		}
 
-		String results[] = CommonLib.runCommand("readelf -a " + file.getAbsolutePath()).split("\n");
+		ELFNode currentNode = new ELFNode(parent, file, null, false);
 
-		ELFNode currentNode = new ELFNode(file, null, false);
+		String results[] = CommonLib.runCommand("readelf -a " + file.getAbsolutePath()).split("\n");
 		for (String line : results) {
 			String words[] = line.split("[\\[\\]]");
 			if (words.length > 1 && line.toLowerCase().contains("needed")) {
-				//				boolean match = false;
 				File childFile = null;
 
 				for (String s : setting.getLookupDirectory()) {
@@ -142,11 +137,11 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 				}
 				if (childFile != null) {
 					if (parsedFiles.contains(file.getName() + "-" + childFile.getName())) {
-						continue;
+						//						continue;
 					} else {
 						parsedFiles.add(file.getName() + "-" + childFile.getName());
 					}
-					ELFNode node = analystELF(childFile);
+					ELFNode node = analystELF(currentNode, childFile);
 					if (node.file.isFile()) {
 						currentNode.child.add(node);
 						jLabel1.setText(noOfVertex + " " + file.getName());
@@ -165,5 +160,4 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 	private void jCancelButtonActionPerformed(ActionEvent evt) {
 		this.setVisible(false);
 	}
-	//$hide<<$
 }

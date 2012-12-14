@@ -9,7 +9,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
@@ -18,10 +17,12 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Random;
+import java.util.Vector;
 
 import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
@@ -30,6 +31,7 @@ import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -66,8 +68,6 @@ import com.mxgraph.view.mxCellState;
 import com.mxgraph.view.mxGraph;
 import com.peterswing.CommonLib;
 import com.peterswing.advancedswing.jdropdownbutton.JDropDownButton;
-import javax.swing.JLabel;
-import javax.swing.JTable;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
@@ -119,6 +119,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	private JLabel dotLabel;
 	private JPanel panel_1;
 	private JButton btnSavePng;
+	Vector<String> allEdges = new Vector<String>();
 
 	public ElfDependencyWalkerPanel(JFrame jframe) {
 		super();
@@ -743,13 +744,35 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 
 	private void dotButtonActionPerformed(ActionEvent evt) {
 		try {
+			allEdges.clear();
 			File file = new File("elf.dot");
 			BufferedWriter of = new BufferedWriter(new FileWriter(file));
 			of.write("digraph G{\n");
 			addDotCells(of, (ELFNode) myTreeModel.getRoot());
+
+			// subgraph
+			int maxDepthOfTree = getMaxDepth((ELFNode) myTreeModel.getRoot());
+			for (int x = 1; x <= maxDepthOfTree; x++) {
+				of.write("subgraph cluster" + x + " {\n");
+				Vector<ELFNode> nodesInLevel = new Vector<ELFNode>();
+				getNodesInLevel(nodesInLevel, (ELFNode) myTreeModel.getRoot(), x);
+				for (int y = 0; y < nodesInLevel.size(); y++) {
+					ELFNode node = nodesInLevel.get(y);
+					if (y > 0) {
+						of.write(" ; ");
+					}
+					of.write("\"" + node.getFile().getName() + "\"");
+				}
+				of.write(";\n");
+				of.write("label = \"Level" + x + "\";\n");
+				of.write("color = red;\n");
+				of.write("}\n");
+			}
+			// end subgraph
+
 			of.write("}\n");
 			of.close();
-			CommonLib.runCommand("circo -Tpng " + file.getName() + " -o elf.png");
+			CommonLib.runCommand("dot -Tpng " + file.getName() + " -o elf.png");
 			//file.delete();
 			ImageIcon icon = new ImageIcon("elf.png");
 			icon.getImage().flush();
@@ -763,9 +786,57 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		}
 	}
 
+	private void getAllNodes(Vector<ELFNode> allNodes, ELFNode node) {
+		allNodes.add(node);
+		Iterator<ELFNode> ir = node.child.iterator();
+		while (ir.hasNext()) {
+			ELFNode childNode = ir.next();
+			getAllNodes(allNodes, childNode);
+		}
+	}
+
+	private void getNodesInLevel(Vector<ELFNode> nodesInLevel, ELFNode node, int level) {
+		Vector<ELFNode> allNodes = new Vector<ELFNode>();
+		getAllNodes(allNodes, (ELFNode) myTreeModel.getRoot());
+		Collections.sort(allNodes);
+		ELFNode lastNode = null;
+		int maxDepth = -9999;
+		for (ELFNode n : allNodes) {
+			if (lastNode != null && !n.file.getName().equals(lastNode.file.getName())) {
+				if (maxDepth == level) {
+					System.out.println(lastNode.file.getName() + " == " + level);
+					nodesInLevel.addElement(lastNode);
+				}
+				maxDepth = n.getLevel();
+			} else {
+				if (n.getLevel() > maxDepth) {
+					maxDepth = n.getLevel();
+				}
+
+				System.out.println("   " + n.file.getName() + " = " + n.getLevel());
+			}
+			lastNode = n;
+		}
+	}
+
+	private int getMaxDepth(ELFNode node) {
+		int maxChildDepth = node.getLevel();
+		Iterator<ELFNode> ir = node.child.iterator();
+		while (ir.hasNext()) {
+			ELFNode childNode = ir.next();
+			int childLevel = getMaxDepth(childNode);
+			if (childLevel > maxChildDepth) {
+				maxChildDepth = childLevel;
+			}
+		}
+		return maxChildDepth;
+	}
+
 	private void addDotCells(BufferedWriter writer, ELFNode node) throws IOException {
 		Iterator<ELFNode> ir = node.child.iterator();
-		writer.write("\"" + node.file.getName() + "\" [shape=box fontsize=8 width=0.2 height=0.1];\n");
+		if (!node.file.getName().equals("Peter")) {
+			writer.write("\"" + node.file.getName() + "\" [shape=box fontsize=8 width=0.2 height=0.1];\n");
+		}
 
 		float r = numGen.nextFloat();
 		float g = numGen.nextFloat();
@@ -773,7 +844,10 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 
 		while (ir.hasNext()) {
 			ELFNode childNode = ir.next();
-			writer.write("\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\" [color=\"" + r + " ," + g + ", " + b + "\"];\n");
+			if (!node.file.getName().equals("Peter") && !allEdges.contains(node.file.getName() + "\" -> \"" + childNode.file.getName())) {
+				writer.write("\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\" [color=\"" + r + " ," + g + ", " + b + "\"];\n");
+				allEdges.add(node.file.getName() + "\" -> \"" + childNode.file.getName());
+			}
 			addDotCells(writer, childNode);
 		}
 	}
