@@ -70,14 +70,14 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 				thisLayout.setHorizontalGroup(thisLayout
 						.createSequentialGroup()
 						.addContainerGap()
-						.addGroup(
-								thisLayout
-										.createParallelGroup()
-										.addComponent(jLabel1, GroupLayout.Alignment.LEADING, 0, 378, Short.MAX_VALUE)
-										.addGroup(
-												GroupLayout.Alignment.LEADING,
-												thisLayout.createSequentialGroup().addGap(0, 317, Short.MAX_VALUE)
-														.addComponent(jCancelButton, GroupLayout.PREFERRED_SIZE, 62, GroupLayout.PREFERRED_SIZE))).addContainerGap());
+						.addGroup(thisLayout
+								.createParallelGroup()
+								.addComponent(jLabel1, GroupLayout.Alignment.LEADING, 0, 378, Short.MAX_VALUE)
+								.addGroup(GroupLayout.Alignment.LEADING,
+										thisLayout.createSequentialGroup()
+												.addGap(0, 317, Short.MAX_VALUE)
+												.addComponent(jCancelButton, GroupLayout.PREFERRED_SIZE, 62,
+														GroupLayout.PREFERRED_SIZE))).addContainerGap());
 			}
 			this.setSize(418, 126);
 		} catch (Exception e) {
@@ -137,7 +137,7 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 				}
 				if (childFile != null) {
 					if (parsedFiles.contains(file.getName() + "-" + childFile.getName())) {
-						//						continue;
+						continue;
 					} else {
 						parsedFiles.add(file.getName() + "-" + childFile.getName());
 					}
