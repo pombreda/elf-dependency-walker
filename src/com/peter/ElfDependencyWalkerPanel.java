@@ -749,8 +749,8 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			addDotCells(of, (ELFNode) myTreeModel.getRoot());
 			of.write("}\n");
 			of.close();
-			CommonLib.runCommand("dot -Tpng " + file.getName() + " -o elf.png");
-			file.delete();
+			CommonLib.runCommand("circo -Tpng " + file.getName() + " -o elf.png");
+			//file.delete();
 			ImageIcon icon = new ImageIcon("elf.png");
 			icon.getImage().flush();
 			dotLabel.setIcon(icon);

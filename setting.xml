@@ -1,6 +1,6 @@
 <?xml version='1.0' ?>  <Setting>
     <divX>400</divX>
-    <height>706</height>
+    <height>1032</height>
     <historyList>
       <historyList>/usr/bin/HEAD</historyList>
       <historyList>/bin/bunzip2</historyList>
@@ -18,7 +18,7 @@
       <historyList>/usr/bin/VBoxClient</historyList>
       <historyList>/usr/bin/yelp</historyList>
     </historyList>
-    <lastOpenPath>/lib</lastOpenPath>
+    <lastOpenPath>/usr/lib</lastOpenPath>
     <lookupDirectory>
       <lookupDirectory>/usr</lookupDirectory>
       <lookupDirectory>/usr/lib</lookupDirectory>
@@ -26,7 +26,7 @@
       <lookupDirectory>/usr/local/lib</lookupDirectory>
       <lookupDirectory>/lib/i386-linux-gnu/</lookupDirectory>
     </lookupDirectory>
-    <width>1050</width>
-    <x>392</x>
-    <y>84</y>
+    <width>1920</width>
+    <x>0</x>
+    <y>24</y>
   </Setting>
