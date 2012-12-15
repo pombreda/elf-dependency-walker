@@ -350,6 +350,8 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	}
 
 	public void updateJGraphx(MyTreeModel model) {
+		if (1 < 2)
+			return;
 		graph = new mxGraph() {
 			public void drawState(mxICanvas canvas, mxCellState state, String label) {
 				if (getModel().isVertex(state.getCell()) && canvas instanceof PeterSwingCanvas) {
@@ -794,7 +796,8 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			icon.getImage().flush();
 
 			int preferWidth = dotLabel.getWidth() > icon.getIconWidth() ? icon.getIconWidth() : dotLabel.getWidth();
-			int preferHeight = dotLabel.getHeight() > icon.getIconHeight() ? icon.getIconHeight() : dotLabel.getHeight();
+			float ratio = ((float) preferWidth) / icon.getIconWidth();
+			int preferHeight = (int) (icon.getIconHeight() * ratio);
 			dotLabel.setIcon(resizeImage(icon, preferWidth, preferHeight));
 			jTabbedPane1.setSelectedIndex(2);
 		} catch (Exception ex) {
