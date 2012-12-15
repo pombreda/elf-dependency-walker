@@ -19,6 +19,7 @@ public class ELFNode implements TreeNode, Comparable {
 	boolean notFound;
 	ELFNode parent;
 	public LinkedHashSet<ELFNode> child = new LinkedHashSet<ELFNode>();
+	int level = -1;
 
 	public ELFNode(ELFNode parent, File file, String result, boolean notFound) {
 		this.parent = parent;
@@ -98,19 +99,27 @@ public class ELFNode implements TreeNode, Comparable {
 	}
 
 	public int getLevel() {
-		int level = 0;
-		ELFNode parentNode = parent;
-		System.out.print("            ");
-		System.out.print("  " + file.getName());
-		while (parentNode != null) {
-			System.out.print(", " + parentNode.file.getName());
-			parentNode = parentNode.parent;
+		if (level == -1) {
+			int level = 0;
+			ELFNode parentNode = parent;
+			Global.debug("            ");
+			Global.debug("  " + file.getName());
 
-			level++;
+			while (parentNode != null) {
+				Global.debug(", " + parentNode.file.getName());
+
+				parentNode = parentNode.parent;
+
+				level++;
+			}
+			Global.debug(", " + level);
+			Global.debug();
+
+			this.level = level;
+			return level;
+		} else {
+			return level;
 		}
-		System.out.print(", " + level);
-		System.out.println();
-		return level;
 	}
 
 	@Override
