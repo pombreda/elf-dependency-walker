@@ -804,7 +804,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		for (ELFNode n : allNodes) {
 			if (lastNode != null && !n.file.getName().equals(lastNode.file.getName())) {
 				if (maxDepth == level) {
-					System.out.println(lastNode.file.getName() + " == " + level);
+					Global.debug(lastNode.file.getName() + " == " + level);
 					nodesInLevel.addElement(lastNode);
 				}
 				maxDepth = n.getLevel();
@@ -813,7 +813,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 					maxDepth = n.getLevel();
 				}
 
-				System.out.println("   " + n.file.getName() + " = " + n.getLevel());
+				Global.debug("   " + n.file.getName() + " = " + n.getLevel());
 			}
 			lastNode = n;
 		}

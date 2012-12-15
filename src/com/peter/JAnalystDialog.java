@@ -5,7 +5,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Vector;
 
 import javax.swing.GroupLayout;
@@ -26,10 +27,12 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 	private File files[];
 	final int MAX_NUMBER_OF_VERTEX = 100000000;
 	int noOfVertex;
+	boolean started;
 
-	private String onlyInTheseDirectories[] = { "/lib", "/usr/lib", "/usr/local/lib", "/lib64", "/usr/lib64", "/usr/local/lib64" };
+	//	private String onlyInTheseDirectories[] = { "/lib", "/usr/lib", "/usr/local/lib", "/lib64", "/usr/lib64", "/usr/local/lib64" };
 
 	Vector<String> parsedFiles = new Vector<String>();
+	HashMap<String, String[]> cache = new HashMap<String, String[]>();
 
 	public JAnalystDialog(JFrame frame, JTree jTree, File files[]) {
 		super(frame, true);
@@ -93,25 +96,25 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 		parsedFiles.clear();
 		for (File file : files) {
 			if (file.isFile()) {
-				node = analystELF(root, file);
+				node = analystELF(root, file, "");
 				root.child.add(node);
 			} else {
 				for (File f : file.listFiles()) {
-					node = analystELF(root, f);
+					node = analystELF(root, f, "");
 					if (node.file.isFile()) {
 						root.child.add(node);
 					}
 				}
 			}
 		}
-		if (node != null) {
+		if (root != null) {
 			((MyTreeModel) jTree.getModel()).setRoot(root);
 		}
 		this.jCancelButton.setText("Finished");
 		this.setVisible(false);
 	}
 
-	private ELFNode analystELF(ELFNode parent, File file) {
+	private ELFNode analystELF(ELFNode parent, File file, String debugStr) {
 		Setting setting = Setting.getInstance();
 		if (setting.getLookupDirectory().size() == 0) {
 			JOptionPane.showMessageDialog(this, "Lookup directory empty, please set them in setting!!!");
@@ -123,10 +126,25 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 
 		ELFNode currentNode = new ELFNode(parent, file, null, false);
 
-		String results[] = CommonLib.runCommand("readelf -a " + file.getAbsolutePath()).split("\n");
+		String results[];
+		boolean needToCache = false;
+		if (cache.get(file.getAbsolutePath()) == null) {
+			results = CommonLib.runCommand("readelf -a " + file.getAbsolutePath()).split("\n");
+			//			cache.put(file.getAbsolutePath(), results);
+			needToCache = true;
+		} else {
+			results = cache.get(file.getAbsolutePath());
+		}
+		Vector<String> cacheLines = new Vector<String>();
 		for (String line : results) {
+			if (!started) {
+				return null;
+			}
 			String words[] = line.split("[\\[\\]]");
 			if (words.length > 1 && line.toLowerCase().contains("needed")) {
+				if (needToCache) {
+					cacheLines.add(line);
+				}
 				File childFile = null;
 
 				for (String s : setting.getLookupDirectory()) {
@@ -135,29 +153,38 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 						break;
 					}
 				}
-				if (childFile != null) {
+				if (childFile != null && childFile.isFile()) {
 					if (parsedFiles.contains(file.getName() + "-" + childFile.getName())) {
-						continue;
+						//						continue;
 					} else {
 						parsedFiles.add(file.getName() + "-" + childFile.getName());
 					}
-					ELFNode node = analystELF(currentNode, childFile);
-					if (node.file.isFile()) {
-						currentNode.child.add(node);
-						jLabel1.setText(noOfVertex + " " + file.getName());
-						noOfVertex++;
-					}
+					Global.debug(debugStr + noOfVertex + "," + currentNode.file.getName() + "======" + childFile.getName());
+
+					ELFNode node = analystELF(currentNode, childFile, debugStr + "    ");
+					currentNode.child.add(node);
+					jLabel1.setText(noOfVertex + " " + file.getName());
+					noOfVertex++;
 				}
 			}
+		}
+		if (needToCache) {
+			String[] temp = new String[cacheLines.size()];
+			cacheLines.toArray(temp);
+			cache.put(file.getAbsolutePath(), temp);
 		}
 		return currentNode;
 	}
 
 	private void thisWindowActivated(WindowEvent evt) {
-		new Thread(this).start();
+		if (!started) {
+			started = true;
+			new Thread(this).start();
+		}
 	}
 
 	private void jCancelButtonActionPerformed(ActionEvent evt) {
+		started = false;
 		this.setVisible(false);
 	}
 }
