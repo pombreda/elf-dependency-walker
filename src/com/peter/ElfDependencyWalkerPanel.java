@@ -7,6 +7,7 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -120,6 +121,8 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	private JPanel panel_1;
 	private JButton btnSavePng;
 	Vector<String> allEdges = new Vector<String>();
+	private JButton buttonZoomIn;
+	private JButton buttonZoomOut;
 
 	public ElfDependencyWalkerPanel(JFrame jframe) {
 		super();
@@ -315,6 +318,22 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 						});
 						panel_1.add(btnSavePng);
 					}
+					{
+						buttonZoomIn = new JButton("+");
+						buttonZoomIn.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent arg0) {
+							}
+						});
+						panel_1.add(buttonZoomIn);
+					}
+					{
+						buttonZoomOut = new JButton("-");
+						buttonZoomOut.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+							}
+						});
+						panel_1.add(buttonZoomOut);
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -331,9 +350,6 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	}
 
 	public void updateJGraphx(MyTreeModel model) {
-		if (1 < 2) {
-			return;
-		}
 		graph = new mxGraph() {
 			public void drawState(mxICanvas canvas, mxCellState state, String label) {
 				if (getModel().isVertex(state.getCell()) && canvas instanceof PeterSwingCanvas) {
@@ -776,14 +792,18 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			//file.delete();
 			ImageIcon icon = new ImageIcon("elf.png");
 			icon.getImage().flush();
-			dotLabel.setIcon(icon);
-			dotLabel.revalidate();
-			scrollPane.getViewport().remove(dotLabel);
-			scrollPane.getViewport().add(dotLabel);
+
+			int preferWidth = dotLabel.getWidth() > icon.getIconWidth() ? icon.getIconWidth() : dotLabel.getWidth();
+			int preferHeight = dotLabel.getHeight() > icon.getIconHeight() ? icon.getIconHeight() : dotLabel.getHeight();
+			dotLabel.setIcon(resizeImage(icon, preferWidth, preferHeight));
 			jTabbedPane1.setSelectedIndex(2);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
+	}
+
+	ImageIcon resizeImage(ImageIcon icon, int width, int height) {
+		return new ImageIcon(icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH));
 	}
 
 	private void getAllNodes(Vector<ELFNode> allNodes, ELFNode node) {
