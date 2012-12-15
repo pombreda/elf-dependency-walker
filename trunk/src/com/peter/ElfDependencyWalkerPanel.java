@@ -123,6 +123,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	Vector<String> allEdges = new Vector<String>();
 	private JButton buttonZoomIn;
 	private JButton buttonZoomOut;
+	private JButton btnExportCsvFor;
 
 	public ElfDependencyWalkerPanel(JFrame jframe) {
 		super();
@@ -278,6 +279,32 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 					dotButton = new JButton();
 					jToolBar1.add(dotButton);
 					dotButton.setText("dot");
+					{
+						btnExportCsvFor = new JButton("Export CSV for Gephi");
+						btnExportCsvFor.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								final JFileChooser fc = new JFileChooser(Setting.getInstance().getLastOpenPath());
+								int returnVal = fc.showSaveDialog(ElfDependencyWalkerPanel.this);
+								if (returnVal == JFileChooser.APPROVE_OPTION) {
+									File file;
+									if (!fc.getSelectedFile().getName().endsWith(".csv")) {
+										file = new File(fc.getSelectedFile().getAbsolutePath() + ".csv");
+									} else {
+										file = fc.getSelectedFile();
+									}
+									try {
+										BufferedWriter of = new BufferedWriter(new FileWriter(file));
+										of.write("source,target\n");
+										genGephiCSV(of, (ELFNode) myTreeModel.getRoot());
+										of.close();
+									} catch (Exception ex) {
+										ex.printStackTrace();
+									}
+								}
+							}
+						});
+						jToolBar1.add(btnExportCsvFor);
+					}
 					dotButton.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							dotButtonActionPerformed(evt);
@@ -288,7 +315,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			int x = Setting.getInstance().getX();
 			int y = Setting.getInstance().getY();
 			setLocation(x, y);
-			this.setPreferredSize(new java.awt.Dimension(775, 607));
+			this.setPreferredSize(new Dimension(916, 607));
 
 			setSize(Setting.getInstance().getWidth(), Setting.getInstance().getHeight());
 
@@ -345,7 +372,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		final JFileChooser fc = new JFileChooser(Setting.getInstance().getLastOpenPath());
 		int returnVal = fc.showSaveDialog(this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			saveImage(dotLabel, fc.getSelectedFile());
+			saveImage(new ImageIcon("elf.png").getImage(), fc.getSelectedFile());
 		}
 	}
 
@@ -714,6 +741,24 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		}
 	}
 
+	public static BufferedImage imageToBufferedImage(Image im) {
+		BufferedImage bi = new BufferedImage(im.getWidth(null), im.getHeight(null), BufferedImage.TYPE_INT_RGB);
+		Graphics bg = bi.getGraphics();
+		bg.drawImage(im, 0, 0, null);
+		bg.dispose();
+		return bi;
+	}
+
+	public static boolean saveImage(Image image, File file) {
+		try {
+			ImageIO.write(imageToBufferedImage(image), "PNG", file);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
 	public static boolean saveImage(Container container, File file) {
 		final BufferedImage image = new BufferedImage(container.getWidth(), container.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		Graphics gr = image.getGraphics();
@@ -766,12 +811,15 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			File file = new File("elf.dot");
 			BufferedWriter of = new BufferedWriter(new FileWriter(file));
 			of.write("digraph G{\n");
+			of.write("fontname = Verdana;\n");
+			of.write("fontsize = 8;\n");
 			addDotCells(of, (ELFNode) myTreeModel.getRoot());
 
 			// subgraph
 			int maxDepthOfTree = getMaxDepth((ELFNode) myTreeModel.getRoot());
 			for (int x = 1; x <= maxDepthOfTree; x++) {
 				of.write("subgraph cluster" + x + " {\n");
+				of.write("rank=same;Level" + x + ";\n");
 				Vector<ELFNode> nodesInLevel = new Vector<ELFNode>();
 				getNodesInLevel(nodesInLevel, (ELFNode) myTreeModel.getRoot(), x);
 				for (int y = 0; y < nodesInLevel.size(); y++) {
@@ -787,6 +835,32 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 				of.write("}\n");
 			}
 			// end subgraph
+
+			//rank
+			of.write("{\n");
+			of.write("node[shape = plaintext];\n");
+			for (int x = 1; x <= maxDepthOfTree; x++) {
+				if (x > 1) {
+					of.write(" -> ");
+				}
+				of.write("Level" + x);
+			}
+			of.write("\n");
+			/*for (int x = 1; x <= maxDepthOfTree; x++) {
+				of.write("{rank=same;Level" + x + ";");
+				Vector<ELFNode> nodesInLevel = new Vector<ELFNode>();
+				getNodesInLevel(nodesInLevel, (ELFNode) myTreeModel.getRoot(), x);
+				for (int y = 0; y < nodesInLevel.size(); y++) {
+					ELFNode node = nodesInLevel.get(y);
+					if (y > 0) {
+						of.write(" ; ");
+					}
+					of.write("\"" + node.getFile().getName() + "\"");
+				}
+				of.write("}\n");
+			}
+			of.write("}\n");*/
+			//end rank
 
 			of.write("}\n");
 			of.close();
@@ -872,6 +946,19 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 				allEdges.add(node.file.getName() + "\" -> \"" + childNode.file.getName());
 			}
 			addDotCells(writer, childNode);
+		}
+	}
+
+	protected void genGephiCSV(BufferedWriter of, ELFNode node) throws IOException {
+		Iterator<ELFNode> ir = node.child.iterator();
+		while (ir.hasNext()) {
+			ELFNode childNode = ir.next();
+			of.write(node.file.getName() + "," + childNode.file.getName() + "\n");
+		}
+		ir = node.child.iterator();
+		while (ir.hasNext()) {
+			ELFNode childNode = ir.next();
+			genGephiCSV(of, childNode);
 		}
 	}
 }
