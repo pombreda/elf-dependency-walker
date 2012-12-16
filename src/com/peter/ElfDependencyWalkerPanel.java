@@ -819,7 +819,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			int maxDepthOfTree = getMaxDepth((ELFNode) myTreeModel.getRoot());
 			for (int x = 1; x <= maxDepthOfTree; x++) {
 				of.write("subgraph cluster" + x + " {\n");
-				of.write("rank=same;Level" + x + ";\n");
+				of.write("rank=same;\n");//Level" + x + ";\n");
 				Vector<ELFNode> nodesInLevel = new Vector<ELFNode>();
 				getNodesInLevel(nodesInLevel, (ELFNode) myTreeModel.getRoot(), x);
 				for (int y = 0; y < nodesInLevel.size(); y++) {
@@ -845,7 +845,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 				}
 				of.write("Level" + x);
 			}
-			of.write("\n");
+			of.write("}\n");
 			/*for (int x = 1; x <= maxDepthOfTree; x++) {
 				of.write("{rank=same;Level" + x + ";");
 				Vector<ELFNode> nodesInLevel = new Vector<ELFNode>();
