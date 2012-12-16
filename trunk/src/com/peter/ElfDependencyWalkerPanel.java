@@ -811,15 +811,17 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			File file = new File("elf.dot");
 			BufferedWriter of = new BufferedWriter(new FileWriter(file));
 			of.write("digraph G{\n");
-			of.write("fontname = Verdana;\n");
-			of.write("fontsize = 8;\n");
+			of.write("\tfontname = Verdana;\n");
+			of.write("\tfontsize = 8;\n");
+			of.write("\tsplines=ortho;\n");
 			addDotCells(of, (ELFNode) myTreeModel.getRoot());
+			int maxDepthOfTree = getMaxDepth((ELFNode) myTreeModel.getRoot());
 
 			// subgraph
-			int maxDepthOfTree = getMaxDepth((ELFNode) myTreeModel.getRoot());
+			/*
 			for (int x = 1; x <= maxDepthOfTree; x++) {
-				of.write("subgraph cluster" + x + " {\n");
-				of.write("rank=same;\n");//Level" + x + ";\n");
+				of.write("\tsubgraph cluster" + x + " {\n");
+				of.write("\t\trank=same;\n");//Level" + x + ";\n");
 				Vector<ELFNode> nodesInLevel = new Vector<ELFNode>();
 				getNodesInLevel(nodesInLevel, (ELFNode) myTreeModel.getRoot(), x);
 				for (int y = 0; y < nodesInLevel.size(); y++) {
@@ -827,27 +829,39 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 					if (y > 0) {
 						of.write(" ; ");
 					}
-					of.write("\"" + node.getFile().getName() + "\"");
+					of.write("\t\t\"" + node.getFile().getName() + "\"");
 				}
-				of.write(";\n");
-				of.write("label = \"Level" + x + "\";\n");
-				of.write("color = red;\n");
-				of.write("}\n");
-			}
+				of.write("\t\t;\n");
+				of.write("\t\tlabel = \"Level" + x + "\";\n");
+				of.write("\t\tcolor = red;\n");
+				of.write("\t}\n");
+			}*/
 			// end subgraph
 
 			//rank
-			of.write("{\n");
-			of.write("node[shape = plaintext];\n");
+			/*of.write("\t{\n");
+			of.write("\t\tnode[shape = plaintext];\n\t\t");
 			for (int x = 1; x <= maxDepthOfTree; x++) {
 				if (x > 1) {
 					of.write(" -> ");
 				}
 				of.write("Level" + x);
 			}
-			of.write("}\n");
-			/*for (int x = 1; x <= maxDepthOfTree; x++) {
-				of.write("{rank=same;Level" + x + ";");
+			of.write("\n\t}\n");*/
+
+			of.write("\t{\n");
+			of.write("\t\tnode[shape=box fontsize=8 width=0.2 height=0.1];\n");
+			for (int x = 1; x <= maxDepthOfTree; x++) {
+				if (x > 0) {
+					of.write(" -> ");
+				}
+				of.write("Level" + x);
+			}
+			of.write("\n\t}\n");
+
+			for (int x = 1; x <= maxDepthOfTree; x++) {
+				of.write("\t{\n");
+				of.write("\t\trank=same;Level" + x);
 				Vector<ELFNode> nodesInLevel = new Vector<ELFNode>();
 				getNodesInLevel(nodesInLevel, (ELFNode) myTreeModel.getRoot(), x);
 				for (int y = 0; y < nodesInLevel.size(); y++) {
@@ -857,12 +871,11 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 					}
 					of.write("\"" + node.getFile().getName() + "\"");
 				}
-				of.write("}\n");
+				of.write("\n\t}\n");
 			}
-			of.write("}\n");*/
 			//end rank
 
-			of.write("}\n");
+			of.write("}\n"); //end graph
 			of.close();
 			CommonLib.runCommand("dot -Tpng " + file.getName() + " -o elf.png");
 			//file.delete();
