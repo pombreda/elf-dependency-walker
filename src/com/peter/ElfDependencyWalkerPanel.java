@@ -854,13 +854,13 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			of.write("\t{\n");
 			of.write("\t\tnode[shape=box fontsize=8 width=0.2 height=0.1];\n");
 			for (int x = 1; x <= maxDepthOfTree; x++) {
-				if (x > 0) {
+				if (x > 1) {
 					of.write(" -> ");
 				}
 				of.write("Level" + x);
 			}
 			of.write("\n\t}\n");
-
+			System.out.println("step 1");
 			for (int x = 1; x <= maxDepthOfTree; x++) {
 				of.write("\t{\n");
 				of.write("\t\trank=same;Level" + x);
@@ -876,16 +876,20 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 				of.write("\n\t}\n");
 			}
 			//end rank
-
+			System.out.println("step 2");
 			of.write("}\n"); //end graph
 			of.close();
 			CommonLib.runCommand("dot -Tpng " + file.getName() + " -o elf.png");
 			//file.delete();
+			System.out.println("step 3");
 			ImageIcon icon = new ImageIcon("elf.png");
 			icon.getImage().flush();
 
 			int preferWidth = dotLabel.getWidth() > icon.getIconWidth() ? icon.getIconWidth() : dotLabel.getWidth();
 			float ratio = ((float) preferWidth) / icon.getIconWidth();
+			if (ratio == 0) {
+				ratio = 1;
+			}
 			int preferHeight = (int) (icon.getIconHeight() * ratio);
 			dotLabel.setIcon(resizeImage(icon, preferWidth, preferHeight));
 			jTabbedPane1.setSelectedIndex(2);
@@ -958,7 +962,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		while (ir.hasNext()) {
 			ELFNode childNode = ir.next();
 			if (!node.file.getName().equals("Peter") && !allEdges.contains(node.file.getName() + "\" -> \"" + childNode.file.getName())) {
-				writer.write("\t\t\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\" [color=\"" + r + " ," + g + ", " + b + "\"];\n");
+				//				writer.write("\t\t\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\" [color=\"" + r + " ," + g + ", " + b + "\"];\n");
 				allEdges.add(node.file.getName() + "\" -> \"" + childNode.file.getName());
 			}
 			addDotCells(writer, childNode);
