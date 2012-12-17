@@ -157,7 +157,9 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 				}
 				if (childFile != null && childFile.isFile()) {
 					if (parsedFiles.keySet().contains(file.getName() + "-" + childFile.getName())) {
-						currentNode.child.add(parsedFiles.get(file.getName() + "-" + childFile.getName()));
+						ELFNode childNode = parsedFiles.get(file.getName() + "-" + childFile.getName());
+						currentNode.child.add(childNode);
+						childNode.parent.add(currentNode);
 					} else {
 						ELFNode node = analystELF(currentNode, childFile, debugStr + "    ");
 						parsedFiles.put(file.getName() + "-" + childFile.getName(), node);
