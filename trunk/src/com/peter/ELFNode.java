@@ -17,12 +17,13 @@ public class ELFNode implements TreeNode, Comparable {
 
 	String nmResult;
 	boolean notFound;
-	ELFNode parent;
+	//	ELFNode parent;
+	public LinkedHashSet<ELFNode> parent = new LinkedHashSet<ELFNode>();
 	public LinkedHashSet<ELFNode> child = new LinkedHashSet<ELFNode>();
 	int level = -1;
 
 	public ELFNode(ELFNode parent, File file, String result, boolean notFound) {
-		this.parent = parent;
+		this.parent.add(parent);
 		this.file = file;
 		this.nmResult = result;
 		this.notFound = notFound;
@@ -90,7 +91,7 @@ public class ELFNode implements TreeNode, Comparable {
 
 	@Override
 	public TreeNode getParent() {
-		return parent;
+		return (TreeNode) parent.toArray()[0];
 	}
 
 	@Override
@@ -99,27 +100,28 @@ public class ELFNode implements TreeNode, Comparable {
 	}
 
 	public int getLevel() {
-		if (level == -1) {
-			int level = 0;
-			ELFNode parentNode = parent;
-			Global.debug("            ");
-			Global.debug("  " + file.getName());
-
-			while (parentNode != null) {
-				Global.debug(", " + parentNode.file.getName());
-
-				parentNode = parentNode.parent;
-
-				level++;
-			}
-			Global.debug(", " + level);
-			Global.debug();
-
-			this.level = level;
+		if (level != -1) {
 			return level;
 		} else {
+			level = getLevel(this, 0);
 			return level;
 		}
+	}
+
+	public int getLevel(ELFNode node, int level) {
+		if (node == null || node.parent.size() == 0) {
+			return level;
+		}
+		System.out.println(level + ":" + node.file.getName());
+		int maxLevel = 0;
+		Iterator<ELFNode> ir = node.parent.iterator();
+		while (ir.hasNext()) {
+			int temp = getLevel(ir.next(), level + 1);
+			if (temp > maxLevel) {
+				maxLevel = temp;
+			}
+		}
+		return maxLevel;
 	}
 
 	@Override

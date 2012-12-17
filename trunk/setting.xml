@@ -1,21 +1,8 @@
 <?xml version='1.0' ?>  <Setting>
     <divX>400</divX>
-    <height>684</height>
+    <height>855</height>
     <historyList>
-      <historyList>/root/Downloads/eclipse/eclipse</historyList>
-      <historyList>/usr/bin/pilot-foto-treo600</historyList>
-      <historyList>/usr/bin/qemu-kvm</historyList>
-      <historyList>/usr/bin/mysqlserverclone</historyList>
-      <historyList>/usr/bin/VBoxClient</historyList>
-      <historyList>/usr/bin/HEAD</historyList>
-      <historyList>/bin/ls</historyList>
-      <historyList>/usr/bin/java</historyList>
-      <historyList>/opt/google/chrome/chrome</historyList>
-      <historyList>/usr/bin/ssh</historyList>
-      <historyList>/usr/bin/yes</historyList>
-      <historyList>/bin/dd</historyList>
-      <historyList>/bin/bzdiff</historyList>
-      <historyList>/bin/bunzip2</historyList>
+      <historyList>/usr/bin/ls</historyList>
       <historyList>/usr/bin/yelp</historyList>
     </historyList>
     <lastOpenPath>/usr/bin</lastOpenPath>
@@ -24,9 +11,8 @@
       <lookupDirectory>/usr/lib</lookupDirectory>
       <lookupDirectory>/lib</lookupDirectory>
       <lookupDirectory>/usr/local/lib</lookupDirectory>
-      <lookupDirectory>/lib/i386-linux-gnu/</lookupDirectory>
     </lookupDirectory>
-    <width>977</width>
-    <x>246</x>
-    <y>71</y>
+    <width>1448</width>
+    <x>-4</x>
+    <y>24</y>
   </Setting>

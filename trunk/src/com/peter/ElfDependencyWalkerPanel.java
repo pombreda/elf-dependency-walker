@@ -124,6 +124,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	private JButton buttonZoomIn;
 	private JButton buttonZoomOut;
 	private JButton btnExportCsvFor;
+	Vector<String> finishedDotNodes = new Vector<String>();
 
 	public ElfDependencyWalkerPanel(JFrame jframe) {
 		super();
@@ -808,6 +809,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	private void dotButtonActionPerformed(ActionEvent evt) {
 		try {
 			allEdges.clear();
+			finishedDotNodes.clear();
 			File file = new File("elf.dot");
 			BufferedWriter of = new BufferedWriter(new FileWriter(file));
 			of.write("digraph G{\n");
@@ -944,8 +946,9 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 
 	private void addDotCells(BufferedWriter writer, ELFNode node) throws IOException {
 		Iterator<ELFNode> ir = node.child.iterator();
-		if (!node.file.getName().equals("Peter")) {
-			writer.write("\"" + node.file.getName() + "\" [shape=box fontsize=8 width=0.2 height=0.1];\n");
+		if (!node.file.getName().equals("Peter") && !finishedDotNodes.contains(node.file.getName())) {
+			writer.write("\t\"" + node.file.getName() + "\" [shape=box fontsize=8 width=0.2 height=0.1];\n");
+			finishedDotNodes.add(node.file.getName());
 		}
 
 		float r = numGen.nextFloat();
@@ -955,7 +958,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		while (ir.hasNext()) {
 			ELFNode childNode = ir.next();
 			if (!node.file.getName().equals("Peter") && !allEdges.contains(node.file.getName() + "\" -> \"" + childNode.file.getName())) {
-				writer.write("\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\" [color=\"" + r + " ," + g + ", " + b + "\"];\n");
+				writer.write("\t\t\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\" [color=\"" + r + " ," + g + ", " + b + "\"];\n");
 				allEdges.add(node.file.getName() + "\" -> \"" + childNode.file.getName());
 			}
 			addDotCells(writer, childNode);
