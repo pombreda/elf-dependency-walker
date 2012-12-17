@@ -29,7 +29,8 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 	int noOfVertex;
 	boolean started;
 
-	//	private String onlyInTheseDirectories[] = { "/lib", "/usr/lib", "/usr/local/lib", "/lib64", "/usr/lib64", "/usr/local/lib64" };
+	// private String onlyInTheseDirectories[] = { "/lib", "/usr/lib",
+	// "/usr/local/lib", "/lib64", "/usr/lib64", "/usr/local/lib64" };
 
 	Vector<String> parsedFiles = new Vector<String>();
 	HashMap<String, String[]> cache = new HashMap<String, String[]>();
@@ -73,14 +74,14 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 				thisLayout.setHorizontalGroup(thisLayout
 						.createSequentialGroup()
 						.addContainerGap()
-						.addGroup(thisLayout
-								.createParallelGroup()
-								.addComponent(jLabel1, GroupLayout.Alignment.LEADING, 0, 378, Short.MAX_VALUE)
-								.addGroup(GroupLayout.Alignment.LEADING,
-										thisLayout.createSequentialGroup()
-												.addGap(0, 317, Short.MAX_VALUE)
-												.addComponent(jCancelButton, GroupLayout.PREFERRED_SIZE, 62,
-														GroupLayout.PREFERRED_SIZE))).addContainerGap());
+						.addGroup(
+								thisLayout
+										.createParallelGroup()
+										.addComponent(jLabel1, GroupLayout.Alignment.LEADING, 0, 378, Short.MAX_VALUE)
+										.addGroup(
+												GroupLayout.Alignment.LEADING,
+												thisLayout.createSequentialGroup().addGap(0, 317, Short.MAX_VALUE)
+														.addComponent(jCancelButton, GroupLayout.PREFERRED_SIZE, 62, GroupLayout.PREFERRED_SIZE))).addContainerGap());
 			}
 			this.setSize(418, 126);
 		} catch (Exception e) {
@@ -130,7 +131,7 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 		boolean needToCache = false;
 		if (cache.get(file.getAbsolutePath()) == null) {
 			results = CommonLib.runCommand("readelf -a " + file.getAbsolutePath()).split("\n");
-			//			cache.put(file.getAbsolutePath(), results);
+			// cache.put(file.getAbsolutePath(), results);
 			needToCache = true;
 		} else {
 			results = cache.get(file.getAbsolutePath());
@@ -155,16 +156,17 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 				}
 				if (childFile != null && childFile.isFile()) {
 					if (parsedFiles.contains(file.getName() + "-" + childFile.getName())) {
-						//						continue;
+						// continue;
 					} else {
 						parsedFiles.add(file.getName() + "-" + childFile.getName());
+
+						ELFNode node = analystELF(currentNode, childFile, debugStr + "    ");
+						currentNode.child.add(node);
+						jLabel1.setText(noOfVertex + " " + file.getName());
+						noOfVertex++;
 					}
 					Global.debug(debugStr + noOfVertex + "," + currentNode.file.getName() + "======" + childFile.getName());
 
-					ELFNode node = analystELF(currentNode, childFile, debugStr + "    ");
-					currentNode.child.add(node);
-					jLabel1.setText(noOfVertex + " " + file.getName());
-					noOfVertex++;
 				}
 			}
 		}
