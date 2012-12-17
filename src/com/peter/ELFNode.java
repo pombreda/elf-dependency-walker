@@ -10,9 +10,9 @@ import javax.swing.ImageIcon;
 import javax.swing.tree.TreeNode;
 
 public class ELFNode implements TreeNode, Comparable {
-	Icon icon = new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/script.png"));
-	Icon directoryIcon = new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/folder.png"));
-	Icon notFoundIcon = new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/cross.png"));
+	static Icon icon = new ImageIcon(ELFNode.class.getClassLoader().getResource("icons/famfam_icons/script.png"));
+	static Icon directoryIcon = new ImageIcon(ELFNode.class.getClassLoader().getResource("icons/famfam_icons/folder.png"));
+	static Icon notFoundIcon = new ImageIcon(ELFNode.class.getClassLoader().getResource("icons/famfam_icons/cross.png"));
 	File file;
 
 	String nmResult;
