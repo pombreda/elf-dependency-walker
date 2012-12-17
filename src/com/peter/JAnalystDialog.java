@@ -32,7 +32,8 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 	// private String onlyInTheseDirectories[] = { "/lib", "/usr/lib",
 	// "/usr/local/lib", "/lib64", "/usr/lib64", "/usr/local/lib64" };
 
-	Vector<String> parsedFiles = new Vector<String>();
+	//	Vector<String> parsedFiles = new Vector<String>();
+	HashMap<String, ELFNode> parsedFiles = new HashMap<String, ELFNode>();
 	HashMap<String, String[]> cache = new HashMap<String, String[]>();
 
 	public JAnalystDialog(JFrame frame, JTree jTree, File files[]) {
@@ -155,12 +156,11 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 					}
 				}
 				if (childFile != null && childFile.isFile()) {
-					if (parsedFiles.contains(file.getName() + "-" + childFile.getName())) {
-						// continue;
+					if (parsedFiles.keySet().contains(file.getName() + "-" + childFile.getName())) {
+						currentNode.child.add(parsedFiles.get(file.getName() + "-" + childFile.getName()));
 					} else {
-						parsedFiles.add(file.getName() + "-" + childFile.getName());
-
 						ELFNode node = analystELF(currentNode, childFile, debugStr + "    ");
+						parsedFiles.put(file.getName() + "-" + childFile.getName(), node);
 						currentNode.child.add(node);
 						jLabel1.setText(noOfVertex + " " + file.getName());
 						noOfVertex++;
