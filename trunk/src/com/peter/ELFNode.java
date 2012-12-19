@@ -103,7 +103,7 @@ public class ELFNode implements TreeNode, Comparable {
 		if (level != -1) {
 			return level;
 		} else {
-			level = getLevel(this, 0);
+			level = getLevel(this, -1);
 			return level;
 		}
 	}
@@ -112,7 +112,7 @@ public class ELFNode implements TreeNode, Comparable {
 		if (node == null || node.parent.size() == 0) {
 			return level;
 		}
-//		System.out.println(level + ":" + node.file.getName());
+		//		System.out.println(level + ":" + node.file.getName());
 		int maxLevel = 0;
 		Iterator<ELFNode> ir = node.parent.iterator();
 		while (ir.hasNext()) {
