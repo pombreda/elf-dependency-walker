@@ -18,6 +18,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -871,7 +872,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 
 	private void dotButtonActionPerformed(ActionEvent evt) {
 		try {
-			Vector<String> allLevelNames = new Vector<String>();
+			LinkedHashSet<String> allLevelNames = new LinkedHashSet<String>();
 			allEdges.clear();
 			finishedDotNodes.clear();
 			File file = new File("elf.dot");
@@ -888,8 +889,9 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 
 			//rank
 			for (int x = 1; x <= maxDepthOfTree; x++) {
-				float level = maxDepthOfTree - x;
-
+				//				float level = (float) (maxDepthOfTree - x);
+				BigDecimal level = new BigDecimal(maxDepthOfTree - x);
+				;
 				Vector<ELFNode> nodesInLevel = new Vector<ELFNode>();
 				getNodesInLevel(nodesInLevel, (ELFNode) myTreeModel.getRoot(), x);
 
@@ -902,8 +904,9 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 						of.write(" ; ");
 					}
 					of.write("\"" + node.getFile().getName() + "\"");
-					if (y % 1 == 0 && y > 0 && y != nodesInLevel.size() - 1) {
-						level = (float) (level + 0.1);
+					if (y % 10 == 1 && y > 0 && y != nodesInLevel.size() - 1) {
+						//level = level + 0.1f;
+						level = level.add(BigDecimal.valueOf(0.1));
 						of.write("\n\t}\n");
 						of.write("\t{\n\t\trank=same;\"Level " + level + "\";");
 						allLevelNames.add("\"Level " + level + "\"");
@@ -924,7 +927,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 				if (x > 0) {
 					of.write(" -> ");
 				}
-				of.write(allLevelNames.get(x));
+				of.write(allLevelNames.toArray()[x].toString());
 			}
 			of.write("\n\t}\n");
 			of.write("}\n"); //end graph
@@ -1013,7 +1016,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		while (ir.hasNext()) {
 			ELFNode childNode = ir.next();
 			if (!node.file.getName().equals("Peter") && !allEdges.contains(node.file.getName() + "\" -> \"" + childNode.file.getName())) {
-				writer.write("\t\t\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\" [width=1, color=\"" + r + " ," + g + ", " + b + "\"];\n");
+				//writer.write("\t\t\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\" [width=1, color=\"" + r + " ," + g + ", " + b + "\"];\n");
 				allEdges.add(node.file.getName() + "\" -> \"" + childNode.file.getName());
 			}
 			addDotCells(writer, childNode);
