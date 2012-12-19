@@ -891,6 +891,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			for (int x = 1; x <= maxDepthOfTree; x++) {
 				//				float level = (float) (maxDepthOfTree - x);
 				BigDecimal level = new BigDecimal(maxDepthOfTree - x);
+				;
 				Vector<ELFNode> nodesInLevel = new Vector<ELFNode>();
 				getNodesInLevel(nodesInLevel, (ELFNode) myTreeModel.getRoot(), x);
 
@@ -903,9 +904,15 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 						of.write(" ; ");
 					}
 					of.write("\"" + node.getFile().getName() + "\"");
+<<<<<<< .mine
 					if (y % 10 == 0 && y > 0 && y != nodesInLevel.size() - 1) {
 						//level = level + 0.1f;
 						level = level.add(BigDecimal.valueOf(0.1));
+=======
+					if (y % 10 == 1 && y > 0 && y != nodesInLevel.size() - 1) {
+						//level = level + 0.1f;
+						level = level.add(BigDecimal.valueOf(0.1));
+>>>>>>> .r103
 						of.write("\n\t}\n");
 						of.write("\t{\n\t\trank=same;\"Level " + level + "\";");
 						allLevelNames.add("\"Level " + level + "\"");
