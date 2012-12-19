@@ -74,6 +74,7 @@ import com.peterswing.advancedswing.jprogressbardialog.JProgressBarDialog;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
+import javax.swing.JCheckBox;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
@@ -138,6 +139,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	protected int imageY;
 	protected int lastX;
 	protected int lastY;
+	private JCheckBox chckbxEdge;
 
 	public ElfDependencyWalkerPanel(JFrame jframe) {
 		super();
@@ -288,6 +290,11 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 							zoom100ButtonActionPerformed(evt);
 						}
 					});
+				}
+				{
+					chckbxEdge = new JCheckBox("Edge");
+					chckbxEdge.setSelected(true);
+					jToolBar1.add(chckbxEdge);
 				}
 				{
 					dotButton = new JButton();
@@ -918,7 +925,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			}
 			//end rank
 
-			addDotCells(of, (ELFNode) myTreeModel.getRoot());
+			addDotCells(of, (ELFNode) myTreeModel.getRoot(), chckbxEdge.isSelected());
 
 			of.write("\t{\n\t");
 			//of.write("\t\tnode[shape=box fontsize=8 width=0.2 height=0.1];\n");
@@ -1001,7 +1008,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		return maxChildDepth;
 	}
 
-	private void addDotCells(BufferedWriter writer, ELFNode node) throws IOException {
+	private void addDotCells(BufferedWriter writer, ELFNode node, boolean hasEdge) throws IOException {
 		Iterator<ELFNode> ir = node.child.iterator();
 		if (!node.file.getName().equals("Peter") && !finishedDotNodes.contains(node.file.getName())) {
 			writer.write("\t\"" + node.file.getName() + "\" [];\n");
@@ -1014,11 +1021,11 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 
 		while (ir.hasNext()) {
 			ELFNode childNode = ir.next();
-			if (!node.file.getName().equals("Peter") && !allEdges.contains(node.file.getName() + "\" -> \"" + childNode.file.getName())) {
+			if (hasEdge && !node.file.getName().equals("Peter") && !allEdges.contains(node.file.getName() + "\" -> \"" + childNode.file.getName())) {
 				writer.write("\t\t\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\" [width=1, color=\"" + r + " ," + g + ", " + b + "\"];\n");
 				allEdges.add(node.file.getName() + "\" -> \"" + childNode.file.getName());
 			}
-			addDotCells(writer, childNode);
+			addDotCells(writer, childNode, hasEdge);
 		}
 	}
 
