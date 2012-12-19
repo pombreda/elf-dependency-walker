@@ -903,7 +903,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 						of.write(" ; ");
 					}
 					of.write("\"" + node.getFile().getName() + "\"");
-					if (y % 10 == 0 && y > 0 && y != nodesInLevel.size() - 1) {
+					if (y % 4 == 0 && y > 0 && y != nodesInLevel.size() - 1) {
 						//level = level + 0.1f;
 						level = level.add(BigDecimal.valueOf(0.1));
 						of.write("\n\t}\n");
@@ -1015,7 +1015,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		while (ir.hasNext()) {
 			ELFNode childNode = ir.next();
 			if (!node.file.getName().equals("Peter") && !allEdges.contains(node.file.getName() + "\" -> \"" + childNode.file.getName())) {
-				//writer.write("\t\t\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\" [width=1, color=\"" + r + " ," + g + ", " + b + "\"];\n");
+				writer.write("\t\t\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\" [width=1, color=\"" + r + " ," + g + ", " + b + "\"];\n");
 				allEdges.add(node.file.getName() + "\" -> \"" + childNode.file.getName());
 			}
 			addDotCells(writer, childNode);
