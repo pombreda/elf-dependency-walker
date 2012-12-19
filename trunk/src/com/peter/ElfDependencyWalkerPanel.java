@@ -363,9 +363,9 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 							@Override
 							public void mouseDragged(MouseEvent e) {
 								if (mousePressed) {
-									ImageIcon icon = new ImageIcon("elf.png");
-									BufferedImage bi = imageToBufferedImage(icon.getImage(), imageX + (e.getX() - lastX), imageY + (e.getY() - lastY));
-									dotLabel.setIcon(new ImageIcon(bi));
+									//									ImageIcon icon = new ImageIcon("elf.png");
+									//									BufferedImage bi = imageToBufferedImage(icon.getImage(), imageX + (e.getX() - lastX), imageY + (e.getY() - lastY));
+									//									dotLabel.setIcon(new ImageIcon(bi));
 								}
 							}
 						});
@@ -871,9 +871,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 
 	private void dotButtonActionPerformed(ActionEvent evt) {
 		try {
-			//			JProgressBarDialog dialog=new JProgressBarDialog(jframe);
-			//			dialog.setVisible(true);
-			//			dialog.setTitle("Generating dot");
+			Vector<String> allLevelNames = new Vector<String>();
 			allEdges.clear();
 			finishedDotNodes.clear();
 			File file = new File("elf.dot");
@@ -885,72 +883,56 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			of.write("\tnodesep=0.15;\n");
 			of.write("\tranksep=0.15;\n");
 			of.write("\tnode [shape=box, margin=0.04, shape=box, fontname=\"Ubuntu-M\", fontsize = 10, width=0.2, height=0.1];\n");
-			addDotCells(of, (ELFNode) myTreeModel.getRoot());
+
 			int maxDepthOfTree = getMaxDepth((ELFNode) myTreeModel.getRoot());
 
-			// subgraph
-			/*
-			for (int x = 1; x <= maxDepthOfTree; x++) {
-				of.write("\tsubgraph cluster" + x + " {\n");
-				of.write("\t\trank=same;\n");//Level" + x + ";\n");
-				Vector<ELFNode> nodesInLevel = new Vector<ELFNode>();
-				getNodesInLevel(nodesInLevel, (ELFNode) myTreeModel.getRoot(), x);
-				for (int y = 0; y < nodesInLevel.size(); y++) {
-					ELFNode node = nodesInLevel.get(y);
-					if (y > 0) {
-						of.write(" ; ");
-					}
-					of.write("\t\t\"" + node.getFile().getName() + "\"");
-				}
-				of.write("\t\t;\n");
-				of.write("\t\tlabel = \"Level" + x + "\";\n");
-				of.write("\t\tcolor = red;\n");
-				of.write("\t}\n");
-			}*/
-			// end subgraph
-
 			//rank
-			/*of.write("\t{\n");
-			of.write("\t\tnode[shape = plaintext];\n\t\t");
 			for (int x = 1; x <= maxDepthOfTree; x++) {
-				if (x > 1) {
-					of.write(" -> ");
-				}
-				of.write("Level" + x);
-			}
-			of.write("\n\t}\n");*/
-			System.out.println("step 0");
-			of.write("\t{\n\t");
-			//of.write("\t\tnode[shape=box fontsize=8 width=0.2 height=0.1];\n");
-			for (int x = maxDepthOfTree - 1; x >= 0; x--) {
-				if (x < maxDepthOfTree - 1) {
-					of.write(" -> ");
-				}
-				of.write("Level" + x);
-			}
-			of.write("\n\t}\n");
-			System.out.println("step 1");
-			for (int x = 1; x <= maxDepthOfTree; x++) {
-				of.write("\t{\n");
-				of.write("\t\trank=same;Level" + (maxDepthOfTree - x) + ";");
+				float level = maxDepthOfTree - x;
+
 				Vector<ELFNode> nodesInLevel = new Vector<ELFNode>();
 				getNodesInLevel(nodesInLevel, (ELFNode) myTreeModel.getRoot(), x);
+
+				allLevelNames.add("\"Level " + level + "\"");
+				of.write("\t{\n\t\trank=same;\"Level " + level + "\";");
+				boolean newline = false;
 				for (int y = 0; y < nodesInLevel.size(); y++) {
 					ELFNode node = nodesInLevel.get(y);
-					if (y > 0) {
+					if (y > 0 && !newline) {
 						of.write(" ; ");
 					}
 					of.write("\"" + node.getFile().getName() + "\"");
+					if (y % 1 == 0 && y > 0 && y != nodesInLevel.size() - 1) {
+						level = (float) (level + 0.1);
+						of.write("\n\t}\n");
+						of.write("\t{\n\t\trank=same;\"Level " + level + "\";");
+						allLevelNames.add("\"Level " + level + "\"");
+						newline = true;
+					} else {
+						newline = false;
+					}
 				}
 				of.write("\n\t}\n");
 			}
 			//end rank
-			System.out.println("step 2");
+
+			addDotCells(of, (ELFNode) myTreeModel.getRoot());
+
+			of.write("\t{\n\t");
+			//of.write("\t\tnode[shape=box fontsize=8 width=0.2 height=0.1];\n");
+			for (int x = 0; x < allLevelNames.size(); x++) {
+				if (x > 0) {
+					of.write(" -> ");
+				}
+				of.write(allLevelNames.get(x));
+			}
+			of.write("\n\t}\n");
 			of.write("}\n"); //end graph
 			of.close();
+
+			System.out.println("running dot command");
 			CommonLib.runCommand("dot -Tpng " + file.getName() + " -o elf.png");
 			//file.delete();
-			System.out.println("step 3");
 			ImageIcon icon = new ImageIcon("elf.png");
 			icon.getImage().flush();
 
