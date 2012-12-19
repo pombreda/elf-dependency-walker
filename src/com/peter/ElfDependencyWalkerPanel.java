@@ -69,6 +69,10 @@ import com.mxgraph.view.mxCellState;
 import com.mxgraph.view.mxGraph;
 import com.peterswing.CommonLib;
 import com.peterswing.advancedswing.jdropdownbutton.JDropDownButton;
+import com.peterswing.advancedswing.jprogressbardialog.JProgressBarDialog;
+import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseAdapter;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
@@ -125,6 +129,14 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	private JButton buttonZoomOut;
 	private JButton btnExportCsvFor;
 	Vector<String> finishedDotNodes = new Vector<String>();
+	private int preferWidth;
+	private int preferHeight;
+	private JButton button;
+	protected boolean mousePressed;
+	protected int imageX;
+	protected int imageY;
+	protected int lastX;
+	protected int lastY;
 
 	public ElfDependencyWalkerPanel(JFrame jframe) {
 		super();
@@ -331,6 +343,32 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 					panel.add(scrollPane, BorderLayout.CENTER);
 					{
 						dotLabel = new JLabel("");
+						dotLabel.addMouseListener(new MouseAdapter() {
+							@Override
+							public void mousePressed(MouseEvent e) {
+								lastX = e.getX();
+								lastY = e.getY();
+								mousePressed = true;
+							}
+
+							@Override
+							public void mouseReleased(MouseEvent e) {
+								mousePressed = false;
+								imageX = e.getX();
+								imageY = e.getY();
+							}
+						});
+						dotLabel.addMouseMotionListener(new MouseMotionAdapter() {
+
+							@Override
+							public void mouseDragged(MouseEvent e) {
+								if (mousePressed) {
+									ImageIcon icon = new ImageIcon("elf.png");
+									BufferedImage bi = imageToBufferedImage(icon.getImage(), imageX + (e.getX() - lastX), imageY + (e.getY() - lastY));
+									dotLabel.setIcon(new ImageIcon(bi));
+								}
+							}
+						});
 						scrollPane.setViewportView(dotLabel);
 					}
 				}
@@ -350,6 +388,11 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 						buttonZoomIn = new JButton("+");
 						buttonZoomIn.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent arg0) {
+								ImageIcon icon = new ImageIcon("elf.png");
+								icon.getImage().flush();
+								preferWidth = (int) (((float) preferWidth) * 1.1);
+								preferHeight = (int) (((float) preferHeight) * 1.1);
+								dotLabel.setIcon(resizeImage(icon, preferWidth, preferHeight));
 							}
 						});
 						panel_1.add(buttonZoomIn);
@@ -358,9 +401,25 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 						buttonZoomOut = new JButton("-");
 						buttonZoomOut.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
+								ImageIcon icon = new ImageIcon("elf.png");
+								icon.getImage().flush();
+								preferWidth = (int) (((float) preferWidth) * 0.9);
+								preferHeight = (int) (((float) preferHeight) * 0.9);
+								dotLabel.setIcon(resizeImage(icon, preferWidth, preferHeight));
 							}
 						});
 						panel_1.add(buttonZoomOut);
+					}
+					{
+						button = new JButton("100%");
+						button.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent arg0) {
+								ImageIcon icon = new ImageIcon("elf.png");
+								icon.getImage().flush();
+								dotLabel.setIcon(resizeImage(icon, icon.getIconWidth(), icon.getIconHeight()));
+							}
+						});
+						panel_1.add(button);
 					}
 				}
 			}
@@ -743,9 +802,13 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	}
 
 	public static BufferedImage imageToBufferedImage(Image im) {
-		BufferedImage bi = new BufferedImage(im.getWidth(null), im.getHeight(null), BufferedImage.TYPE_INT_RGB);
+		return imageToBufferedImage(im, 0, 0);
+	}
+
+	public static BufferedImage imageToBufferedImage(Image im, int x, int y) {
+		BufferedImage bi = new BufferedImage(im.getWidth(null), im.getHeight(null), BufferedImage.TYPE_INT_ARGB);
 		Graphics bg = bi.getGraphics();
-		bg.drawImage(im, 0, 0, null);
+		bg.drawImage(im, x, y, null);
 		bg.dispose();
 		return bi;
 	}
@@ -808,6 +871,9 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 
 	private void dotButtonActionPerformed(ActionEvent evt) {
 		try {
+			//			JProgressBarDialog dialog=new JProgressBarDialog(jframe);
+			//			dialog.setVisible(true);
+			//			dialog.setTitle("Generating dot");
 			allEdges.clear();
 			finishedDotNodes.clear();
 			File file = new File("elf.dot");
@@ -816,6 +882,9 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			of.write("\tfontname = Verdana;\n");
 			of.write("\tfontsize = 8;\n");
 			of.write("\tsplines=ortho;\n");
+			of.write("\tnodesep=0.15;\n");
+			of.write("\tranksep=0.15;\n");
+			of.write("\tnode [shape=box, margin=0.04, shape=box, fontname=\"Ubuntu-M\", fontsize = 10, width=0.2, height=0.1];\n");
 			addDotCells(of, (ELFNode) myTreeModel.getRoot());
 			int maxDepthOfTree = getMaxDepth((ELFNode) myTreeModel.getRoot());
 
@@ -850,11 +919,11 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 				of.write("Level" + x);
 			}
 			of.write("\n\t}\n");*/
-
-			of.write("\t{\n");
-			of.write("\t\tnode[shape=box fontsize=8 width=0.2 height=0.1];\n");
-			for (int x = 1; x <= maxDepthOfTree; x++) {
-				if (x > 1) {
+			System.out.println("step 0");
+			of.write("\t{\n\t");
+			//of.write("\t\tnode[shape=box fontsize=8 width=0.2 height=0.1];\n");
+			for (int x = maxDepthOfTree - 1; x >= 0; x--) {
+				if (x < maxDepthOfTree - 1) {
 					of.write(" -> ");
 				}
 				of.write("Level" + x);
@@ -863,7 +932,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			System.out.println("step 1");
 			for (int x = 1; x <= maxDepthOfTree; x++) {
 				of.write("\t{\n");
-				of.write("\t\trank=same;Level" + x);
+				of.write("\t\trank=same;Level" + (maxDepthOfTree - x) + ";");
 				Vector<ELFNode> nodesInLevel = new Vector<ELFNode>();
 				getNodesInLevel(nodesInLevel, (ELFNode) myTreeModel.getRoot(), x);
 				for (int y = 0; y < nodesInLevel.size(); y++) {
@@ -885,12 +954,12 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			ImageIcon icon = new ImageIcon("elf.png");
 			icon.getImage().flush();
 
-			int preferWidth = dotLabel.getWidth() > icon.getIconWidth() ? icon.getIconWidth() : dotLabel.getWidth();
+			preferWidth = dotLabel.getWidth() > icon.getIconWidth() ? icon.getIconWidth() : dotLabel.getWidth();
 			float ratio = ((float) preferWidth) / icon.getIconWidth();
 			if (ratio == 0) {
 				ratio = 1;
 			}
-			int preferHeight = (int) (icon.getIconHeight() * ratio);
+			preferHeight = (int) (icon.getIconHeight() * ratio);
 			dotLabel.setIcon(resizeImage(icon, preferWidth, preferHeight));
 			jTabbedPane1.setSelectedIndex(2);
 		} catch (Exception ex) {
@@ -951,7 +1020,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	private void addDotCells(BufferedWriter writer, ELFNode node) throws IOException {
 		Iterator<ELFNode> ir = node.child.iterator();
 		if (!node.file.getName().equals("Peter") && !finishedDotNodes.contains(node.file.getName())) {
-			writer.write("\t\"" + node.file.getName() + "\" [shape=box fontsize=8 width=0.2 height=0.1];\n");
+			writer.write("\t\"" + node.file.getName() + "\" [];\n");
 			finishedDotNodes.add(node.file.getName());
 		}
 
@@ -962,7 +1031,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		while (ir.hasNext()) {
 			ELFNode childNode = ir.next();
 			if (!node.file.getName().equals("Peter") && !allEdges.contains(node.file.getName() + "\" -> \"" + childNode.file.getName())) {
-				//				writer.write("\t\t\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\" [color=\"" + r + " ," + g + ", " + b + "\"];\n");
+				writer.write("\t\t\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\" [width=1, color=\"" + r + " ," + g + ", " + b + "\"];\n");
 				allEdges.add(node.file.getName() + "\" -> \"" + childNode.file.getName());
 			}
 			addDotCells(writer, childNode);
