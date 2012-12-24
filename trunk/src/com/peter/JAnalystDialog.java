@@ -117,67 +117,74 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 	}
 
 	private ELFNode analystELF(ELFNode parent, File file, String debugStr) {
-		Setting setting = Setting.getInstance();
-		if (setting.getLookupDirectory().size() == 0) {
-			JOptionPane.showMessageDialog(this, "Lookup directory empty, please set them in setting!!!");
-			return null;
-		}
-		if (noOfVertex >= MAX_NUMBER_OF_VERTEX) {
-			return null;
-		}
-
-		ELFNode currentNode = new ELFNode(parent, file, null, false);
-
-		String results[];
-		boolean needToCache = false;
-		if (cache.get(file.getAbsolutePath()) == null) {
-			results = CommonLib.runCommand("readelf -a " + file.getAbsolutePath()).split("\n");
-			// cache.put(file.getAbsolutePath(), results);
-			needToCache = true;
+		if (file.isDirectory()) {
+			for (File f : file.listFiles()) {
+				analystELF(parent, f, debugStr + "    ");
+			}
+			return parent;
 		} else {
-			results = cache.get(file.getAbsolutePath());
-		}
-		Vector<String> cacheLines = new Vector<String>();
-		for (String line : results) {
-			if (!started) {
+			Setting setting = Setting.getInstance();
+			if (setting.getLookupDirectory().size() == 0) {
+				JOptionPane.showMessageDialog(this, "Lookup directory empty, please set them in setting!!!");
 				return null;
 			}
-			String words[] = line.split("[\\[\\]]");
-			if (words.length > 1 && line.toLowerCase().contains("needed")) {
-				if (needToCache) {
-					cacheLines.add(line);
-				}
-				File childFile = null;
+			if (noOfVertex >= MAX_NUMBER_OF_VERTEX) {
+				return null;
+			}
 
-				for (String s : setting.getLookupDirectory()) {
-					if (new File(s + "/" + words[1]).exists()) {
-						childFile = new File(s + "/" + words[1]);
-						break;
-					}
-				}
-				if (childFile != null && childFile.isFile()) {
-					if (parsedFiles.keySet().contains(file.getName() + "-" + childFile.getName())) {
-						ELFNode childNode = parsedFiles.get(file.getName() + "-" + childFile.getName());
-						currentNode.child.add(childNode);
-						childNode.parent.add(currentNode);
-					} else {
-						ELFNode node = analystELF(currentNode, childFile, debugStr + "    ");
-						parsedFiles.put(file.getName() + "-" + childFile.getName(), node);
-						currentNode.child.add(node);
-						jLabel1.setText(noOfVertex + " " + file.getName());
-						noOfVertex++;
-					}
-					Global.debug(debugStr + noOfVertex + "," + currentNode.file.getName() + "======" + childFile.getName());
+			ELFNode currentNode = new ELFNode(parent, file, null, false);
 
+			String results[];
+			boolean needToCache = false;
+			if (cache.get(file.getAbsolutePath()) == null) {
+				results = CommonLib.runCommand("readelf -a " + file.getAbsolutePath()).split("\n");
+				// cache.put(file.getAbsolutePath(), results);
+				needToCache = true;
+			} else {
+				results = cache.get(file.getAbsolutePath());
+			}
+			Vector<String> cacheLines = new Vector<String>();
+			for (String line : results) {
+				if (!started) {
+					return null;
+				}
+				String words[] = line.split("[\\[\\]]");
+				if (words.length > 1 && line.toLowerCase().contains("needed")) {
+					if (needToCache) {
+						cacheLines.add(line);
+					}
+					File childFile = null;
+
+					for (String s : setting.getLookupDirectory()) {
+						if (new File(s + "/" + words[1]).exists()) {
+							childFile = new File(s + "/" + words[1]);
+							break;
+						}
+					}
+					if (childFile != null && childFile.isFile()) {
+						if (parsedFiles.keySet().contains(file.getName() + "-" + childFile.getName())) {
+							ELFNode childNode = parsedFiles.get(file.getName() + "-" + childFile.getName());
+							currentNode.child.add(childNode);
+							childNode.parent.add(currentNode);
+						} else {
+							ELFNode node = analystELF(currentNode, childFile, debugStr + "    ");
+							parsedFiles.put(file.getName() + "-" + childFile.getName(), node);
+							currentNode.child.add(node);
+							jLabel1.setText(noOfVertex + " " + file.getName());
+							noOfVertex++;
+						}
+						Global.debug(debugStr + noOfVertex + "," + currentNode.file.getName() + "======" + childFile.getName());
+
+					}
 				}
 			}
+			if (needToCache) {
+				String[] temp = new String[cacheLines.size()];
+				cacheLines.toArray(temp);
+				cache.put(file.getAbsolutePath(), temp);
+			}
+			return currentNode;
 		}
-		if (needToCache) {
-			String[] temp = new String[cacheLines.size()];
-			cacheLines.toArray(temp);
-			cache.put(file.getAbsolutePath(), temp);
-		}
-		return currentNode;
 	}
 
 	private void thisWindowActivated(WindowEvent evt) {
