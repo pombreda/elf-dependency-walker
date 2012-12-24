@@ -75,6 +75,8 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
 import javax.swing.JCheckBox;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
@@ -140,6 +142,8 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	protected int lastX;
 	protected int lastY;
 	private JCheckBox chckbxEdge;
+	private JCheckBox chckbxOrtho;
+	private JSpinner maxLevelSpinner;
 
 	public ElfDependencyWalkerPanel(JFrame jframe) {
 		super();
@@ -295,6 +299,16 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 					chckbxEdge = new JCheckBox("Edge");
 					chckbxEdge.setSelected(true);
 					jToolBar1.add(chckbxEdge);
+				}
+				{
+					chckbxOrtho = new JCheckBox("Ortho");
+					jToolBar1.add(chckbxOrtho);
+				}
+				{
+					maxLevelSpinner = new JSpinner();
+					maxLevelSpinner.setModel(new SpinnerNumberModel(100, 0, 100, 1));
+					maxLevelSpinner.setMaximumSize(new Dimension(50, 18));
+					jToolBar1.add(maxLevelSpinner);
 				}
 				{
 					dotButton = new JButton();
@@ -887,7 +901,9 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			of.write("digraph G{\n");
 			of.write("\tfontname = Verdana;\n");
 			of.write("\tfontsize = 8;\n");
-			of.write("\tsplines=ortho;\n");
+			if (chckbxOrtho.isSelected()) {
+				of.write("\tsplines=ortho;\n");
+			}
 			of.write("\tnodesep=0.15;\n");
 			of.write("\tranksep=0.15;\n");
 			of.write("\tnode [shape=box, margin=0.04, shape=box, fontname=\"Ubuntu-M\", fontsize = 10, width=0.2, height=0.1];\n");
@@ -897,35 +913,48 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			//rank
 			for (int x = 1; x <= maxDepthOfTree; x++) {
 				//				float level = (float) (maxDepthOfTree - x);
-				BigDecimal level = new BigDecimal(maxDepthOfTree - x);
+				int level = maxDepthOfTree - x;
 				Vector<ELFNode> nodesInLevel = new Vector<ELFNode>();
 				getNodesInLevel(nodesInLevel, (ELFNode) myTreeModel.getRoot(), x);
 
-				allLevelNames.add("\"Level " + level + "\"");
-				of.write("\t{\n\t\trank=same;\"Level " + level + "\";");
+				String tempStr = "";
+
+				if (level <= (Integer) maxLevelSpinner.getValue()) {
+					allLevelNames.add("\"Level " + level + "\"");
+				}
+				tempStr = "\t{\n\t\trank=same;\"Level " + level + "\";";
 				boolean newline = false;
+				boolean hasAtLeastOneNodeInLevel = false;
 				for (int y = 0; y < nodesInLevel.size(); y++) {
 					ELFNode node = nodesInLevel.get(y);
-					if (y > 0 && !newline) {
-						of.write(" ; ");
-					}
-					of.write("\"" + node.getFile().getName() + "\"");
-					if (y % 4 == 0 && y > 0 && y != nodesInLevel.size() - 1) {
-						//level = level + 0.1f;
-						level = level.add(BigDecimal.valueOf(0.1));
-						of.write("\n\t}\n");
-						of.write("\t{\n\t\trank=same;\"Level " + level + "\";");
-						allLevelNames.add("\"Level " + level + "\"");
-						newline = true;
-					} else {
-						newline = false;
+					if ((maxDepthOfTree - node.getLevel()) <= (Integer) maxLevelSpinner.getValue()) {
+						if (y > 0 && !newline && hasAtLeastOneNodeInLevel) {
+							tempStr += " ; ";
+						}
+						hasAtLeastOneNodeInLevel = true;
+						tempStr += "\"" + node.getFile().getName() + "\"";
+						//					if (y % 4 == 0 && y > 0 && y != nodesInLevel.size() - 1) {
+						//						//level = level + 0.1f;
+						//						level = level.add(BigDecimal.valueOf(0.1));
+						//						of.write("\n\t}\n");
+						//						of.write("\t{\n\t\trank=same;\"Level " + level + "\";");
+						//						allLevelNames.add("\"Level " + level + "\"");
+						//						newline = true;
+						//					} else {
+						//						newline = false;
+						//					}
 					}
 				}
-				of.write("\n\t}\n");
+
+				tempStr += "\n\t}\n";
+
+				if (hasAtLeastOneNodeInLevel) {
+					of.write(tempStr);
+				}
 			}
 			//end rank
 
-			addDotCells(of, (ELFNode) myTreeModel.getRoot(), chckbxEdge.isSelected());
+			addDotCells(of, (ELFNode) myTreeModel.getRoot(), chckbxEdge.isSelected(), maxDepthOfTree);
 
 			of.write("\t{\n\t");
 			//of.write("\t\tnode[shape=box fontsize=8 width=0.2 height=0.1];\n");
@@ -941,6 +970,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 
 			System.out.println("running dot command");
 			CommonLib.runCommand("dot -Tpng " + file.getName() + " -o elf.png");
+			System.out.println("running dot command end");
 			//file.delete();
 			ImageIcon icon = new ImageIcon("elf.png");
 			icon.getImage().flush();
@@ -953,6 +983,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			preferHeight = (int) (icon.getIconHeight() * ratio);
 			dotLabel.setIcon(resizeImage(icon, preferWidth, preferHeight));
 			jTabbedPane1.setSelectedIndex(2);
+			System.out.println("Process ended");
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -1008,11 +1039,13 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		return maxChildDepth;
 	}
 
-	private void addDotCells(BufferedWriter writer, ELFNode node, boolean hasEdge) throws IOException {
+	private void addDotCells(BufferedWriter writer, ELFNode node, boolean hasEdge, int maxDepthOfTree) throws IOException {
 		Iterator<ELFNode> ir = node.child.iterator();
 		if (!node.file.getName().equals("Peter") && !finishedDotNodes.contains(node.file.getName())) {
-			writer.write("\t\"" + node.file.getName() + "\" [];\n");
-			finishedDotNodes.add(node.file.getName());
+			if ((maxDepthOfTree - node.getLevel()) <= (Integer) maxLevelSpinner.getValue()) {
+				writer.write("\t\"" + node.file.getName() + "\" [];\n");
+				finishedDotNodes.add(node.file.getName());
+			}
 		}
 
 		float r = numGen.nextFloat();
@@ -1022,10 +1055,12 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		while (ir.hasNext()) {
 			ELFNode childNode = ir.next();
 			if (hasEdge && !node.file.getName().equals("Peter") && !allEdges.contains(node.file.getName() + "\" -> \"" + childNode.file.getName())) {
-				writer.write("\t\t\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\" [width=1, color=\"" + r + " ," + g + ", " + b + "\"];\n");
-				allEdges.add(node.file.getName() + "\" -> \"" + childNode.file.getName());
+				if ((maxDepthOfTree - node.getLevel()) <= (Integer) maxLevelSpinner.getValue() && (maxDepthOfTree - childNode.getLevel()) <= (Integer) maxLevelSpinner.getValue()) {
+					writer.write("\t\t\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\" [width=1, color=\"" + r + " ," + g + ", " + b + "\"];\n");
+					allEdges.add(node.file.getName() + "\" -> \"" + childNode.file.getName());
+				}
 			}
-			addDotCells(writer, childNode, hasEdge);
+			addDotCells(writer, childNode, hasEdge, maxDepthOfTree);
 		}
 	}
 
