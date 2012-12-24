@@ -1,12 +1,18 @@
 <?xml version='1.0' ?>  <Setting>
     <divX>400</divX>
-    <height>1032</height>
+    <height>852</height>
     <historyList>
-      <historyList>/usr/bin/abrt-action-install-debuginfo</historyList>
-      <historyList>/usr/bin/ssh</historyList>
-      <historyList>/usr/bin/abrt-dump-oops</historyList>
-      <historyList>/usr/bin/keyctl</historyList>
+      <historyList>/usr/bin/abrt-action-perform-ccpp-analysis</historyList>
+      <historyList>/usr/bin/unopkg</historyList>
+      <historyList>/usr/bin/i686-redhat-linux-gcc</historyList>
+      <historyList>/usr/bin/whois</historyList>
       <historyList>/usr/bin/ls</historyList>
+      <historyList>/usr/bin/POST</historyList>
+      <historyList>/usr/bin/sepgen</historyList>
+      <historyList>/usr/bin/gcc</historyList>
+      <historyList>/usr/bin/firefox</historyList>
+      <historyList>/usr/bin/setleds</historyList>
+      <historyList>/usr/local/bin/rgvim</historyList>
       <historyList>/usr/bin/yelp</historyList>
     </historyList>
     <lastOpenPath>/bin</lastOpenPath>
@@ -16,7 +22,7 @@
       <lookupDirectory>/lib</lookupDirectory>
       <lookupDirectory>/usr/local/lib</lookupDirectory>
     </lookupDirectory>
-    <width>1920</width>
+    <width>1440</width>
     <x>0</x>
     <y>24</y>
   </Setting>
