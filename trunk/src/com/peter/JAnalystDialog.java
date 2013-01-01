@@ -137,8 +137,12 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 			String results[];
 			boolean needToCache = false;
 			if (cache.get(file.getAbsolutePath()) == null) {
-				results = CommonLib.runCommand("readelf -a " + file.getAbsolutePath()).split("\n");
-				// cache.put(file.getAbsolutePath(), results);
+				if (Global.isMac) {
+					System.out.println("/opt/local/bin/gobjdump -x " + file.getAbsolutePath());
+					results = CommonLib.runCommand("/opt/local/bin/gobjdump -x " + file.getAbsolutePath()).split("\n");
+				} else {
+					results = CommonLib.runCommand("readelf -a " + file.getAbsolutePath()).split("\n");
+				}
 				needToCache = true;
 			} else {
 				results = cache.get(file.getAbsolutePath());
@@ -148,17 +152,28 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 				if (!started) {
 					return null;
 				}
-				String words[] = line.split("[\\[\\]]");
-				if (words.length > 1 && line.toLowerCase().contains("needed")) {
+				String words[];
+				if (Global.isMac) {
+					words = line.split(": ");
+				} else {
+					words = line.split("[\\[\\]]");
+				}
+				if (words.length > 1
+						&& ((line.toLowerCase().contains("needed") && !Global.isMac) || (!line.contains(file.getAbsolutePath()) && line.toLowerCase().contains("load command")
+								&& line.toLowerCase().contains(".dylib") && Global.isMac))) {
 					if (needToCache) {
 						cacheLines.add(line);
 					}
 					File childFile = null;
 
-					for (String s : setting.getLookupDirectory()) {
-						if (new File(s + "/" + words[1]).exists()) {
-							childFile = new File(s + "/" + words[1]);
-							break;
+					if (Global.isMac) {
+						childFile = new File(words[1]);
+					} else {
+						for (String s : setting.getLookupDirectory()) {
+							if (new File(s + "/" + words[1]).exists()) {
+								childFile = new File(s + "/" + words[1]);
+								break;
+							}
 						}
 					}
 					if (childFile != null && childFile.isFile()) {
