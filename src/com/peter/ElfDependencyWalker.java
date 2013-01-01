@@ -9,24 +9,36 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.PosixParser;
+
 import com.mxgraph.view.mxGraph;
 
-/**
- * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
- * Builder, which is free for non-commercial use. If Jigloo is being used
- * commercially (ie, by a corporation, company or business for any purpose
- * whatever) then you should purchase a license for each developer using Jigloo.
- * Please visit www.cloudgarden.com for details. Use of Jigloo implies
- * acceptance of these licensing terms. A COMMERCIAL LICENSE HAS NOT BEEN
- * PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR
- * ANY CORPORATE OR COMMERCIAL PURPOSE.
- */
 public class ElfDependencyWalker extends javax.swing.JFrame {
 	mxGraph graph;
 	private ElfDependencyWalkerPanel elfDependencyWalkerPanel;
 	Object parent;
+	static CommandLine cmd;
 
 	public static void main(String[] args) {
+		CommandLineParser parser = new PosixParser();
+		Options options = new Options();
+		try {
+			options.addOption(OptionBuilder.withDescription("specific config xml").hasArg().withArgName("file").create("f"));
+			options.addOption("mac", false, "parse for mac");
+			cmd = parser.parse(options, args);
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+			System.exit(1);
+		}
+
+		if (cmd.hasOption("mac")) {
+			Global.isMac = true;
+		}
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				ElfDependencyWalker inst = new ElfDependencyWalker();

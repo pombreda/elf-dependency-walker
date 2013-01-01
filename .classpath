@@ -13,6 +13,7 @@
 	<classpathentry kind="lib" path="lib/ini4j-0.5.1.jar"/>
 	<classpathentry kind="lib" path="lib/poi-3.5-FINAL-20090928.jar"/>
 	<classpathentry kind="lib" path="lib/TableLayout.jar"/>
+	<classpathentry kind="lib" path="lib/commons-cli-1.2.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Peter-swing"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

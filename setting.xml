@@ -1,6 +1,6 @@
 <?xml version='1.0' ?>  <Setting>
     <divX>400</divX>
-    <height>852</height>
+    <height>835</height>
     <historyList>
       <historyList>/usr/bin/abrt-action-perform-ccpp-analysis</historyList>
       <historyList>/usr/bin/unopkg</historyList>
@@ -15,8 +15,9 @@
       <historyList>/usr/local/bin/rgvim</historyList>
       <historyList>/usr/bin/yelp</historyList>
       <historyList>/usr/sbin/httpd</historyList>
+      <historyList>/bin/ls</historyList>
     </historyList>
-    <lastOpenPath>/usr/sbin</lastOpenPath>
+    <lastOpenPath>/bin</lastOpenPath>
     <lookupDirectory>
       <lookupDirectory>/usr</lookupDirectory>
       <lookupDirectory>/usr/lib</lookupDirectory>
@@ -24,6 +25,6 @@
       <lookupDirectory>/usr/local/lib</lookupDirectory>
     </lookupDirectory>
     <width>1440</width>
-    <x>235</x>
-    <y>71</y>
+    <x>0</x>
+    <y>22</y>
   </Setting>
