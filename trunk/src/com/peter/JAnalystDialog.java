@@ -124,9 +124,19 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 			return parent;
 		} else {
 			Setting setting = Setting.getInstance();
+
 			if (setting.getLookupDirectory().size() == 0) {
-				JOptionPane.showMessageDialog(this, "Lookup directory empty, please set them in setting!!!");
-				return null;
+				String s[] = "/usr\n/usr/lib\n/lib\n/usr/local/lib\n/lib64\n/usr/lib64\n/usr/local/lib64".split("\n");
+				setting.getLookupDirectory().clear();
+				for (String a : s) {
+					if (!a.equals("")) {
+						setting.getLookupDirectory().add(a);
+					}
+				}
+				setting.save();
+
+				//				JOptionPane.showMessageDialog(this, "Lookup directory empty, please set them in setting!!!");
+				//				return null;
 			}
 			if (noOfVertex >= MAX_NUMBER_OF_VERTEX) {
 				return null;
