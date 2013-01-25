@@ -1,0 +1,20 @@
+<?xml version='1.0' ?>  <Setting>
+    <divX>400</divX>
+    <height>999</height>
+    <historyList>
+      <historyList>/usr/bin/yelp</historyList>
+    </historyList>
+    <lastOpenPath>/bin</lastOpenPath>
+    <lookupDirectory>
+      <lookupDirectory>/usr</lookupDirectory>
+      <lookupDirectory>/usr/lib</lookupDirectory>
+      <lookupDirectory>/lib</lookupDirectory>
+      <lookupDirectory>/usr/local/lib</lookupDirectory>
+      <lookupDirectory>/lib64</lookupDirectory>
+      <lookupDirectory>/usr/lib64</lookupDirectory>
+      <lookupDirectory>/usr/local/lib64</lookupDirectory>
+    </lookupDirectory>
+    <width>1682</width>
+    <x>-1</x>
+    <y>26</y>
+  </Setting>
