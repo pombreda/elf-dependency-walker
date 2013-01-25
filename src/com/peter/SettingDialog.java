@@ -50,7 +50,7 @@ public class SettingDialog extends JDialog {
 						Setting setting = Setting.getInstance();
 
 						if (setting.getLookupDirectory() == null || setting.getLookupDirectory().size() == 0) {
-							jTextArea1.setText("/usr\n/usr/lib\n/lib\n/usr/local/lib");
+							jTextArea1.setText("/usr\n/usr/lib\n/lib\n/usr/local/lib\n/lib64\n/usr/lib64\n/usr/local/lib64");
 						} else {
 							String s = "";
 							for (String a : setting.getLookupDirectory()) {
