@@ -377,6 +377,12 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 								mousePressed = false;
 								imageX = e.getX();
 								imageY = e.getY();
+								int max = scrollPane.getHorizontalScrollBar().getMaximum();
+//								if (imageX - lastX < 0) {
+									scrollPane.getHorizontalScrollBar().setValue(scrollPane.getHorizontalScrollBar().getValue() + (lastX - imageX));
+//								} else if (imageX - lastX < 0) {
+//									scrollPane.getHorizontalScrollBar().setValue(scrollPane.getHorizontalScrollBar().getValue() - (lastX - imageX));
+//								}
 							}
 						});
 						dotLabel.addMouseMotionListener(new MouseMotionAdapter() {
