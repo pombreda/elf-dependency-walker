@@ -369,31 +369,35 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 							public void mousePressed(MouseEvent e) {
 								lastX = e.getX();
 								lastY = e.getY();
-								mousePressed = true;
+								//								mousePressed = true;
 							}
 
 							@Override
 							public void mouseReleased(MouseEvent e) {
-								mousePressed = false;
-								imageX = e.getX();
-								imageY = e.getY();
-								int max = scrollPane.getHorizontalScrollBar().getMaximum();
-//								if (imageX - lastX < 0) {
-									scrollPane.getHorizontalScrollBar().setValue(scrollPane.getHorizontalScrollBar().getValue() + (lastX - imageX));
-//								} else if (imageX - lastX < 0) {
-//									scrollPane.getHorizontalScrollBar().setValue(scrollPane.getHorizontalScrollBar().getValue() - (lastX - imageX));
-//								}
+								//								mousePressed = false;
+								//								imageX = e.getX();
+								//								imageY = e.getY();
+								//								int max = scrollPane.getHorizontalScrollBar().getMaximum();
+								////								if (imageX - lastX < 0) {
+								//									scrollPane.getHorizontalScrollBar().setValue(scrollPane.getHorizontalScrollBar().getValue() + (lastX - imageX));
+								////								} else if (imageX - lastX < 0) {
+								////									scrollPane.getHorizontalScrollBar().setValue(scrollPane.getHorizontalScrollBar().getValue() - (lastX - imageX));
+								////								}
 							}
 						});
 						dotLabel.addMouseMotionListener(new MouseMotionAdapter() {
 
 							@Override
 							public void mouseDragged(MouseEvent e) {
-								if (mousePressed) {
-									//									ImageIcon icon = new ImageIcon("elf.png");
-									//									BufferedImage bi = imageToBufferedImage(icon.getImage(), imageX + (e.getX() - lastX), imageY + (e.getY() - lastY));
-									//									dotLabel.setIcon(new ImageIcon(bi));
-								}
+								imageX = e.getX();
+								imageY = e.getY();
+								int max = scrollPane.getHorizontalScrollBar().getMaximum();
+								//								if (imageX - lastX < 0) {
+								scrollPane.getHorizontalScrollBar().setValue(scrollPane.getHorizontalScrollBar().getValue() + (lastX - imageX));
+								//								} else if (imageX - lastX < 0) {
+								//									scrollPane.getHorizontalScrollBar().setValue(scrollPane.getHorizontalScrollBar().getValue() - (lastX - imageX));
+								//								}
+								scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getValue() + (lastY - imageY));
 							}
 						});
 						scrollPane.setViewportView(dotLabel);
