@@ -1,6 +1,6 @@
 <?xml version='1.0' ?>  <Setting>
     <divX>400</divX>
-    <height>620</height>
+    <height>1035</height>
     <historyList>
       <historyList>/usr/bin/yelp</historyList>
     </historyList>
@@ -14,7 +14,7 @@
       <lookupDirectory>/usr/lib64</lookupDirectory>
       <lookupDirectory>/usr/local/lib64</lookupDirectory>
     </lookupDirectory>
-    <width>1512</width>
-    <x>98</x>
-    <y>67</y>
+    <width>1922</width>
+    <x>-1</x>
+    <y>23</y>
   </Setting>
