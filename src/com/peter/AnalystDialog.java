@@ -20,7 +20,7 @@ import javax.swing.LayoutStyle;
 
 import com.peterswing.CommonLib;
 
-public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
+public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 	private JButton jCancelButton;
 	private JLabel jLabel1;
 	private JTree jTree;
@@ -36,7 +36,7 @@ public class JAnalystDialog extends javax.swing.JDialog implements Runnable {
 	HashMap<String, ELFNode> parsedFiles = new HashMap<String, ELFNode>();
 	HashMap<String, String[]> cache = new HashMap<String, String[]>();
 
-	public JAnalystDialog(JFrame frame, JTree jTree, File files[]) {
+	public AnalystDialog(JFrame frame, JTree jTree, File files[]) {
 		super(frame, true);
 		this.jTree = jTree;
 		this.files = files;

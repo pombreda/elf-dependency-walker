@@ -115,7 +115,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	CallGraphComponent graphComponent;
 	mxGraphOutline graphOutline;
 	JProgressBar jStatusProgressBar = new JProgressBar();
-	JAnalystDialog dialog;
+	AnalystDialog dialog;
 	Object parent;
 	JFrame jframe;
 	int x = 0;
@@ -648,7 +648,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 				Setting.getInstance().getHistoryList().add(files[0].getAbsolutePath());
 				Setting.getInstance().setLastOpenPath(files[0].getParentFile().getAbsolutePath());
 			}
-			dialog = new JAnalystDialog(jframe, jTree1, files);
+			dialog = new AnalystDialog(jframe, jTree1, files);
 			dialog.setVisible(true);
 			updateJGraphx(myTreeModel);
 			dotButtonActionPerformed(null);
@@ -764,7 +764,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		int returnVal = fc.showOpenDialog(this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			Setting.getInstance().setLastOpenPath(fc.getSelectedFile().getAbsolutePath());
-			JAnalystDialog d = new JAnalystDialog(jframe, jTree1, fc.getSelectedFiles());
+			AnalystDialog d = new AnalystDialog(jframe, jTree1, fc.getSelectedFiles());
 			d.setVisible(true);
 			updateJGraphx(myTreeModel);
 			dotButtonActionPerformed(null);
