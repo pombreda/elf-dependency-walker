@@ -1,4 +1,4 @@
-package com.peter;
+package com.elfdependencywalker;
 
 import java.awt.Color;
 import java.awt.Font;

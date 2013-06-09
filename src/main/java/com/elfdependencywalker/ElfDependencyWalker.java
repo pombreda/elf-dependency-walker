@@ -1,4 +1,4 @@
-package com.peter;
+package com.elfdependencywalker;
 
 import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
@@ -19,6 +19,10 @@ import org.apache.commons.cli.PosixParser;
 import com.mxgraph.view.mxGraph;
 
 public class ElfDependencyWalker extends javax.swing.JFrame {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4271596071774399164L;
 	mxGraph graph;
 	private ElfDependencyWalkerPanel elfDependencyWalkerPanel;
 	Object parent;
@@ -67,8 +71,8 @@ public class ElfDependencyWalker extends javax.swing.JFrame {
 				}
 			});
 			this.setIconImage(new ImageIcon(getClass().getClassLoader().getResource("icons/peter.png")).getImage());
-			int x = Setting.getInstance().getX();
-			int y = Setting.getInstance().getY();
+			int x = Setting.getInstance().x;
+			int y = Setting.getInstance().y;
 			setLocation(x, y);
 			{
 				try {
@@ -81,7 +85,7 @@ public class ElfDependencyWalker extends javax.swing.JFrame {
 			}
 			this.setSize(814, 533);
 
-			setSize(Setting.getInstance().getWidth(), Setting.getInstance().getHeight());
+			setSize(Setting.getInstance().width, Setting.getInstance().height);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -89,10 +93,10 @@ public class ElfDependencyWalker extends javax.swing.JFrame {
 	}
 
 	private void thisWindowClosing(WindowEvent evt) {
-		Setting.getInstance().setWidth(this.getWidth());
-		Setting.getInstance().setHeight(this.getHeight());
-		Setting.getInstance().setX(this.getLocation().x);
-		Setting.getInstance().setY(this.getLocation().y);
+		Setting.getInstance().width = this.getWidth();
+		Setting.getInstance().height = this.getHeight();
+		Setting.getInstance().x = this.getLocation().x;
+		Setting.getInstance().y = this.getLocation().y;
 		Setting.getInstance().save();
 	}
 

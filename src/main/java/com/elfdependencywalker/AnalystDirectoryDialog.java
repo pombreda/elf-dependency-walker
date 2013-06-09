@@ -1,4 +1,4 @@
-package com.peter;
+package com.elfdependencywalker;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;

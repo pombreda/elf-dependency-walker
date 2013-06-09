@@ -1,4 +1,4 @@
-package com.peter;
+package com.elfdependencywalker;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -123,12 +123,12 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 		} else {
 			Setting setting = Setting.getInstance();
 
-			if (setting.getLookupDirectory().size() == 0) {
+			if (setting.lookupDirectory.size() == 0) {
 				String s[] = "/usr\n/usr/lib\n/lib\n/usr/local/lib\n/lib64\n/usr/lib64\n/usr/local/lib64".split("\n");
-				setting.getLookupDirectory().clear();
+				setting.lookupDirectory.clear();
 				for (String a : s) {
 					if (!a.equals("")) {
-						setting.getLookupDirectory().add(a);
+						setting.lookupDirectory.add(a);
 					}
 				}
 				setting.save();
@@ -177,7 +177,7 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 					if (Global.isMac) {
 						childFile = new File(words[1]);
 					} else {
-						for (String s : setting.getLookupDirectory()) {
+						for (String s : setting.lookupDirectory) {
 							if (new File(s + "/" + words[1]).exists()) {
 								childFile = new File(s + "/" + words[1]);
 								break;

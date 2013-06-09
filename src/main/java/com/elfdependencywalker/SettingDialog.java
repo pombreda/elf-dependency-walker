@@ -1,19 +1,16 @@
-package com.peter;
+package com.elfdependencywalker;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
 
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.ListModel;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
@@ -49,11 +46,11 @@ public class SettingDialog extends JDialog {
 						jScrollPane1.setViewportView(jTextArea1);
 						Setting setting = Setting.getInstance();
 
-						if (setting.getLookupDirectory() == null || setting.getLookupDirectory().size() == 0) {
+						if (setting.lookupDirectory == null || setting.lookupDirectory.size() == 0) {
 							jTextArea1.setText("/usr\n/usr/lib\n/lib\n/usr/local/lib\n/lib64\n/usr/lib64\n/usr/local/lib64");
 						} else {
 							String s = "";
-							for (String a : setting.getLookupDirectory()) {
+							for (String a : setting.lookupDirectory) {
 								s += a + "\n";
 							}
 							jTextArea1.setText(s);
@@ -91,10 +88,10 @@ public class SettingDialog extends JDialog {
 	private void saveButtonActionPerformed(ActionEvent evt) {
 		Setting setting = Setting.getInstance();
 		String s[] = jTextArea1.getText().split("\n");
-		setting.getLookupDirectory().clear();
+		setting.lookupDirectory.clear();
 		for (String a : s) {
 			if (!a.equals("")) {
-				setting.getLookupDirectory().add(a);
+				setting.lookupDirectory.add(a);
 			}
 		}
 		setting.save();
