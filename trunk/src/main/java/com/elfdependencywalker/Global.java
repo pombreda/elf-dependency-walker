@@ -1,4 +1,4 @@
-package com.peter;
+package com.elfdependencywalker;
 
 public class Global {
 	public static String version = "20130125";

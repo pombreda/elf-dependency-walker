@@ -1,4 +1,4 @@
-package com.peter;
+package com.elfdependencywalker;
 
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;

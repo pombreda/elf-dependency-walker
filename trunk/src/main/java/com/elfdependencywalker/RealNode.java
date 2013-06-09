@@ -1,4 +1,4 @@
-package com.peter;
+package com.elfdependencywalker;
 
 import java.io.File;
 import java.util.Enumeration;
