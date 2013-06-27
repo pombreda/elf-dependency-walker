@@ -1,0 +1,18 @@
+<Setting>
+  <x>182</x>
+  <y>109</y>
+  <width>1386</width>
+  <height>721</height>
+  <divX>0</divX>
+  <lastOpenPath>/boot</lastOpenPath>
+  <historyList/>
+  <lookupDirectory>
+    <string>/usr</string>
+    <string>/usr/lib</string>
+    <string>/lib</string>
+    <string>/usr/local/lib</string>
+    <string>/lib64</string>
+    <string>/usr/lib64</string>
+    <string>/usr/local/lib64</string>
+  </lookupDirectory>
+</Setting>
