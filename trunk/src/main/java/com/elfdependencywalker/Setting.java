@@ -32,7 +32,7 @@ public class Setting {
 		xstream.alias("Setting", Setting.class);
 		String xml = xstream.toXML(this);
 		try {
-			IOUtils.write(xml, new FileOutputStream(new File("gkd.xml")));
+			IOUtils.write(xml, new FileOutputStream(new File("elf-dependency-walker.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -42,13 +42,23 @@ public class Setting {
 		try {
 			XStream xstream = new XStream();
 			xstream.alias("Setting", Setting.class);
-			Setting setting = (Setting) xstream.fromXML(new FileInputStream(new File("gkd.xml")));
+			Setting setting = (Setting) xstream.fromXML(new FileInputStream(new File("elf-dependency-walker.xml")));
 			return setting;
 		} catch (Exception ex) {
-			new File("gkd.xml").delete();
-			Setting Setting = new Setting();
-			Setting.save();
-			return Setting;
+			new File("elf-dependency-walker.xml").delete();
+			Setting setting = new Setting();
+			setting.lookupDirectory.add("/usr");
+			setting.lookupDirectory.add("/usr/lib");
+			setting.lookupDirectory.add("/lib");
+			setting.lookupDirectory.add("/usr/local/lib");
+			setting.lookupDirectory.add("/lib64");
+			setting.lookupDirectory.add("/usr/lib64");
+			setting.lookupDirectory.add("/usr/local/lib64");
+			setting.lookupDirectory.add("/lib/x86_64-linux-gnu");
+			setting.width = 800;
+			setting.height = 600;
+			setting.save();
+			return setting;
 		}
 	}
 
