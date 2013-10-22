@@ -101,7 +101,7 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 			} else {
 				for (File f : file.listFiles()) {
 					node = analystELF(root, f, "");
-					if (node.file.isFile()) {
+					if (node.file != null && node.file.isFile()) {
 						root.child.add(node);
 					}
 				}
