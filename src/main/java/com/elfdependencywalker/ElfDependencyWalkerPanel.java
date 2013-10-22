@@ -999,6 +999,9 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 						ratio = 1;
 					}
 					preferHeight = (int) (icon.getIconHeight() * ratio);
+					if (preferHeight == 0) {
+						return;
+					}
 					dotLabel.setIcon(resizeImage(icon, preferWidth, preferHeight));
 					jTabbedPane1.setSelectedIndex(2);
 					System.out.println("Process ended");

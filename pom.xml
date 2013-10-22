@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>elf-dependency-walker</groupId>
 	<artifactId>elf-dependency-walker</artifactId>
-	<version>20131001</version>
+	<version>20131022</version>
 	<build>
 		<plugins>
 			<plugin>

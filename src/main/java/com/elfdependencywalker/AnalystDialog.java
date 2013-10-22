@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -97,11 +98,13 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 		for (File file : files) {
 			if (file.isFile()) {
 				node = analystELF(root, file, "");
-				root.child.add(node);
+				if (node != null) {
+					root.child.add(node);
+				}
 			} else {
 				for (File f : file.listFiles()) {
 					node = analystELF(root, f, "");
-					if (node.file != null && node.file.isFile()) {
+					if (node != null && node.file != null && node.file.isFile()) {
 						root.child.add(node);
 					}
 				}
@@ -115,8 +118,16 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 	}
 
 	private ELFNode analystELF(ELFNode parent, File file, String debugStr) {
+		try {
+			if (!file.getAbsolutePath().equals(file.getCanonicalPath())) {
+				return null;
+			}
+		} catch (IOException e) {
+			return parent;
+		}
 		if (file.isDirectory()) {
 			for (File f : file.listFiles()) {
+				jLabel1.setText("Processing directory " + file.getAbsolutePath());
 				analystELF(parent, f, debugStr + "    ");
 			}
 			return parent;
@@ -132,9 +143,6 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 					}
 				}
 				setting.save();
-
-				//				JOptionPane.showMessageDialog(this, "Lookup directory empty, please set them in setting!!!");
-				//				return null;
 			}
 			if (noOfVertex >= MAX_NUMBER_OF_VERTEX) {
 				return null;
@@ -189,15 +197,17 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 							ELFNode childNode = parsedFiles.get(file.getName() + "-" + childFile.getName());
 							currentNode.child.add(childNode);
 							childNode.parent.add(currentNode);
+							System.out.println("parsed : " + file.getName() + "-" + childFile.getName());
 						} else {
 							ELFNode node = analystELF(currentNode, childFile, debugStr + "    ");
-							parsedFiles.put(file.getName() + "-" + childFile.getName(), node);
-							currentNode.child.add(node);
-							jLabel1.setText(noOfVertex + " " + file.getName());
-							noOfVertex++;
+							if (node != null) {
+								parsedFiles.put(file.getName() + "-" + childFile.getName(), node);
+								currentNode.child.add(node);
+								jLabel1.setText(noOfVertex + " " + file.getName());
+								noOfVertex++;
+							}
 						}
 						Global.debug(debugStr + noOfVertex + "," + currentNode.file.getName() + "======" + childFile.getName());
-
 					}
 				}
 			}

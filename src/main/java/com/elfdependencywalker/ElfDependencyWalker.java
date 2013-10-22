@@ -3,6 +3,8 @@ package com.elfdependencywalker;
 import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
@@ -19,9 +21,6 @@ import org.apache.commons.cli.PosixParser;
 import com.mxgraph.view.mxGraph;
 
 public class ElfDependencyWalker extends javax.swing.JFrame {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 4271596071774399164L;
 	mxGraph graph;
 	private ElfDependencyWalkerPanel elfDependencyWalkerPanel;
