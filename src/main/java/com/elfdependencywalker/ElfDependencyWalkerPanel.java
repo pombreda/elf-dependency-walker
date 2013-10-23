@@ -102,6 +102,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	private JTree jTree1;
 	private JSplitPane jSplitPane1;
 	private JButton jSaveToPngButton;
+	private JCheckBox filterNoChildNodejCheckBox;
 	private JButton dotButton;
 	private JButton zoom100Button;
 	private JButton zoomOutButton;
@@ -293,6 +294,11 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 							zoom100ButtonActionPerformed(evt);
 						}
 					});
+				}
+				{
+					filterNoChildNodejCheckBox = new JCheckBox();
+					jToolBar1.add(filterNoChildNodejCheckBox);
+					filterNoChildNodejCheckBox.setText("filter no child node");
 				}
 				{
 					chckbxEdge = new JCheckBox("Edge");
@@ -766,7 +772,9 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			Setting.getInstance().lastOpenPath = fc.getSelectedFile().getAbsolutePath();
 			AnalystDialog d = new AnalystDialog(jframe, jTree1, fc.getSelectedFiles());
 			d.setVisible(true);
+			System.out.println("updateJGraphx(myTreeModel);");
 			updateJGraphx(myTreeModel);
+			System.out.println("dotButtonActionPerformed(null);");
 			dotButtonActionPerformed(null);
 		}
 	}
@@ -945,6 +953,9 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 						boolean hasAtLeastOneNodeInLevel = false;
 						for (int y = 0; y < nodesInLevel.size(); y++) {
 							ELFNode node = nodesInLevel.get(y);
+							if (filterNoChildNodejCheckBox.isSelected() && node.getChildCount() == 0 && node.getParent().getParent() == null) {
+								continue;
+							}
 							if ((maxDepthOfTree - node.getLevel()) <= (Integer) maxLevelSpinner.getValue()) {
 								if (y > 0 && !newline && hasAtLeastOneNodeInLevel) {
 									tempStr += " ; ";
@@ -986,9 +997,8 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 					of.write("}\n"); //end graph
 					of.close();
 
-					System.out.println("running dot command");
+					System.out.println("running dot command : " + "dot -Tpng " + file.getName() + " -o elf.png");
 					CommonLib.runCommand("dot -Tpng " + file.getName() + " -o elf.png");
-					System.out.println("running dot command end");
 					//file.delete();
 					ImageIcon icon = new ImageIcon("elf.png");
 					icon.getImage().flush();
@@ -1069,6 +1079,9 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	}
 
 	private void addDotCells(BufferedWriter writer, ELFNode node, boolean hasEdge, int maxDepthOfTree, JProgressBarDialog d) throws IOException {
+		if (filterNoChildNodejCheckBox.isSelected() && node.getChildCount() == 0 && node.getParent().getParent() == null) {
+			return;
+		}
 		Iterator<ELFNode> ir = node.child.iterator();
 		if (!node.file.getName().equals("Peter") && !finishedDotNodes.contains(node.file.getName())) {
 			if ((maxDepthOfTree - node.getLevel()) <= (Integer) maxLevelSpinner.getValue()) {
