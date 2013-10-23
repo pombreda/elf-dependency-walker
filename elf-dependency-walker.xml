@@ -1,8 +1,8 @@
 <Setting>
-  <x>444</x>
-  <y>262</y>
-  <width>1166</width>
-  <height>737</height>
+  <x>0</x>
+  <y>52</y>
+  <width>1920</width>
+  <height>1004</height>
   <divX>0</divX>
   <lastOpenPath>/usr/bin</lastOpenPath>
   <historyList>
@@ -17,6 +17,7 @@
     <string>/usr/bin/nm-tool</string>
     <string>/usr/bin/install-info</string>
     <string>/usr/bin/yes</string>
+    <string>/usr/bin/gprof</string>
   </historyList>
   <lookupDirectory>
     <string>/usr</string>
