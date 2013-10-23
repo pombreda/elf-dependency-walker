@@ -1,0 +1,32 @@
+<Setting>
+  <x>444</x>
+  <y>262</y>
+  <width>1166</width>
+  <height>737</height>
+  <divX>0</divX>
+  <lastOpenPath>/usr/bin</lastOpenPath>
+  <historyList>
+    <string>/usr/bin/acpi_listen</string>
+    <string>/usr/bin/POST</string>
+    <string>/usr/bin/alacarte</string>
+    <string>/usr/bin/dotty</string>
+    <string>/usr/bin/ibus-table-createdb</string>
+    <string>/usr/bin/intel_stepping</string>
+    <string>/usr/bin/syslinux2ansi</string>
+    <string>/usr/bin/stdbuf</string>
+    <string>/usr/bin/nm-tool</string>
+    <string>/usr/bin/install-info</string>
+    <string>/usr/bin/yes</string>
+  </historyList>
+  <lookupDirectory>
+    <string>/usr</string>
+    <string>/usr/lib</string>
+    <string>/lib</string>
+    <string>/usr/local/lib</string>
+    <string>/lib64</string>
+    <string>/usr/lib64</string>
+    <string>/usr/local/lib64</string>
+    <string>/lib/x86_64-linux-gnu</string>
+    <string>/usr/lib/x86_64-linux-gnu</string>
+  </lookupDirectory>
+</Setting>
