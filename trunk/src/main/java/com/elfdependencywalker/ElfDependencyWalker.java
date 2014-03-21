@@ -3,8 +3,6 @@ package com.elfdependencywalker;
 import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
@@ -57,10 +55,6 @@ public class ElfDependencyWalker extends javax.swing.JFrame {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		initGUI();
-	}
-
-	private void initGUI() {
 		try {
 			setTitle("Elf Dependency Walker " + Global.version);
 			this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -73,19 +67,11 @@ public class ElfDependencyWalker extends javax.swing.JFrame {
 			int x = Setting.getInstance().x;
 			int y = Setting.getInstance().y;
 			setLocation(x, y);
-			{
-				try {
-					// this try-catch prevent Jigloo crash
-					elfDependencyWalkerPanel = new ElfDependencyWalkerPanel(this);
-				} catch (Exception ex) {
-
-				}
-				getContentPane().add(elfDependencyWalkerPanel, BorderLayout.CENTER);
-			}
+			elfDependencyWalkerPanel = new ElfDependencyWalkerPanel(this);
+			getContentPane().add(elfDependencyWalkerPanel, BorderLayout.CENTER);
 			this.setSize(814, 533);
 
 			setSize(Setting.getInstance().width, Setting.getInstance().height);
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -96,6 +82,8 @@ public class ElfDependencyWalker extends javax.swing.JFrame {
 		Setting.getInstance().height = this.getHeight();
 		Setting.getInstance().x = this.getLocation().x;
 		Setting.getInstance().y = this.getLocation().y;
+		Setting.getInstance().x = this.getLocation().x;
+		Setting.getInstance().divX = elfDependencyWalkerPanel.splitPane1.getDividerLocation();
 		Setting.getInstance().save();
 	}
 
