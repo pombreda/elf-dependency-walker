@@ -1,9 +1,9 @@
 <Setting>
-  <x>0</x>
-  <y>52</y>
-  <width>1920</width>
-  <height>1004</height>
-  <divX>0</divX>
+  <x>133</x>
+  <y>112</y>
+  <width>1668</width>
+  <height>899</height>
+  <divX>248</divX>
   <lastOpenPath>/usr/bin</lastOpenPath>
   <historyList>
     <string>/usr/bin/acpi_listen</string>
@@ -18,6 +18,11 @@
     <string>/usr/bin/install-info</string>
     <string>/usr/bin/yes</string>
     <string>/usr/bin/gprof</string>
+    <string>/usr/bin/HEAD</string>
+    <string>/usr/bin/2to3-2.7</string>
+    <string>/usr/bin/a2ping</string>
+    <string>/usr/bin/acyclic</string>
+    <string>/usr/bin/dh_installmanpages</string>
   </historyList>
   <lookupDirectory>
     <string>/usr</string>

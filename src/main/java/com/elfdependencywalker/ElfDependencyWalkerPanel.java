@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -21,7 +22,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -77,30 +80,20 @@ import com.peterswing.CommonLib;
 import com.peterswing.advancedswing.jdropdownbutton.JDropDownButton;
 import com.peterswing.advancedswing.jprogressbardialog.JProgressBarDialog;
 
-/**
- * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
- * Builder, which is free for non-commercial use. If Jigloo is being used
- * commercially (ie, by a corporation, company or business for any purpose
- * whatever) then you should purchase a license for each developer using Jigloo.
- * Please visit www.cloudgarden.com for details. Use of Jigloo implies
- * acceptance of these licensing terms. A COMMERCIAL LICENSE HAS NOT BEEN
- * PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR
- * ANY CORPORATE OR COMMERCIAL PURPOSE.
- */
 public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Printable {
-	private JTabbedPane jTabbedPane1;
-	private JPanel jTreePanel;
-	private JScrollPane jScrollPane1;
-	private JScrollPane jScrollPane2;
-	private JDropDownButton jLayoutButton;
-	private JButton jAnaystDirectoryButton;
-	private JSplitPane jGraphSplitPane;
-	private JButton jPrintButton;
-	private JDropDownButton jAnalystButton;
-	private JToolBar jToolBar1;
-	private JEditorPane jTextArea1;
-	private JTree jTree1;
-	private JSplitPane jSplitPane1;
+	private JTabbedPane tabbedPane1;
+	private JPanel treePanel;
+	private JScrollPane scrollPane1;
+	private JScrollPane scrollPane2;
+	private JDropDownButton layoutButton;
+	private JButton anaystDirectoryButton;
+	private JSplitPane graphSplitPane;
+	private JButton printButton;
+	private JDropDownButton analystButton;
+	private JToolBar toolBar1;
+	private JEditorPane textArea1;
+	private JTree tree1;
+	public JSplitPane splitPane1;
 	private JButton jSaveToPngButton;
 	private JCheckBox filterNoChildNodejCheckBox;
 	private JButton dotButton;
@@ -108,8 +101,8 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	private JButton zoomOutButton;
 	private JButton zoomInButton;
 	private JButton settingButton;
-	private JPanel jPanel1;
-	private JPanel jCallGraphPreviewPanel = new JPanel();
+	private JPanel panel1;
+	private JPanel callGraphPreviewPanel = new JPanel();
 	private MyTreeModel myTreeModel = new MyTreeModel(null);
 	final JEditorPane lines = new JEditorPane();
 	mxGraph graph;
@@ -148,318 +141,283 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	public ElfDependencyWalkerPanel(JFrame jframe) {
 		super();
 		this.jframe = jframe;
-		initGUI();
-	}
-
-	private void initGUI() {
 		try {
 			BorderLayout thisLayout = new BorderLayout();
 			this.setLayout(thisLayout);
-			{
-				jTabbedPane1 = new JTabbedPane();
-				this.add(jTabbedPane1, BorderLayout.CENTER);
-				{
-					jTreePanel = new JPanel();
-					BorderLayout jTreePanelLayout = new BorderLayout();
-					jTreePanel.setLayout(jTreePanelLayout);
-					jTabbedPane1.addTab("Tree", null, jTreePanel, null);
-					{
-						jSplitPane1 = new JSplitPane();
-						jTreePanel.add(jSplitPane1, BorderLayout.CENTER);
-						{
-							jScrollPane1 = new JScrollPane();
-							jSplitPane1.add(jScrollPane1, JSplitPane.LEFT);
-							jScrollPane1.setPreferredSize(new java.awt.Dimension(79, 541));
-							{
-								jTree1 = new JTree(myTreeModel);
-								jTree1.setShowsRootHandles(true);
-								jTree1.setCellRenderer(new MyTreeRenderer());
-								jScrollPane1.setViewportView(jTree1);
-								jTree1.addTreeSelectionListener(new TreeSelectionListener() {
-									public void valueChanged(TreeSelectionEvent evt) {
-										jTree1ValueChanged(evt);
-									}
-								});
-							}
-						}
-						{
-							jScrollPane2 = new JScrollPane();
-							jSplitPane1.add(jScrollPane2, JSplitPane.RIGHT);
-							jScrollPane2.setPreferredSize(new java.awt.Dimension(68, 541));
-							{
-								jTextArea1 = new JEditorPane();
-								jScrollPane2.setViewportView(jTextArea1);
-								updateLine();
-								lines.setBackground(new Color(230, 230, 230));
-								lines.setEditable(false);
-								jScrollPane2.setRowHeaderView(lines);
 
-							}
+			tabbedPane1 = new JTabbedPane();
+			this.add(tabbedPane1, BorderLayout.CENTER);
+
+			treePanel = new JPanel();
+			BorderLayout jTreePanelLayout = new BorderLayout();
+			treePanel.setLayout(jTreePanelLayout);
+			tabbedPane1.addTab("Tree", null, treePanel, null);
+
+			splitPane1 = new JSplitPane();
+			treePanel.add(splitPane1, BorderLayout.CENTER);
+
+			scrollPane1 = new JScrollPane();
+			splitPane1.add(scrollPane1, JSplitPane.LEFT);
+			scrollPane1.setPreferredSize(new java.awt.Dimension(79, 541));
+
+			tree1 = new JTree(myTreeModel);
+			tree1.setShowsRootHandles(true);
+			tree1.setCellRenderer(new MyTreeRenderer());
+			scrollPane1.setViewportView(tree1);
+			tree1.addTreeSelectionListener(new TreeSelectionListener() {
+				public void valueChanged(TreeSelectionEvent evt) {
+					tree1ValueChanged(evt);
+				}
+			});
+
+			scrollPane2 = new JScrollPane();
+			splitPane1.add(scrollPane2, JSplitPane.RIGHT);
+			scrollPane2.setPreferredSize(new java.awt.Dimension(68, 541));
+
+			textArea1 = new JEditorPane();
+			scrollPane2.setViewportView(textArea1);
+			updateLine();
+			lines.setBackground(new Color(230, 230, 230));
+			lines.setEditable(false);
+			scrollPane2.setRowHeaderView(lines);
+
+			graphSplitPane = new JSplitPane();
+			tabbedPane1.addTab("Graph", null, graphSplitPane, null);
+
+			toolBar1 = new JToolBar();
+			this.add(toolBar1, BorderLayout.NORTH);
+
+			analystButton = new JDropDownButton();
+			toolBar1.add(analystButton);
+			analystButton.setText("Analyst ");
+			analystButton.setMaximumSize(new java.awt.Dimension(100, 28));
+			analystButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/folder_page.png")));
+			analystButton.setPreferredSize(new java.awt.Dimension(100, 28));
+			analystButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					analystButtonActionPerformed(evt);
+				}
+			});
+			addHistoryMenuitems();
+
+			anaystDirectoryButton = new JButton();
+			toolBar1.add(anaystDirectoryButton);
+			anaystDirectoryButton.setText("Analyst Directory");
+			anaystDirectoryButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/folder.png")));
+			anaystDirectoryButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					anaystDirectoryButtonActionPerformed(evt);
+				}
+			});
+
+			printButton = new JButton();
+			toolBar1.add(printButton);
+			printButton.setText("Print");
+			printButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/printer.png")));
+			printButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					printButtonActionPerformed(evt);
+				}
+			});
+
+			layoutButton = new JDropDownButton();
+			toolBar1.add(layoutButton);
+			layoutButton.setMaximumSize(new java.awt.Dimension(180, 28));
+			layoutButton.setText("Hierarchical Layout");
+			layoutButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/cake.png")));
+			layoutButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					layoutButtonActionPerformed(evt);
+				}
+			});
+
+			settingButton = new JButton();
+			toolBar1.add(settingButton);
+			settingButton.setText("Setting");
+			settingButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					settingButtonActionPerformed(evt);
+				}
+			});
+
+			zoomInButton = new JButton();
+			toolBar1.add(zoomInButton);
+			zoomInButton.setText("Zoom in");
+			zoomInButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					zoomInButtonActionPerformed(evt);
+				}
+			});
+
+			zoomOutButton = new JButton();
+			toolBar1.add(zoomOutButton);
+			zoomOutButton.setText("Zoom out");
+			zoomOutButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					zoomOutButtonActionPerformed(evt);
+				}
+			});
+
+			zoom100Button = new JButton();
+			toolBar1.add(zoom100Button);
+			zoom100Button.setText("100%");
+			zoom100Button.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					zoom100ButtonActionPerformed(evt);
+				}
+			});
+
+			filterNoChildNodejCheckBox = new JCheckBox();
+			toolBar1.add(filterNoChildNodejCheckBox);
+			filterNoChildNodejCheckBox.setText("filter no child node");
+
+			chckbxEdge = new JCheckBox("Edge");
+			chckbxEdge.setSelected(true);
+			toolBar1.add(chckbxEdge);
+
+			chckbxOrtho = new JCheckBox("Ortho");
+			toolBar1.add(chckbxOrtho);
+
+			maxLevelSpinner = new JSpinner();
+			maxLevelSpinner.setModel(new SpinnerNumberModel(100, 0, 100, 1));
+			maxLevelSpinner.setMaximumSize(new Dimension(50, 18));
+			toolBar1.add(maxLevelSpinner);
+
+			dotButton = new JButton();
+			toolBar1.add(dotButton);
+			dotButton.setText("dot");
+
+			btnExportCsvFor = new JButton("Export CSV for Gephi");
+			btnExportCsvFor.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					final JFileChooser fc = new JFileChooser(Setting.getInstance().lastOpenPath);
+					int returnVal = fc.showSaveDialog(ElfDependencyWalkerPanel.this);
+					if (returnVal == JFileChooser.APPROVE_OPTION) {
+						File file;
+						if (!fc.getSelectedFile().getName().endsWith(".csv")) {
+							file = new File(fc.getSelectedFile().getAbsolutePath() + ".csv");
+						} else {
+							file = fc.getSelectedFile();
+						}
+						try {
+							BufferedWriter of = new BufferedWriter(new FileWriter(file));
+							of.write("source,target\n");
+							genGephiCSV(of, (ELFNode) myTreeModel.getRoot());
+							of.close();
+						} catch (Exception ex) {
+							ex.printStackTrace();
 						}
 					}
+				}
+			});
+			toolBar1.add(btnExportCsvFor);
 
+			dotButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					dotButtonActionPerformed(evt);
 				}
-				{
-					jGraphSplitPane = new JSplitPane();
-					jTabbedPane1.addTab("Graph", null, jGraphSplitPane, null);
-				}
-			}
-			{
-				jToolBar1 = new JToolBar();
-				this.add(jToolBar1, BorderLayout.NORTH);
-				{
-					jAnalystButton = new JDropDownButton();
-					jToolBar1.add(jAnalystButton);
-					jAnalystButton.setText("Analyst ");
-					jAnalystButton.setMaximumSize(new java.awt.Dimension(100, 28));
-					jAnalystButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/folder_page.png")));
-					jAnalystButton.setPreferredSize(new java.awt.Dimension(100, 28));
-					jAnalystButton.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent evt) {
-							jAnalystButtonActionPerformed(evt);
-						}
-					});
-					addHistoryMenuitems();
-				}
-				{
-					jAnaystDirectoryButton = new JButton();
-					jToolBar1.add(jAnaystDirectoryButton);
-					jAnaystDirectoryButton.setText("Analyst Directory");
-					jAnaystDirectoryButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/folder.png")));
-					jAnaystDirectoryButton.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent evt) {
-							jAnaystDirectoryButtonActionPerformed(evt);
-						}
-					});
-				}
-				{
-					jPrintButton = new JButton();
-					jToolBar1.add(jPrintButton);
-					jPrintButton.setText("Print");
-					jPrintButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/printer.png")));
-					jPrintButton.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent evt) {
-							jPrintButtonActionPerformed(evt);
-						}
-					});
-				}
-				{
-					jLayoutButton = new JDropDownButton();
-					jToolBar1.add(jLayoutButton);
-					jLayoutButton.setMaximumSize(new java.awt.Dimension(180, 28));
-					jLayoutButton.setText("Hierarchical Layout");
-					jLayoutButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/cake.png")));
-					jLayoutButton.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent evt) {
-							jLayoutButtonActionPerformed(evt);
-						}
-					});
-				}
-				{
-					settingButton = new JButton();
-					jToolBar1.add(settingButton);
-					settingButton.setText("Setting");
-					settingButton.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent evt) {
-							settingButtonActionPerformed(evt);
-						}
-					});
-				}
-				{
-					zoomInButton = new JButton();
-					jToolBar1.add(zoomInButton);
-					zoomInButton.setText("Zoom in");
-					zoomInButton.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent evt) {
-							zoomInButtonActionPerformed(evt);
-						}
-					});
-				}
-				{
-					zoomOutButton = new JButton();
-					jToolBar1.add(zoomOutButton);
-					zoomOutButton.setText("Zoom out");
-					zoomOutButton.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent evt) {
-							zoomOutButtonActionPerformed(evt);
-						}
-					});
-				}
-				{
-					zoom100Button = new JButton();
-					jToolBar1.add(zoom100Button);
-					zoom100Button.setText("100%");
-					zoom100Button.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent evt) {
-							zoom100ButtonActionPerformed(evt);
-						}
-					});
-				}
-				{
-					filterNoChildNodejCheckBox = new JCheckBox();
-					jToolBar1.add(filterNoChildNodejCheckBox);
-					filterNoChildNodejCheckBox.setText("filter no child node");
-				}
-				{
-					chckbxEdge = new JCheckBox("Edge");
-					chckbxEdge.setSelected(true);
-					jToolBar1.add(chckbxEdge);
-				}
-				{
-					chckbxOrtho = new JCheckBox("Ortho");
-					jToolBar1.add(chckbxOrtho);
-				}
-				{
-					maxLevelSpinner = new JSpinner();
-					maxLevelSpinner.setModel(new SpinnerNumberModel(100, 0, 100, 1));
-					maxLevelSpinner.setMaximumSize(new Dimension(50, 18));
-					jToolBar1.add(maxLevelSpinner);
-				}
-				{
-					dotButton = new JButton();
-					jToolBar1.add(dotButton);
-					dotButton.setText("dot");
-					{
-						btnExportCsvFor = new JButton("Export CSV for Gephi");
-						btnExportCsvFor.addActionListener(new ActionListener() {
-							public void actionPerformed(ActionEvent e) {
-								final JFileChooser fc = new JFileChooser(Setting.getInstance().lastOpenPath);
-								int returnVal = fc.showSaveDialog(ElfDependencyWalkerPanel.this);
-								if (returnVal == JFileChooser.APPROVE_OPTION) {
-									File file;
-									if (!fc.getSelectedFile().getName().endsWith(".csv")) {
-										file = new File(fc.getSelectedFile().getAbsolutePath() + ".csv");
-									} else {
-										file = fc.getSelectedFile();
-									}
-									try {
-										BufferedWriter of = new BufferedWriter(new FileWriter(file));
-										of.write("source,target\n");
-										genGephiCSV(of, (ELFNode) myTreeModel.getRoot());
-										of.close();
-									} catch (Exception ex) {
-										ex.printStackTrace();
-									}
-								}
-							}
-						});
-						jToolBar1.add(btnExportCsvFor);
-					}
-					dotButton.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent evt) {
-							dotButtonActionPerformed(evt);
-						}
-					});
-				}
-			}
+			});
+
 			int x = Setting.getInstance().x;
 			int y = Setting.getInstance().y;
 			setLocation(x, y);
-			this.setPreferredSize(new Dimension(916, 607));
+			this.setPreferredSize(new Dimension(1202, 665));
 
 			setSize(Setting.getInstance().width, Setting.getInstance().height);
 
 			addLayoutMenuitems();
-			jSplitPane1.setDividerLocation(Setting.getInstance().divX);
-			{
-				panel = new JPanel();
-				jTabbedPane1.addTab("Dot", null, panel, null);
-				panel.setLayout(new BorderLayout(0, 0));
-				{
-					scrollPane = new JScrollPane();
-					panel.add(scrollPane, BorderLayout.CENTER);
-					{
-						dotLabel = new JLabel("");
-						dotLabel.addMouseListener(new MouseAdapter() {
-							@Override
-							public void mousePressed(MouseEvent e) {
-								lastX = e.getX();
-								lastY = e.getY();
-								//								mousePressed = true;
-							}
+			splitPane1.setDividerLocation(Setting.getInstance().divX);
 
-							@Override
-							public void mouseReleased(MouseEvent e) {
-								//								mousePressed = false;
-								//								imageX = e.getX();
-								//								imageY = e.getY();
-								//								int max = scrollPane.getHorizontalScrollBar().getMaximum();
-								////								if (imageX - lastX < 0) {
-								//									scrollPane.getHorizontalScrollBar().setValue(scrollPane.getHorizontalScrollBar().getValue() + (lastX - imageX));
-								////								} else if (imageX - lastX < 0) {
-								////									scrollPane.getHorizontalScrollBar().setValue(scrollPane.getHorizontalScrollBar().getValue() - (lastX - imageX));
-								////								}
-							}
-						});
-						dotLabel.addMouseMotionListener(new MouseMotionAdapter() {
+			panel = new JPanel();
+			tabbedPane1.addTab("Dot", null, panel, null);
+			panel.setLayout(new BorderLayout(0, 0));
 
-							@Override
-							public void mouseDragged(MouseEvent e) {
-								imageX = e.getX();
-								imageY = e.getY();
-								int max = scrollPane.getHorizontalScrollBar().getMaximum();
-								//								if (imageX - lastX < 0) {
-								scrollPane.getHorizontalScrollBar().setValue(scrollPane.getHorizontalScrollBar().getValue() + (lastX - imageX));
-								//								} else if (imageX - lastX < 0) {
-								//									scrollPane.getHorizontalScrollBar().setValue(scrollPane.getHorizontalScrollBar().getValue() - (lastX - imageX));
-								//								}
-								scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getValue() + (lastY - imageY));
-							}
-						});
-						scrollPane.setViewportView(dotLabel);
-					}
+			scrollPane = new JScrollPane();
+			panel.add(scrollPane, BorderLayout.CENTER);
+
+			dotLabel = new JLabel("");
+			dotLabel.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mousePressed(MouseEvent e) {
+					lastX = e.getX();
+					lastY = e.getY();
+					//								mousePressed = true;
 				}
-				{
-					panel_1 = new JPanel();
-					panel.add(panel_1, BorderLayout.NORTH);
-					{
-						btnSavePng = new JButton("Save png");
-						btnSavePng.addActionListener(new ActionListener() {
-							public void actionPerformed(ActionEvent e) {
-								saveDotToPng();
-							}
-						});
-						panel_1.add(btnSavePng);
-					}
-					{
-						buttonZoomIn = new JButton("+");
-						buttonZoomIn.addActionListener(new ActionListener() {
-							public void actionPerformed(ActionEvent arg0) {
-								ImageIcon icon = new ImageIcon("elf.png");
-								icon.getImage().flush();
-								preferWidth = (int) (((float) preferWidth) * 1.1);
-								preferHeight = (int) (((float) preferHeight) * 1.1);
-								dotLabel.setIcon(resizeImage(icon, preferWidth, preferHeight));
-							}
-						});
-						panel_1.add(buttonZoomIn);
-					}
-					{
-						buttonZoomOut = new JButton("-");
-						buttonZoomOut.addActionListener(new ActionListener() {
-							public void actionPerformed(ActionEvent e) {
-								ImageIcon icon = new ImageIcon("elf.png");
-								icon.getImage().flush();
-								preferWidth = (int) (((float) preferWidth) * 0.9);
-								preferHeight = (int) (((float) preferHeight) * 0.9);
-								dotLabel.setIcon(resizeImage(icon, preferWidth, preferHeight));
-							}
-						});
-						panel_1.add(buttonZoomOut);
-					}
-					{
-						button = new JButton("100%");
-						button.addActionListener(new ActionListener() {
-							public void actionPerformed(ActionEvent arg0) {
-								ImageIcon icon = new ImageIcon("elf.png");
-								icon.getImage().flush();
-								dotLabel.setIcon(resizeImage(icon, icon.getIconWidth(), icon.getIconHeight()));
-							}
-						});
-						panel_1.add(button);
-					}
+
+				@Override
+				public void mouseReleased(MouseEvent e) {
+					//								mousePressed = false;
+					//								imageX = e.getX();
+					//								imageY = e.getY();
+					//								int max = scrollPane.getHorizontalScrollBar().getMaximum();
+					////								if (imageX - lastX < 0) {
+					//									scrollPane.getHorizontalScrollBar().setValue(scrollPane.getHorizontalScrollBar().getValue() + (lastX - imageX));
+					////								} else if (imageX - lastX < 0) {
+					////									scrollPane.getHorizontalScrollBar().setValue(scrollPane.getHorizontalScrollBar().getValue() - (lastX - imageX));
+					////								}
 				}
-			}
+			});
+			dotLabel.addMouseMotionListener(new MouseMotionAdapter() {
+
+				@Override
+				public void mouseDragged(MouseEvent e) {
+					imageX = e.getX();
+					imageY = e.getY();
+					int max = scrollPane.getHorizontalScrollBar().getMaximum();
+					//								if (imageX - lastX < 0) {
+					scrollPane.getHorizontalScrollBar().setValue(scrollPane.getHorizontalScrollBar().getValue() + (lastX - imageX));
+					//								} else if (imageX - lastX < 0) {
+					//									scrollPane.getHorizontalScrollBar().setValue(scrollPane.getHorizontalScrollBar().getValue() - (lastX - imageX));
+					//								}
+					scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getValue() + (lastY - imageY));
+				}
+			});
+			scrollPane.setViewportView(dotLabel);
+
+			panel_1 = new JPanel();
+			panel.add(panel_1, BorderLayout.NORTH);
+
+			btnSavePng = new JButton("Save png");
+			btnSavePng.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					saveDotToPng();
+				}
+			});
+			panel_1.add(btnSavePng);
+
+			buttonZoomIn = new JButton("+");
+			buttonZoomIn.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					ImageIcon icon = new ImageIcon("elf.png");
+					icon.getImage().flush();
+					preferWidth = (int) (((float) preferWidth) * 1.1);
+					preferHeight = (int) (((float) preferHeight) * 1.1);
+					dotLabel.setIcon(resizeImage(icon, preferWidth, preferHeight));
+				}
+			});
+			panel_1.add(buttonZoomIn);
+
+			buttonZoomOut = new JButton("-");
+			buttonZoomOut.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					ImageIcon icon = new ImageIcon("elf.png");
+					icon.getImage().flush();
+					preferWidth = (int) (((float) preferWidth) * 0.9);
+					preferHeight = (int) (((float) preferHeight) * 0.9);
+					dotLabel.setIcon(resizeImage(icon, preferWidth, preferHeight));
+				}
+			});
+			panel_1.add(buttonZoomOut);
+
+			button = new JButton("100%");
+			button.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					ImageIcon icon = new ImageIcon("elf.png");
+					icon.getImage().flush();
+					dotLabel.setIcon(resizeImage(icon, icon.getIconWidth(), icon.getIconHeight()));
+				}
+			});
+			panel_1.add(button);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -521,27 +479,28 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 
 		graph.setCellsDisconnectable(false);
 		graphComponent = new CallGraphComponent(graph);
-		jGraphSplitPane.add(graphComponent, JSplitPane.RIGHT);
+		graphSplitPane.add(graphComponent, JSplitPane.RIGHT);
 		{
-			jPanel1 = new JPanel();
-			BoxLayout jPanel1Layout = new BoxLayout(jPanel1, javax.swing.BoxLayout.Y_AXIS);
-			jPanel1.setLayout(jPanel1Layout);
-			jGraphSplitPane.add(jPanel1, JSplitPane.LEFT);
-			jPanel1.setPreferredSize(new java.awt.Dimension(100, 535));
-			jPanel1.add(jCallGraphPreviewPanel);
+			panel1 = new JPanel();
+			BoxLayout jPanel1Layout = new BoxLayout(panel1, javax.swing.BoxLayout.Y_AXIS);
+			panel1.setLayout(jPanel1Layout);
+			graphSplitPane.add(panel1, JSplitPane.LEFT);
+			graphSplitPane.setDividerLocation(250);
+			panel1.setPreferredSize(new java.awt.Dimension(100, 535));
+			panel1.add(callGraphPreviewPanel);
 		}
 
 		graphOutline = new mxGraphOutline(graphComponent);
 		graphOutline.setBorder(new LineBorder(Color.LIGHT_GRAY));
 
 		BorderLayout jCallGraphPreviewPanelLayout = new BorderLayout();
-		jCallGraphPreviewPanel.setLayout(jCallGraphPreviewPanelLayout);
-		jCallGraphPreviewPanel.removeAll();
-		jCallGraphPreviewPanel.add(graphOutline, BorderLayout.CENTER);
-		jCallGraphPreviewPanel.setPreferredSize(new Dimension(100, 100));
+		callGraphPreviewPanel.setLayout(jCallGraphPreviewPanelLayout);
+		callGraphPreviewPanel.removeAll();
+		callGraphPreviewPanel.add(graphOutline, BorderLayout.CENTER);
+		callGraphPreviewPanel.setPreferredSize(new Dimension(100, 100));
 		{
 			jSaveToPngButton = new JButton();
-			jPanel1.add(jSaveToPngButton);
+			panel1.add(jSaveToPngButton);
 			jSaveToPngButton.setText("Save png");
 			jSaveToPngButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/disk.png")));
 			jSaveToPngButton.addActionListener(new ActionListener() {
@@ -634,9 +593,9 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		String str[] = label.split("->");
 	}
 
-	private void jAnalystButtonActionPerformed(ActionEvent evt) {
+	private void analystButtonActionPerformed(ActionEvent evt) {
 		File files[] = null;
-		if (jAnalystButton.getEventSource() == null) {
+		if (analystButton.getEventSource() == null) {
 			final JFileChooser fc = new JFileChooser(Setting.getInstance().lastOpenPath);
 			fc.setMultiSelectionEnabled(true);
 			int returnVal = fc.showOpenDialog(this);
@@ -645,7 +604,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			}
 		} else {
 			files = new File[1];
-			files[0] = new File(((JMenuItem) jAnalystButton.getEventSource()).getText());
+			files[0] = new File(((JMenuItem) analystButton.getEventSource()).getText());
 		}
 		if (files != null) {
 			if (files.length == 1) {
@@ -654,7 +613,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 				Setting.getInstance().historyList.add(files[0].getAbsolutePath());
 				Setting.getInstance().lastOpenPath = files[0].getParentFile().getAbsolutePath();
 			}
-			dialog = new AnalystDialog(jframe, jTree1, files);
+			dialog = new AnalystDialog(jframe, tree1, files);
 			dialog.setVisible(true);
 			updateJGraphx(myTreeModel);
 			dotButtonActionPerformed(null);
@@ -662,32 +621,32 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	}
 
 	private void addHistoryMenuitems() {
-		jAnalystButton.removeAll();
+		analystButton.removeAll();
 		LinkedHashSet<String> historyVector = Setting.getInstance().historyList;
 		for (String str : historyVector) {
 			if (new File(str).exists()) {
-				jAnalystButton.insert(new JMenuItem(str), 0);
+				analystButton.insert(new JMenuItem(str), 0);
 			}
 		}
 	}
 
 	private void addLayoutMenuitems() {
-		jLayoutButton.removeAll();
-		jLayoutButton.add(new JMenuItem("Hierarchical Layout"));
-		jLayoutButton.add(new JMenuItem("Circle Layout"));
-		jLayoutButton.add(new JMenuItem("Organic Layout"));
-		jLayoutButton.add(new JMenuItem("Compact Tree Layout"));
-		jLayoutButton.add(new JMenuItem("Edge Label Layout"));
-		jLayoutButton.add(new JMenuItem("Fast Organic Layout"));
-		jLayoutButton.add(new JMenuItem("Orthogonal Layout"));
-		jLayoutButton.add(new JMenuItem("Parallel Edge Layout"));
-		jLayoutButton.add(new JMenuItem("Stack Layout"));
+		layoutButton.removeAll();
+		layoutButton.add(new JMenuItem("Hierarchical Layout"));
+		layoutButton.add(new JMenuItem("Circle Layout"));
+		layoutButton.add(new JMenuItem("Organic Layout"));
+		layoutButton.add(new JMenuItem("Compact Tree Layout"));
+		layoutButton.add(new JMenuItem("Edge Label Layout"));
+		layoutButton.add(new JMenuItem("Fast Organic Layout"));
+		layoutButton.add(new JMenuItem("Orthogonal Layout"));
+		layoutButton.add(new JMenuItem("Parallel Edge Layout"));
+		layoutButton.add(new JMenuItem("Stack Layout"));
 	}
 
-	private void jTree1ValueChanged(TreeSelectionEvent evt) {
+	private void tree1ValueChanged(TreeSelectionEvent evt) {
 		try {
-			ELFNode node = (ELFNode) jTree1.getLastSelectedPathComponent();
-			jTextArea1.setContentType("text/html");
+			ELFNode node = (ELFNode) tree1.getLastSelectedPathComponent();
+			textArea1.setContentType("text/html");
 			if (node.getNmResult() == null) {
 				File file = node.getFile();
 				String results[] = clearHTML(CommonLib.runCommand("readelf -a " + file.getAbsolutePath())).split("\n\n");
@@ -702,14 +661,13 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 					} else {
 						count = 0;
 					}
-
 				}
 				result += "</pre></body></html>";
 				node.setNmResult(result);
 			}
 
-			jTextArea1.setText(node.getNmResult());
-			jTextArea1.setCaretPosition(0);
+			textArea1.setText(node.getNmResult());
+			textArea1.setCaretPosition(0);
 
 			// updateLine();
 		} catch (Exception ex) {
@@ -735,8 +693,8 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		lines.setText(text);
 	}
 
-	private void jPrintButtonActionPerformed(ActionEvent evt) {
-		PrintUtilities.printComponent(jTextArea1);
+	private void printButtonActionPerformed(ActionEvent evt) {
+		PrintUtilities.printComponent(textArea1);
 	}
 
 	@Override
@@ -746,9 +704,9 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		} else {
 			Graphics2D g2d = (Graphics2D) graphics;
 			g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
-			disableDoubleBuffering(jTextArea1);
-			jTextArea1.paint(g2d);
-			enableDoubleBuffering(jTextArea1);
+			disableDoubleBuffering(textArea1);
+			textArea1.paint(g2d);
+			enableDoubleBuffering(textArea1);
 			return (PAGE_EXISTS);
 		}
 	}
@@ -763,14 +721,14 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		currentManager.setDoubleBufferingEnabled(true);
 	}
 
-	private void jAnaystDirectoryButtonActionPerformed(ActionEvent evt) {
+	private void anaystDirectoryButtonActionPerformed(ActionEvent evt) {
 		final JFileChooser fc = new JFileChooser(Setting.getInstance().lastOpenPath);
 		fc.setMultiSelectionEnabled(true);
 		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		int returnVal = fc.showOpenDialog(this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			Setting.getInstance().lastOpenPath = fc.getSelectedFile().getAbsolutePath();
-			AnalystDialog d = new AnalystDialog(jframe, jTree1, fc.getSelectedFiles());
+			AnalystDialog d = new AnalystDialog(jframe, tree1, fc.getSelectedFiles());
 			d.setVisible(true);
 			System.out.println("updateJGraphx(myTreeModel);");
 			updateJGraphx(myTreeModel);
@@ -779,7 +737,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		}
 	}
 
-	private void jLayoutButtonActionPerformed(ActionEvent evt) {
+	private void layoutButtonActionPerformed(ActionEvent evt) {
 		if (parent != null) {
 			final mxGraph graph = graphComponent.getGraph();
 			Object cell = graph.getSelectionCell();
@@ -790,12 +748,12 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			graph.getModel().beginUpdate();
 
 			String str;
-			if (jLayoutButton.getEventSource() == null) {
+			if (layoutButton.getEventSource() == null) {
 				str = "Hierarchical Layout";
 			} else {
-				str = ((JMenuItem) jLayoutButton.getEventSource()).getText();
+				str = ((JMenuItem) layoutButton.getEventSource()).getText();
 			}
-			jLayoutButton.setText(str);
+			layoutButton.setText(str);
 			if (str.equals("Hierarchical Layout")) {
 				mxHierarchicalLayout layout = new mxHierarchicalLayout(graph);
 				layout.execute(cell);
@@ -836,7 +794,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			});
 
 			morph.startAnimation();
-			jTabbedPane1.setSelectedIndex(1);
+			tabbedPane1.setSelectedIndex(1);
 		}
 	}
 
@@ -922,6 +880,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 					File file = new File("elf.dot");
 					BufferedWriter of = new BufferedWriter(new FileWriter(file));
 					of.write("digraph G{\n");
+					of.write("\tmargin = 0.7;\n");
 					of.write("\tfontname = Verdana;\n");
 					of.write("\tfontsize = 8;\n");
 					if (chckbxOrtho.isSelected()) {
@@ -1000,6 +959,9 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 					System.out.println("running dot command : " + "dot -Tpng " + file.getName() + " -o elf.png");
 					CommonLib.runCommand("dot -Tpng " + file.getName() + " -o elf.png");
 					//file.delete();
+
+					addText(new File("elf.png"));
+
 					ImageIcon icon = new ImageIcon("elf.png");
 					icon.getImage().flush();
 
@@ -1012,9 +974,27 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 					if (preferHeight == 0) {
 						return;
 					}
-					dotLabel.setIcon(resizeImage(icon, preferWidth, preferHeight));
-					jTabbedPane1.setSelectedIndex(2);
+					ImageIcon resizedIcon = resizeImage(icon, preferWidth, preferHeight);
+					//					Graphics g = resizedIcon.getImage().getGraphics();
+					//					g.drawString("FUCK", 100, 100);
+					dotLabel.setIcon(resizedIcon);
+					tabbedPane1.setSelectedIndex(2);
 					System.out.println("Process ended");
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+
+			private void addText(File file) {
+				try {
+					BufferedImage image = ImageIO.read(file);
+					Graphics g = image.getGraphics();
+					g.setFont(new Font("Verdana", Font.PLAIN, 12));
+					g.setColor(Color.black);
+					g.drawString(System.getProperty("os.name") + " " + System.getProperty("os.version") + " " + System.getProperty("os.arch"), 10, 30);
+					g.drawString(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()), 10, 50);
+					g.dispose();
+					ImageIO.write(image, "png", file);
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
