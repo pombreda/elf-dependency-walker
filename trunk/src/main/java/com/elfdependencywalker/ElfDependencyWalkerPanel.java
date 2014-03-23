@@ -647,7 +647,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		try {
 			ELFNode node = (ELFNode) tree1.getLastSelectedPathComponent();
 			textArea1.setContentType("text/html");
-			if (node.getNmResult() == null) {
+			if (node.getNmResult() == null && !Global.isMac) {
 				File file = node.getFile();
 				String results[] = clearHTML(CommonLib.runCommand("readelf -a " + file.getAbsolutePath())).split("\n\n");
 
@@ -957,7 +957,11 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 					of.close();
 
 					System.out.println("running dot command : " + "dot -Tpng " + file.getName() + " -o elf.png");
-					CommonLib.runCommand("dot -Tpng " + file.getName() + " -o elf.png");
+					if (Global.isMac) {
+						CommonLib.runCommand("/opt/local/bin/dot -Tpng " + file.getName() + " -o elf.png");
+					} else {
+						CommonLib.runCommand("dot -Tpng " + file.getName() + " -o elf.png");
+					}
 					//file.delete();
 
 					addText(new File("elf.png"));

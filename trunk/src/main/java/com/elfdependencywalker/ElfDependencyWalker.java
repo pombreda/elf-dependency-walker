@@ -30,14 +30,14 @@ public class ElfDependencyWalker extends javax.swing.JFrame {
 		Options options = new Options();
 		try {
 			options.addOption(OptionBuilder.withDescription("specific config xml").hasArg().withArgName("file").create("f"));
-			options.addOption("mac", false, "parse for mac");
+			//			options.addOption("mac", false, "parse for mac");
 			cmd = parser.parse(options, args);
 		} catch (ParseException e1) {
 			e1.printStackTrace();
 			System.exit(1);
 		}
 
-		if (cmd.hasOption("mac")) {
+		if (System.getProperty("os.name").toLowerCase().contains("mac")) {
 			Global.isMac = true;
 		}
 		SwingUtilities.invokeLater(new Runnable() {

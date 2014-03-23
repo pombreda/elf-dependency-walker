@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -46,43 +46,38 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 
 	private void initGUI() {
 		try {
-			{
-				GroupLayout thisLayout = new GroupLayout((JComponent) getContentPane());
-				getContentPane().setLayout(thisLayout);
-				this.setTitle("Analyzing");
+			GroupLayout thisLayout = new GroupLayout((JComponent) getContentPane());
+			getContentPane().setLayout(thisLayout);
+			this.setTitle("Analyzing");
 
-				this.addWindowListener(new WindowAdapter() {
-					public void windowActivated(WindowEvent evt) {
-						thisWindowActivated(evt);
-					}
-				});
-				{
-					jCancelButton = new JButton();
-					jCancelButton.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent evt) {
-							jCancelButtonActionPerformed(evt);
-						}
-					});
-					jCancelButton.setText("Cancel");
+			this.addWindowListener(new WindowAdapter() {
+				public void windowActivated(WindowEvent evt) {
+					thisWindowActivated(evt);
 				}
-				{
-					jLabel1 = new JLabel();
+			});
+			jCancelButton = new JButton();
+			jCancelButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					jCancelButtonActionPerformed(evt);
 				}
-				thisLayout.setVerticalGroup(thisLayout.createSequentialGroup().addContainerGap().addComponent(jLabel1, 0, 44, Short.MAX_VALUE)
-						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jCancelButton, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE).addContainerGap());
-				thisLayout.setHorizontalGroup(thisLayout
-						.createSequentialGroup()
-						.addContainerGap()
-						.addGroup(
-								thisLayout
-										.createParallelGroup()
-										.addComponent(jLabel1, GroupLayout.Alignment.LEADING, 0, 378, Short.MAX_VALUE)
-										.addGroup(
-												GroupLayout.Alignment.LEADING,
-												thisLayout.createSequentialGroup().addGap(0, 317, Short.MAX_VALUE)
-														.addComponent(jCancelButton, GroupLayout.PREFERRED_SIZE, 62, GroupLayout.PREFERRED_SIZE))).addContainerGap());
-			}
+			});
+			jCancelButton.setText("Cancel");
+			jLabel1 = new JLabel();
+			thisLayout.setVerticalGroup(thisLayout.createSequentialGroup().addContainerGap().addComponent(jLabel1, 0, 44, Short.MAX_VALUE)
+					.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+					.addComponent(jCancelButton, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE).addContainerGap());
+			thisLayout.setHorizontalGroup(thisLayout
+					.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(
+							thisLayout
+									.createParallelGroup()
+									.addComponent(jLabel1, GroupLayout.Alignment.LEADING, 0, 378, Short.MAX_VALUE)
+									.addGroup(
+											GroupLayout.Alignment.LEADING,
+											thisLayout.createSequentialGroup().addGap(0, 317, Short.MAX_VALUE)
+													.addComponent(jCancelButton, GroupLayout.PREFERRED_SIZE, 62, GroupLayout.PREFERRED_SIZE))).addContainerGap());
+
 			this.setSize(418, 126);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -119,126 +114,134 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 	}
 
 	private ELFNode analystELF(ELFNode parent, File file, String debugStr) {
-		//		try {
-		//			System.out.println(file.getCanonicalPath() + "," + file.getAbsolutePath());
-		//			if (!file.getAbsolutePath().equals(file.getCanonicalPath())) {
-		//				return null;
-		//			}
-		//		} catch (IOException e) {
-		//			return parent;
-		//		}
-		if (file.isDirectory()) {
-			try {
-				if (parsedFiles.keySet().contains(file.getCanonicalPath())) {
+		try {
+			if (parsedFiles.keySet().contains(file.getCanonicalPath())) {
+				return null;
+			}
+			parsedFiles.put(file.getCanonicalPath(), null);
+			if (file.isDirectory()) {
+				try {
+					parsedFiles.put(file.getCanonicalPath(), null);
+				} catch (Exception ex) {
+					ex.printStackTrace();
 					return null;
 				}
-				parsedFiles.put(file.getCanonicalPath(), null);
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				return null;
-			}
 
-			for (File f : file.listFiles()) {
-				jLabel1.setText("Processing directory " + file.getAbsolutePath());
-				analystELF(parent, f, debugStr + "    ");
-			}
-			return parent;
-		} else {
-			Setting setting = Setting.getInstance();
-
-			if (setting.lookupDirectory.size() == 0) {
-				String s[] = "/usr\n/usr/lib\n/lib\n/usr/local/lib\n/lib64\n/usr/lib64\n/usr/local/lib64".split("\n");
-				setting.lookupDirectory.clear();
-				for (String a : s) {
-					if (!a.equals("")) {
-						setting.lookupDirectory.add(a);
-					}
+				for (File f : file.listFiles()) {
+					jLabel1.setText("Processing directory " + file.getAbsolutePath());
+					analystELF(parent, f, debugStr + "    ");
 				}
-				setting.save();
-			}
-			if (noOfVertex >= MAX_NUMBER_OF_VERTEX) {
-				return null;
-			}
-
-			ELFNode currentNode = new ELFNode(parent, file, null, false);
-
-			String results[];
-			boolean needToCache = false;
-			if (cache.get(file.getAbsolutePath()) == null) {
-				if (Global.isMac) {
-					System.out.println("/opt/local/bin/gobjdump -x " + file.getAbsolutePath());
-					results = CommonLib.runCommand("/opt/local/bin/gobjdump -x " + file.getAbsolutePath()).split("\n");
-				} else {
-					results = CommonLib.runCommand("readelf -a " + file.getAbsolutePath()).split("\n");
-				}
-				needToCache = true;
+				return parent;
 			} else {
-				results = cache.get(file.getAbsolutePath());
-			}
-			Vector<String> cacheLines = new Vector<String>();
-			for (String line : results) {
-				if (!started) {
+				Setting setting = Setting.getInstance();
+
+				if (setting.lookupDirectory.size() == 0) {
+					String s[] = "/usr\n/usr/lib\n/lib\n/usr/local/lib\n/lib64\n/usr/lib64\n/usr/local/lib64".split("\n");
+					setting.lookupDirectory.clear();
+					for (String a : s) {
+						if (!a.equals("")) {
+							setting.lookupDirectory.add(a);
+						}
+					}
+					setting.save();
+				}
+				if (noOfVertex >= MAX_NUMBER_OF_VERTEX) {
 					return null;
 				}
-				String words[];
-				if (Global.isMac) {
-					words = line.split(": ");
-				} else {
-					words = line.split("[\\[\\]]");
-				}
-				if (words.length > 1
-						&& ((line.toLowerCase().contains("needed") && !Global.isMac) || (!line.contains(file.getAbsolutePath()) && line.toLowerCase().contains("load command")
-								&& line.toLowerCase().contains(".dylib") && Global.isMac))) {
-					if (needToCache) {
-						cacheLines.add(line);
-					}
-					File childFile = null;
 
+				ELFNode currentNode = new ELFNode(parent, file, null, false);
+
+				String results[];
+				boolean needToCache = false;
+				if (cache.get(file.getAbsolutePath()) == null) {
 					if (Global.isMac) {
-						childFile = new File(words[1]);
+						results = CommonLib.runCommand("otool -L " + file.getAbsolutePath()).split("\n");
+						results = Arrays.copyOfRange(results, 1, results.length);
 					} else {
-						boolean found = false;
-						for (String s : setting.lookupDirectory) {
-							if (new File(s + "/" + words[1]).exists()) {
-								childFile = new File(s + "/" + words[1]);
-								found = true;
-								break;
-							}
-						}
-						if (!found) {
-							System.out.println("can't found : " + words[1]);
-						}
+						results = CommonLib.runCommand("readelf -a " + file.getAbsolutePath()).split("\n");
 					}
-					if (childFile != null && childFile.isFile()) {
-						try {
-							if (parsedFiles.keySet().contains(file.getCanonicalPath() + "-" + childFile.getCanonicalPath())) {
-								ELFNode childNode = parsedFiles.get(file.getCanonicalPath() + "-" + childFile.getCanonicalPath());
-								currentNode.child.add(childNode);
-								childNode.parent.add(currentNode);
-								System.out.println("parsed : " + file.getCanonicalPath() + "-" + childFile.getCanonicalPath());
-							} else {
-								ELFNode node = analystELF(currentNode, childFile, debugStr + "    ");
-								if (node != null) {
-									System.out.println(">>>>>>>>>>>>>>>>>>" + file.getCanonicalPath() + "-" + childFile.getCanonicalPath());
-									parsedFiles.put(file.getCanonicalPath() + "-" + childFile.getCanonicalPath(), node);
-									currentNode.child.add(node);
-									jLabel1.setText(noOfVertex + " " + file.getCanonicalPath());
-									noOfVertex++;
+					needToCache = true;
+				} else {
+					results = cache.get(file.getAbsolutePath());
+				}
+				Vector<String> cacheLines = new Vector<String>();
+				for (String line : results) {
+					if (!started) {
+						return null;
+					}
+					String words[];
+					if (Global.isMac) {
+						line = line.trim();
+						words = line.split(" ");
+					} else {
+						words = line.split("[\\[\\]]");
+					}
+					if (words.length > 1 && ((line.toLowerCase().contains("needed") && !Global.isMac) || (Global.isMac))) {
+						if (needToCache) {
+							cacheLines.add(line);
+						}
+						File childFile = null;
+
+						boolean found = false;
+						if (Global.isMac) {
+							if (new File(words[0]).exists()) {
+								childFile = new File(words[0]);
+								found = true;
+							}
+						} else {
+							for (String s : setting.lookupDirectory) {
+								if (new File(s + "/" + words[1]).exists()) {
+									childFile = new File(s + "/" + words[1]);
+									found = true;
+									break;
 								}
 							}
-							Global.debug(debugStr + noOfVertex + "," + currentNode.file.getCanonicalPath() + "======" + childFile.getCanonicalPath());
-						} catch (Exception ex) {
-							ex.printStackTrace();
+						}
+
+						if (!found) {
+							if (Global.isMac) {
+								System.out.println("can't found : " + words[0]);
+							} else {
+								System.out.println("can't found : " + words[1]);
+							}
+						}
+						//					}
+						System.out.println(childFile.getAbsolutePath());
+						if (childFile != null && childFile.isFile()) {
+							try {
+								if (parsedFiles.keySet().contains(file.getCanonicalPath() + "-" + childFile.getCanonicalPath())) {
+									ELFNode childNode = parsedFiles.get(file.getCanonicalPath() + "-" + childFile.getCanonicalPath());
+									currentNode.child.add(childNode);
+									childNode.parent.add(currentNode);
+									System.out.println("parsed : " + file.getCanonicalPath() + "-" + childFile.getCanonicalPath());
+								} else {
+									ELFNode node = analystELF(currentNode, childFile, debugStr + "    ");
+									if (node != null) {
+										System.out.println(">>>>>>>>>>>>>>>>>>" + file.getCanonicalPath() + "-" + childFile.getCanonicalPath());
+										parsedFiles.put(file.getCanonicalPath() + "-" + childFile.getCanonicalPath(), node);
+										System.out.println("p=" + file.getCanonicalPath() + "-" + childFile.getCanonicalPath());
+										currentNode.child.add(node);
+										jLabel1.setText(noOfVertex + " " + file.getCanonicalPath());
+										noOfVertex++;
+									}
+								}
+								Global.debug(debugStr + noOfVertex + "," + currentNode.file.getCanonicalPath() + "======" + childFile.getCanonicalPath());
+							} catch (Exception ex) {
+								ex.printStackTrace();
+							}
 						}
 					}
 				}
+				if (needToCache) {
+					String[] temp = new String[cacheLines.size()];
+					cacheLines.toArray(temp);
+					cache.put(file.getAbsolutePath(), temp);
+				}
+				return currentNode;
 			}
-			if (needToCache) {
-				String[] temp = new String[cacheLines.size()];
-				cacheLines.toArray(temp);
-				cache.put(file.getAbsolutePath(), temp);
-			}
-			return currentNode;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return null;
 		}
 	}
 

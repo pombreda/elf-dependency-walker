@@ -23,6 +23,9 @@
     <string>/usr/bin/a2ping</string>
     <string>/usr/bin/acyclic</string>
     <string>/usr/bin/dh_installmanpages</string>
+    <string>/usr/bin/at</string>
+    <string>/usr/bin/gcc</string>
+    <string>/usr/bin/ypcat</string>
   </historyList>
   <lookupDirectory>
     <string>/usr</string>
