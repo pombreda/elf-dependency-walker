@@ -1091,8 +1091,13 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		Iterator<ELFNode> ir = node.child.iterator();
 		while (ir.hasNext()) {
 			ELFNode childNode = ir.next();
-			of.write(node.file.getName() + "," + childNode.file.getName() + ",Directed," + id + ",,1.0\n");
-			id++;
+			if (node.file.getName().equals("peter")) {
+				continue;
+			}
+			if (!node.file.getName().equals(childNode.file.getName())) {
+				of.write(node.file.getName() + "," + childNode.file.getName() + ",Directed," + id + "," + node.file.getName() + ",1.0\n");
+				id++;
+			}
 		}
 		ir = node.child.iterator();
 		while (ir.hasNext()) {
