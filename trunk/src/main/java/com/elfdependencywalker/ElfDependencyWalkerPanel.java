@@ -301,8 +301,8 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 						}
 						try {
 							BufferedWriter of = new BufferedWriter(new FileWriter(file));
-							of.write("source,target\n");
-							genGephiCSV(of, (ELFNode) myTreeModel.getRoot());
+							of.write("Source,Target,Type,Id,Label,Weight\n");
+							genGephiCSV(of, (ELFNode) myTreeModel.getRoot(), 1);
 							of.close();
 						} catch (Exception ex) {
 							ex.printStackTrace();
@@ -1087,16 +1087,17 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		}
 	}
 
-	protected void genGephiCSV(BufferedWriter of, ELFNode node) throws IOException {
+	protected void genGephiCSV(BufferedWriter of, ELFNode node, int id) throws IOException {
 		Iterator<ELFNode> ir = node.child.iterator();
 		while (ir.hasNext()) {
 			ELFNode childNode = ir.next();
-			of.write(node.file.getName() + "," + childNode.file.getName() + "\n");
+			of.write(node.file.getName() + "," + childNode.file.getName() + ",Directed," + id + ",,1.0\n");
+			id++;
 		}
 		ir = node.child.iterator();
 		while (ir.hasNext()) {
 			ELFNode childNode = ir.next();
-			genGephiCSV(of, childNode);
+			genGephiCSV(of, childNode, id);
 		}
 	}
 }
