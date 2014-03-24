@@ -1,10 +1,10 @@
 <Setting>
-  <x>180</x>
-  <y>148</y>
+  <x>283</x>
+  <y>101</y>
   <width>1440</width>
   <height>852</height>
   <divX>248</divX>
-  <lastOpenPath>/usr/bin</lastOpenPath>
+  <lastOpenPath>/usr/lib</lastOpenPath>
   <historyList>
     <string>/usr/bin/acpi_listen</string>
     <string>/usr/bin/POST</string>
@@ -26,6 +26,9 @@
     <string>/usr/bin/at</string>
     <string>/usr/bin/gcc</string>
     <string>/usr/bin/ypcat</string>
+    <string>/usr/lib/libfontenc.so.1</string>
+    <string>/usr/lib/libevview3.so.3</string>
+    <string>/usr/lib/libevview3.so.3.0.0</string>
   </historyList>
   <lookupDirectory>
     <string>/usr</string>
@@ -37,5 +40,6 @@
     <string>/usr/local/lib64</string>
     <string>/lib/x86_64-linux-gnu</string>
     <string>/usr/lib/x86_64-linux-gnu</string>
+    <string>/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/jli/</string>
   </lookupDirectory>
 </Setting>

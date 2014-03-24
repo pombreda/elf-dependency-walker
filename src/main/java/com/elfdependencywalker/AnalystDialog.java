@@ -31,7 +31,7 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 	// private String onlyInTheseDirectories[] = { "/lib", "/usr/lib",
 	// "/usr/local/lib", "/lib64", "/usr/lib64", "/usr/local/lib64" };
 
-	//	Vector<String> parsedFiles = new Vector<String>();
+	// Vector<String> parsedFiles = new Vector<String>();
 	HashMap<String, ELFNode> parsedFiles = new HashMap<String, ELFNode>();
 	HashMap<String, String[]> cache = new HashMap<String, String[]>();
 
@@ -115,10 +115,9 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 
 	private ELFNode analystELF(ELFNode parent, File file, String debugStr) {
 		try {
-			if (parsedFiles.keySet().contains(file.getCanonicalPath())) {
-				return null;
+			if (file.getName().equals("libz.so.1")) {
+				System.out.println("aa");
 			}
-			parsedFiles.put(file.getCanonicalPath(), null);
 			if (file.isDirectory()) {
 				try {
 					parsedFiles.put(file.getCanonicalPath(), null);
@@ -205,8 +204,7 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 								System.out.println("can't found : " + words[1]);
 							}
 						}
-						//					}
-						System.out.println(childFile.getAbsolutePath());
+						// }
 						if (childFile != null && childFile.isFile()) {
 							try {
 								if (parsedFiles.keySet().contains(file.getCanonicalPath() + "-" + childFile.getCanonicalPath())) {
@@ -217,9 +215,7 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 								} else {
 									ELFNode node = analystELF(currentNode, childFile, debugStr + "    ");
 									if (node != null) {
-										System.out.println(">>>>>>>>>>>>>>>>>>" + file.getCanonicalPath() + "-" + childFile.getCanonicalPath());
 										parsedFiles.put(file.getCanonicalPath() + "-" + childFile.getCanonicalPath(), node);
-										System.out.println("p=" + file.getCanonicalPath() + "-" + childFile.getCanonicalPath());
 										currentNode.child.add(node);
 										jLabel1.setText(noOfVertex + " " + file.getCanonicalPath());
 										noOfVertex++;
