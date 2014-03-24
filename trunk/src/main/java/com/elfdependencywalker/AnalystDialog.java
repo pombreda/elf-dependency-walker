@@ -117,12 +117,12 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 		try {
 			System.out.println(file.getName());
 			if (file.isDirectory()) {
-				try {
-					parsedFiles.put(file.getCanonicalPath(), null);
-				} catch (Exception ex) {
-					ex.printStackTrace();
-					return null;
-				}
+//				try {
+//					parsedFiles.put(file.getCanonicalPath(), null);
+//				} catch (Exception ex) {
+//					ex.printStackTrace();
+//					return null;
+//				}
 
 				for (File f : file.listFiles()) {
 					jLabel1.setText("Processing directory " + file.getAbsolutePath());
@@ -149,7 +149,7 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 				ELFNode currentNode;
 				if (parsedFiles.keySet().contains(parent.getFile().getCanonicalPath() + "-" + file.getCanonicalPath())) {
 					//					ELFNode childNode = parsedFiles.get(file.getCanonicalPath() + "-" + childFile.getCanonicalPath());
-					currentNode = parsedFiles.get(file.getCanonicalPath() + "-" + file.getCanonicalPath());
+					currentNode = parsedFiles.get(parent.getFile().getCanonicalPath() + "-" + file.getCanonicalPath());
 					parent.child.add(currentNode);
 					return currentNode;
 					//					currentNode.child.add(childNode);
