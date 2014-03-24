@@ -115,9 +115,7 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 
 	private ELFNode analystELF(ELFNode parent, File file, String debugStr) {
 		try {
-			if (file.getName().equals("libz.so.1")) {
-				System.out.println("aa");
-			}
+			System.out.println(file.getName());
 			if (file.isDirectory()) {
 				try {
 					parsedFiles.put(file.getCanonicalPath(), null);
@@ -148,7 +146,20 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 					return null;
 				}
 
-				ELFNode currentNode = new ELFNode(parent, file, null, false);
+				ELFNode currentNode;
+				if (parsedFiles.keySet().contains(parent.getFile().getCanonicalPath() + "-" + file.getCanonicalPath())) {
+					//					ELFNode childNode = parsedFiles.get(file.getCanonicalPath() + "-" + childFile.getCanonicalPath());
+					currentNode = parsedFiles.get(file.getCanonicalPath() + "-" + file.getCanonicalPath());
+					parent.child.add(currentNode);
+					return currentNode;
+					//					currentNode.child.add(childNode);
+					//					childNode.parent.add(currentNode);
+					//					System.out.println("parsed : " + file.getCanonicalPath() + "-" + childFile.getCanonicalPath());
+				} else {
+					currentNode = new ELFNode(parent, file, null, false);
+					parent.child.add(currentNode);
+					parsedFiles.put(parent.getFile().getCanonicalPath() + "-" + file.getCanonicalPath(), currentNode);
+				}
 
 				String results[];
 				boolean needToCache = false;
@@ -164,6 +175,9 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 					results = cache.get(file.getAbsolutePath());
 				}
 				Vector<String> cacheLines = new Vector<String>();
+
+				//				ELFNode node = analystELF(currentNode, null, debugStr + "    ");
+
 				for (String line : results) {
 					if (!started) {
 						return null;
@@ -204,23 +218,24 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 								System.out.println("can't found : " + words[1]);
 							}
 						}
-						// }
 						if (childFile != null && childFile.isFile()) {
 							try {
-								if (parsedFiles.keySet().contains(file.getCanonicalPath() + "-" + childFile.getCanonicalPath())) {
-									ELFNode childNode = parsedFiles.get(file.getCanonicalPath() + "-" + childFile.getCanonicalPath());
-									currentNode.child.add(childNode);
-									childNode.parent.add(currentNode);
-									System.out.println("parsed : " + file.getCanonicalPath() + "-" + childFile.getCanonicalPath());
-								} else {
-									ELFNode node = analystELF(currentNode, childFile, debugStr + "    ");
-									if (node != null) {
-										parsedFiles.put(file.getCanonicalPath() + "-" + childFile.getCanonicalPath(), node);
-										currentNode.child.add(node);
-										jLabel1.setText(noOfVertex + " " + file.getCanonicalPath());
-										noOfVertex++;
-									}
-								}
+								//								if (parsedFiles.keySet().contains(file.getCanonicalPath() + "-" + childFile.getCanonicalPath())) {
+								//									ELFNode childNode = parsedFiles.get(file.getCanonicalPath() + "-" + childFile.getCanonicalPath());
+								//									currentNode.child.add(childNode);
+								//									childNode.parent.add(currentNode);
+								//									System.out.println("parsed : " + file.getCanonicalPath() + "-" + childFile.getCanonicalPath());
+								//								} else {
+								//									parsedFiles.put(file.getCanonicalPath() + "-" + childFile.getCanonicalPath(), null);
+								analystELF(currentNode, childFile, debugStr + "    ");
+								//									if (node != null) {
+								//										System.out.println("<<" + file.getCanonicalPath() + "-" + childFile.getCanonicalPath());
+								//										parsedFiles.put(file.getCanonicalPath() + "-" + childFile.getCanonicalPath(), node);
+								//										currentNode.child.add(node);
+								//										jLabel1.setText(noOfVertex + " " + file.getCanonicalPath());
+								//										noOfVertex++;
+								//									}
+								//								}
 								Global.debug(debugStr + noOfVertex + "," + currentNode.file.getCanonicalPath() + "======" + childFile.getCanonicalPath());
 							} catch (Exception ex) {
 								ex.printStackTrace();
