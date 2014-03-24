@@ -942,7 +942,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 					}
 					//end rank
 
-					addDotCells(of, (ELFNode) myTreeModel.getRoot(), chckbxEdge.isSelected(), maxDepthOfTree, d);
+					addDotCells(of, (ELFNode) myTreeModel.getRoot(), chckbxEdge.isSelected(), maxDepthOfTree, d, new Vector<String>());
 
 					of.write("\t{\n\t");
 					//of.write("\t\tnode[shape=box fontsize=8 width=0.2 height=0.1];\n");
@@ -1054,15 +1054,20 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		Iterator<ELFNode> ir = node.child.iterator();
 		while (ir.hasNext()) {
 			ELFNode childNode = ir.next();
-			int childLevel = getMaxDepth(childNode);
-			if (childLevel > maxChildDepth) {
-				maxChildDepth = childLevel;
+			if (childNode.level > node.level) {
+				int childLevel = getMaxDepth(childNode);
+				if (childLevel > maxChildDepth) {
+					maxChildDepth = childLevel;
+				}
 			}
 		}
 		return maxChildDepth;
 	}
 
-	private void addDotCells(BufferedWriter writer, ELFNode node, boolean hasEdge, int maxDepthOfTree, JProgressBarDialog d) throws IOException {
+	private void addDotCells(BufferedWriter writer, ELFNode node, boolean hasEdge, int maxDepthOfTree, JProgressBarDialog d, Vector<String> parsed) throws IOException {
+		if (parsed.contains(node.getFile().getName())) {
+			return;
+		}
 		if (filterNoChildNodejCheckBox.isSelected() && node.getChildCount() == 0 && node.getParent().getParent() == null) {
 			return;
 		}
@@ -1070,6 +1075,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		if (!node.file.getName().equals("Peter") && !finishedDotNodes.contains(node.file.getName())) {
 			if ((maxDepthOfTree - node.getLevel()) <= (Integer) maxLevelSpinner.getValue()) {
 				writer.write("\t\"" + node.file.getName() + "\" [];\n");
+				parsed.add(node.file.getName());
 				finishedDotNodes.add(node.file.getName());
 			}
 		}
@@ -1087,7 +1093,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 					allEdges.add(node.file.getName() + "\" -> \"" + childNode.file.getName());
 				}
 			}
-			addDotCells(writer, childNode, hasEdge, maxDepthOfTree, d);
+			addDotCells(writer, childNode, hasEdge, maxDepthOfTree, d, parsed);
 		}
 	}
 
