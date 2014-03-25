@@ -87,21 +87,21 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 	@Override
 	public void run() {
 		noOfVertex = 0;
-		ELFNode node = null;
+		//		ELFNode node = null;
 		ELFNode root = new ELFNode(null, new File("Peter"), null, true);
 		parsedFiles.clear();
 		for (File file : files) {
 			if (file.isFile()) {
-				node = analystELF(root, file, "");
-				if (node != null) {
-					root.child.add(node);
-				}
+				analystELF(root, file, "");
+				//				if (node != null) {
+				//					root.child.add(node);
+				//				}
 			} else {
 				for (File f : file.listFiles()) {
-					node = analystELF(root, f, "");
-					if (node != null && node.file != null && node.file.isFile()) {
-						root.child.add(node);
-					}
+					analystELF(root, f, "");
+					//					if (node != null && node.file != null && node.file.isFile()) {
+					//						root.child.add(node);
+					//					}
 				}
 			}
 		}
@@ -113,7 +113,7 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 		this.setVisible(false);
 	}
 
-	private ELFNode analystELF(ELFNode parent, File file, String debugStr) {
+	private void analystELF(ELFNode parent, File file, String debugStr) {
 		try {
 			System.out.println(file.getName());
 			if (file.isDirectory()) {
@@ -128,7 +128,7 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 					jLabel1.setText("Processing directory " + file.getAbsolutePath());
 					analystELF(parent, f, debugStr + "    ");
 				}
-				return parent;
+				//				return parent;
 			} else {
 				Setting setting = Setting.getInstance();
 
@@ -143,14 +143,14 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 					setting.save();
 				}
 				if (noOfVertex >= MAX_NUMBER_OF_VERTEX) {
-					return null;
+					//					return null;
 				}
 
 				ELFNode currentNode;
 				if (parsedFiles.keySet().contains(parent.getFile().getCanonicalPath() + "-" + file.getCanonicalPath())) {
 					currentNode = parsedFiles.get(parent.getFile().getCanonicalPath() + "-" + file.getCanonicalPath());
 					parent.child.add(currentNode);
-					return currentNode;
+					//					return currentNode;
 				} else {
 					currentNode = new ELFNode(parent, file, null, false);
 					parent.child.add(currentNode);
@@ -174,7 +174,7 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 
 				for (String line : results) {
 					if (!started) {
-						return null;
+						return;
 					}
 					String words[];
 					if (Global.isMac) {
@@ -242,11 +242,11 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 					cacheLines.toArray(temp);
 					cache.put(file.getAbsolutePath(), temp);
 				}
-				return currentNode;
+				//				return currentNode;
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			return null;
+			//			return null;
 		}
 	}
 
