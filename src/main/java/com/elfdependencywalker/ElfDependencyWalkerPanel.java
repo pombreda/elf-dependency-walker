@@ -79,6 +79,7 @@ import com.mxgraph.view.mxGraph;
 import com.peterswing.CommonLib;
 import com.peterswing.advancedswing.jdropdownbutton.JDropDownButton;
 import com.peterswing.advancedswing.jprogressbardialog.JProgressBarDialog;
+import com.peterswing.advancedswing.jprogressbardialog.JProgressBarDialogEventListener;
 
 public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Printable {
 	private JTabbedPane tabbedPane1;
@@ -431,84 +432,100 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		}
 	}
 
-	public void updateJGraphx(MyTreeModel model) {
-		//		if (1 < 2)
-		//			return;
-		graph = new mxGraph() {
-			public void drawState(mxICanvas canvas, mxCellState state, String label) {
-				if (getModel().isVertex(state.getCell()) && canvas instanceof PeterSwingCanvas) {
-					PeterSwingCanvas c = (PeterSwingCanvas) canvas;
-					c.drawVertex(state, label);
-				} else {
-					// draw edge, at least
-					//					super.drawState(canvas, state, label);
+	public boolean updateJGraphx(MyTreeModel model) {
+		final JProgressBarDialog d = new JProgressBarDialog(jframe, "Updating tree...", true);
+		d.jProgressBar.setIndeterminate(true);
+		d.jProgressBar.setStringPainted(true);
+		Thread longRunningThread = new Thread() {
+			public void run() {
+
+				graph = new mxGraph() {
+					public void drawState(mxICanvas canvas, mxCellState state, String label) {
+						if (getModel().isVertex(state.getCell()) && canvas instanceof PeterSwingCanvas) {
+							PeterSwingCanvas c = (PeterSwingCanvas) canvas;
+							c.drawVertex(state, label);
+						} else {
+							// draw edge, at least
+							//					super.drawState(canvas, state, label);
+						}
+					}
+
+					// Ports are not used as terminals for edges, they are
+					// only used to compute the graphical connection point
+
+					public boolean isPort(Object cell) {
+						mxGeometry geo = getCellGeometry(cell);
+
+						return (geo != null) ? geo.isRelative() : false;
+					}
+
+					// Implements a tooltip that shows the actual
+					// source and target of an edge
+					public String getToolTipForCell(Object cell) {
+						if (model.isEdge(cell)) {
+							return convertValueToString(model.getTerminal(cell, true)) + " -> " + convertValueToString(model.getTerminal(cell, false));
+						}
+
+						return super.getToolTipForCell(cell);
+					}
+
+					public boolean isCellFoldable(Object cell, boolean collapse) {
+						return false;
+					}
+				};
+
+				parent = graph.getDefaultParent();
+				allNodes.clear();
+				Iterator<ELFNode> ir = ((ELFNode) myTreeModel.getRoot()).child.iterator();
+				while (ir.hasNext()) {
+					ELFNode n = ir.next();
+					addCells(parent, n, null);
+					d.jProgressBar.setString(n.getFile().getName());
 				}
-			}
 
-			// Ports are not used as terminals for edges, they are
-			// only used to compute the graphical connection point
-
-			public boolean isPort(Object cell) {
-				mxGeometry geo = getCellGeometry(cell);
-
-				return (geo != null) ? geo.isRelative() : false;
-			}
-
-			// Implements a tooltip that shows the actual
-			// source and target of an edge
-			public String getToolTipForCell(Object cell) {
-				if (model.isEdge(cell)) {
-					return convertValueToString(model.getTerminal(cell, true)) + " -> " + convertValueToString(model.getTerminal(cell, false));
+				graph.setCellsDisconnectable(false);
+				graphComponent = new CallGraphComponent(graph);
+				graphSplitPane.add(graphComponent, JSplitPane.RIGHT);
+				{
+					panel1 = new JPanel();
+					BoxLayout jPanel1Layout = new BoxLayout(panel1, javax.swing.BoxLayout.Y_AXIS);
+					panel1.setLayout(jPanel1Layout);
+					graphSplitPane.add(panel1, JSplitPane.LEFT);
+					graphSplitPane.setDividerLocation(250);
+					panel1.setPreferredSize(new java.awt.Dimension(100, 535));
+					panel1.add(callGraphPreviewPanel);
 				}
 
-				return super.getToolTipForCell(cell);
-			}
+				graphOutline = new mxGraphOutline(graphComponent);
+				graphOutline.setBorder(new LineBorder(Color.LIGHT_GRAY));
 
-			public boolean isCellFoldable(Object cell, boolean collapse) {
-				return false;
+				BorderLayout jCallGraphPreviewPanelLayout = new BorderLayout();
+				callGraphPreviewPanel.setLayout(jCallGraphPreviewPanelLayout);
+				callGraphPreviewPanel.removeAll();
+				callGraphPreviewPanel.add(graphOutline, BorderLayout.CENTER);
+				callGraphPreviewPanel.setPreferredSize(new Dimension(100, 100));
+				{
+					jSaveToPngButton = new JButton();
+					panel1.add(jSaveToPngButton);
+					jSaveToPngButton.setText("Save png");
+					jSaveToPngButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/disk.png")));
+					jSaveToPngButton.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							jSaveToPngButtonActionPerformed(evt);
+						}
+					});
+				}
 			}
 		};
+		d.thread = longRunningThread;
+		d.setVisible(true);
 
-		parent = graph.getDefaultParent();
-		allNodes.clear();
-		Iterator<ELFNode> ir = ((ELFNode) myTreeModel.getRoot()).child.iterator();
-		while (ir.hasNext()) {
-			ELFNode n = ir.next();
-			addCells(parent, n, null);
+		try {
+			d.thread.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
-
-		graph.setCellsDisconnectable(false);
-		graphComponent = new CallGraphComponent(graph);
-		graphSplitPane.add(graphComponent, JSplitPane.RIGHT);
-		{
-			panel1 = new JPanel();
-			BoxLayout jPanel1Layout = new BoxLayout(panel1, javax.swing.BoxLayout.Y_AXIS);
-			panel1.setLayout(jPanel1Layout);
-			graphSplitPane.add(panel1, JSplitPane.LEFT);
-			graphSplitPane.setDividerLocation(250);
-			panel1.setPreferredSize(new java.awt.Dimension(100, 535));
-			panel1.add(callGraphPreviewPanel);
-		}
-
-		graphOutline = new mxGraphOutline(graphComponent);
-		graphOutline.setBorder(new LineBorder(Color.LIGHT_GRAY));
-
-		BorderLayout jCallGraphPreviewPanelLayout = new BorderLayout();
-		callGraphPreviewPanel.setLayout(jCallGraphPreviewPanelLayout);
-		callGraphPreviewPanel.removeAll();
-		callGraphPreviewPanel.add(graphOutline, BorderLayout.CENTER);
-		callGraphPreviewPanel.setPreferredSize(new Dimension(100, 100));
-		{
-			jSaveToPngButton = new JButton();
-			panel1.add(jSaveToPngButton);
-			jSaveToPngButton.setText("Save png");
-			jSaveToPngButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/disk.png")));
-			jSaveToPngButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent evt) {
-					jSaveToPngButtonActionPerformed(evt);
-				}
-			});
-		}
+		return true;
 	}
 
 	String getRandomColor() {
@@ -615,8 +632,10 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			}
 			dialog = new AnalystDialog(jframe, tree1, files);
 			dialog.setVisible(true);
-			updateJGraphx(myTreeModel);
-			dotButtonActionPerformed(null);
+			boolean success = updateJGraphx(myTreeModel);
+			if (success) {
+				dotButtonActionPerformed(null);
+			}
 		}
 	}
 
@@ -956,7 +975,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 					of.write("}\n"); //end graph
 					of.close();
 
-					System.out.println("running dot command : " + "dot -Tpng " + file.getName() + " -o elf.png");
+					d.jProgressBar.setString("running dot command : " + "dot -Tpng " + file.getName() + " -o elf.png");
 					if (Global.isMac) {
 						CommonLib.runCommand("/opt/local/bin/dot -Tpng " + file.getName() + " -o elf.png");
 					} else {
