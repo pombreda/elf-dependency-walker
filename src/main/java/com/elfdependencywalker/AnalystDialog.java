@@ -150,6 +150,7 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 				if (parsedFiles.keySet().contains(parent.getFile().getCanonicalPath() + "-" + file.getCanonicalPath())) {
 					currentNode = parsedFiles.get(parent.getFile().getCanonicalPath() + "-" + file.getCanonicalPath());
 					parent.child.add(currentNode);
+					return;
 					//					return currentNode;
 				} else {
 					currentNode = new ELFNode(parent, file, null, false);
