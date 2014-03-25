@@ -857,7 +857,13 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		final JFileChooser fc = new JFileChooser(Setting.getInstance().lastOpenPath);
 		int returnVal = fc.showSaveDialog(this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			saveImage(this.graphComponent.getGraphControl(), fc.getSelectedFile());
+			File file;
+			if (fc.getSelectedFile().getName().endsWith(".png")) {
+				file = fc.getSelectedFile();
+			} else {
+				file = new File(fc.getSelectedFile().getAbsolutePath() + ".png");
+			}
+			saveImage(this.graphComponent.getGraphControl(), file);
 		}
 	}
 
