@@ -2,7 +2,7 @@ package com.elfdependencywalker;
 
 public class Global {
 	public static String version = "20140326";
-	public static boolean debug = false;
+	public static boolean debug = true;
 	public static boolean isMac = false;
 
 	public static void debug(String str) {

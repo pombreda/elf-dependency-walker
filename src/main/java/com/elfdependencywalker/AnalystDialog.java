@@ -109,16 +109,12 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 	private void analystELF(ELFNode parent, File file, String debugStr) {
 		try {
 			if (file.isDirectory()) {
-				//				try {
-				//					parsedFiles.put(file.getCanonicalPath(), null);
-				//				} catch (Exception ex) {
-				//					ex.printStackTrace();
-				//					return null;
-				//				}
-
 				for (File f : file.listFiles()) {
-					label1.setText("Processing directory " + file.getAbsolutePath());
-					analystELF(parent, f, debugStr + "    ");
+					String filename = f.getName().toLowerCase();
+					if (filename.contains(".so") || filename.contains(".dylib")) {
+						label1.setText("Processing directory " + file.getAbsolutePath());
+						analystELF(parent, f, debugStr + "    ");
+					}
 				}
 				return;
 			} else {
