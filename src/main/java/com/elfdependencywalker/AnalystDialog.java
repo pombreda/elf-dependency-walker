@@ -20,8 +20,8 @@ import javax.swing.LayoutStyle;
 import com.peterswing.CommonLib;
 
 public class AnalystDialog extends javax.swing.JDialog implements Runnable {
-	private JButton jCancelButton;
-	private JLabel jLabel1;
+	private JButton cancelButton;
+	private JLabel label1;
 	private JTree jTree;
 	private File files[];
 	final int MAX_NUMBER_OF_VERTEX = 100000000;
@@ -55,28 +55,28 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 					thisWindowActivated(evt);
 				}
 			});
-			jCancelButton = new JButton();
-			jCancelButton.addActionListener(new ActionListener() {
+			cancelButton = new JButton();
+			cancelButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent evt) {
 					jCancelButtonActionPerformed(evt);
 				}
 			});
-			jCancelButton.setText("Cancel");
-			jLabel1 = new JLabel();
-			thisLayout.setVerticalGroup(thisLayout.createSequentialGroup().addContainerGap().addComponent(jLabel1, 0, 44, Short.MAX_VALUE)
+			cancelButton.setText("Cancel");
+			label1 = new JLabel();
+			thisLayout.setVerticalGroup(thisLayout.createSequentialGroup().addContainerGap().addComponent(label1, 0, 44, Short.MAX_VALUE)
 					.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-					.addComponent(jCancelButton, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE).addContainerGap());
+					.addComponent(cancelButton, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE).addContainerGap());
 			thisLayout.setHorizontalGroup(thisLayout
 					.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(
 							thisLayout
 									.createParallelGroup()
-									.addComponent(jLabel1, GroupLayout.Alignment.LEADING, 0, 378, Short.MAX_VALUE)
+									.addComponent(label1, GroupLayout.Alignment.LEADING, 0, 378, Short.MAX_VALUE)
 									.addGroup(
 											GroupLayout.Alignment.LEADING,
 											thisLayout.createSequentialGroup().addGap(0, 317, Short.MAX_VALUE)
-													.addComponent(jCancelButton, GroupLayout.PREFERRED_SIZE, 62, GroupLayout.PREFERRED_SIZE))).addContainerGap());
+													.addComponent(cancelButton, GroupLayout.PREFERRED_SIZE, 62, GroupLayout.PREFERRED_SIZE))).addContainerGap());
 
 			this.setSize(418, 126);
 		} catch (Exception e) {
@@ -87,21 +87,21 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 	@Override
 	public void run() {
 		noOfVertex = 0;
-		//		ELFNode node = null;
+		ELFNode node = null;
 		ELFNode root = new ELFNode(null, new File("Peter"), null, true);
 		parsedFiles.clear();
 		for (File file : files) {
 			if (file.isFile()) {
-				analystELF(root, file, "");
-				//				if (node != null) {
-				//					root.child.add(node);
-				//				}
+				node = analystELF(root, file, "");
+				if (node != null) {
+					root.child.add(node);
+				}
 			} else {
 				for (File f : file.listFiles()) {
-					analystELF(root, f, "");
-					//					if (node != null && node.file != null && node.file.isFile()) {
-					//						root.child.add(node);
-					//					}
+					node = analystELF(root, f, "");
+					if (node != null && node.file != null && node.file.isFile()) {
+						root.child.add(node);
+					}
 				}
 			}
 		}
@@ -109,13 +109,12 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 		if (root != null) {
 			((MyTreeModel) jTree.getModel()).setRoot(root);
 		}
-		this.jCancelButton.setText("Finished");
+		this.cancelButton.setText("Finished");
 		this.setVisible(false);
 	}
 
-	private void analystELF(ELFNode parent, File file, String debugStr) {
+	private ELFNode analystELF(ELFNode parent, File file, String debugStr) {
 		try {
-//			System.out.println(file.getName());
 			if (file.isDirectory()) {
 				//				try {
 				//					parsedFiles.put(file.getCanonicalPath(), null);
@@ -125,10 +124,10 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 				//				}
 
 				for (File f : file.listFiles()) {
-					jLabel1.setText("Processing directory " + file.getAbsolutePath());
+					label1.setText("Processing directory " + file.getAbsolutePath());
 					analystELF(parent, f, debugStr + "    ");
 				}
-				//				return parent;
+				return parent;
 			} else {
 				Setting setting = Setting.getInstance();
 
@@ -143,15 +142,14 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 					setting.save();
 				}
 				if (noOfVertex >= MAX_NUMBER_OF_VERTEX) {
-					//					return null;
+					return null;
 				}
 
 				ELFNode currentNode;
 				if (parsedFiles.keySet().contains(parent.getFile().getCanonicalPath() + "-" + file.getCanonicalPath())) {
 					currentNode = parsedFiles.get(parent.getFile().getCanonicalPath() + "-" + file.getCanonicalPath());
 					parent.child.add(currentNode);
-					return;
-					//					return currentNode;
+					return currentNode;
 				} else {
 					currentNode = new ELFNode(parent, file, null, false);
 					parent.child.add(currentNode);
@@ -175,7 +173,7 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 
 				for (String line : results) {
 					if (!started) {
-						return;
+						return null;
 					}
 					String words[];
 					if (Global.isMac) {
@@ -214,6 +212,7 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 							}
 						}
 						if (childFile != null && childFile.isFile()) {
+							label1.setText("Processing file " + childFile.getAbsolutePath());
 							try {
 								//								if (parsedFiles.keySet().contains(file.getCanonicalPath() + "-" + childFile.getCanonicalPath())) {
 								//									ELFNode childNode = parsedFiles.get(file.getCanonicalPath() + "-" + childFile.getCanonicalPath());
@@ -243,11 +242,11 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 					cacheLines.toArray(temp);
 					cache.put(file.getAbsolutePath(), temp);
 				}
-				//				return currentNode;
+				return currentNode;
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			//			return null;
+			return null;
 		}
 	}
 
