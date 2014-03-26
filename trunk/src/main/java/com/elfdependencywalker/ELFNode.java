@@ -2,6 +2,7 @@ package com.elfdependencywalker;
 
 import java.io.File;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 
@@ -103,20 +104,20 @@ public class ELFNode implements TreeNode, Comparable {
 		if (level != -1) {
 			return level;
 		} else {
-			level = getLevel(this, -1);
+			level = getLevel(this, -1, new HashSet<String>());
 			return level;
 		}
 	}
 
-	public int getLevel(ELFNode node, int level) {
-		if (node == null || node.parent.size() == 0) {
+	public int getLevel(ELFNode node, int level, HashSet<String> parsedNode) {
+		if (node == null || node.parent.size() == 0 || parsedNode.contains(node.getFile().getName())) {
 			return level;
 		}
-		//		System.out.println(level + ":" + node.file.getName());
+		parsedNode.add(node.getFile().getName());
 		int maxLevel = 0;
 		Iterator<ELFNode> ir = node.parent.iterator();
 		while (ir.hasNext()) {
-			int temp = getLevel(ir.next(), level + 1);
+			int temp = getLevel(ir.next(), level + 1, parsedNode);
 			if (temp > maxLevel) {
 				maxLevel = temp;
 			}

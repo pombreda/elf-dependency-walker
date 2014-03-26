@@ -1038,6 +1038,9 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	}
 
 	private void getAllNodes(Vector<ELFNode> allNodes, ELFNode node) {
+		if (allNodes.contains(node)) {
+			return;
+		}
 		allNodes.add(node);
 		Iterator<ELFNode> ir = node.child.iterator();
 		while (ir.hasNext()) {
@@ -1076,12 +1079,8 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		}
 		int maxChildDepth = node.getLevel();
 		Iterator<ELFNode> ir = node.child.iterator();
-		System.out.println(node.child.size());
-		System.out.println(ir.hasNext());
 		while (ir.hasNext()) {
-			System.out.println("fuck");
 			ELFNode childNode = ir.next();
-			System.out.println(childNode.getLevel() + ">" + node.getLevel());
 			if (childNode.getLevel() > node.getLevel()) {
 				int childLevel = getMaxDepth(childNode);
 				if (childLevel > maxChildDepth) {
