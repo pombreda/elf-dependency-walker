@@ -20,7 +20,7 @@ public class ELFNode implements TreeNode, Comparable {
 	//	ELFNode parent;
 	public LinkedHashSet<ELFNode> parent = new LinkedHashSet<ELFNode>();
 	public LinkedHashSet<ELFNode> child = new LinkedHashSet<ELFNode>();
-	int level = -1;
+	private int level = -1;
 
 	public ELFNode(ELFNode parent, File file, String result, boolean notFound) {
 		this.parent.add(parent);
