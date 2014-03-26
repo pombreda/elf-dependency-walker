@@ -79,7 +79,6 @@ import com.mxgraph.view.mxGraph;
 import com.peterswing.CommonLib;
 import com.peterswing.advancedswing.jdropdownbutton.JDropDownButton;
 import com.peterswing.advancedswing.jprogressbardialog.JProgressBarDialog;
-import com.peterswing.advancedswing.jprogressbardialog.JProgressBarDialogEventListener;
 
 public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Printable {
 	private JTabbedPane tabbedPane1;
@@ -1077,9 +1076,13 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		}
 		int maxChildDepth = node.getLevel();
 		Iterator<ELFNode> ir = node.child.iterator();
+		System.out.println(node.child.size());
+		System.out.println(ir.hasNext());
 		while (ir.hasNext()) {
+			System.out.println("fuck");
 			ELFNode childNode = ir.next();
-			if (childNode.level > node.level) {
+			System.out.println(childNode.getLevel() + ">" + node.getLevel());
+			if (childNode.getLevel() > node.getLevel()) {
 				int childLevel = getMaxDepth(childNode);
 				if (childLevel > maxChildDepth) {
 					maxChildDepth = childLevel;
