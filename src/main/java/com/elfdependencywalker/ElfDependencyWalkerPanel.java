@@ -748,9 +748,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			Setting.getInstance().lastOpenPath = fc.getSelectedFile().getAbsolutePath();
 			AnalystDialog d = new AnalystDialog(jframe, tree1, fc.getSelectedFiles());
 			d.setVisible(true);
-			System.out.println("updateJGraphx(myTreeModel);");
 			updateJGraphx(myTreeModel);
-			System.out.println("dotButtonActionPerformed(null);");
 			dotButtonActionPerformed(null);
 		}
 	}
@@ -1078,16 +1076,16 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			return 0;
 		}
 		int maxChildDepth = node.getLevel();
-		Iterator<ELFNode> ir = node.child.iterator();
-		while (ir.hasNext()) {
-			ELFNode childNode = ir.next();
-			if (childNode.getLevel() > node.getLevel()) {
-				int childLevel = getMaxDepth(childNode);
-				if (childLevel > maxChildDepth) {
-					maxChildDepth = childLevel;
-				}
-			}
-		}
+//		Iterator<ELFNode> ir = node.child.iterator();
+//		while (ir.hasNext()) {
+//			ELFNode childNode = ir.next();
+//			if (childNode.getLevel() > node.getLevel()) {
+//				int childLevel = getMaxDepth(childNode);
+//				if (childLevel > maxChildDepth) {
+//					maxChildDepth = childLevel;
+//				}
+//			}
+//		}
 		return maxChildDepth;
 	}
 
