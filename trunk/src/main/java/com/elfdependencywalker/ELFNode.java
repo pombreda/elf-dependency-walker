@@ -101,7 +101,7 @@ public class ELFNode implements TreeNode, Comparable {
 	}
 
 	public int getLevel() {
-		if (level != -1) {
+		if (level >= 0) {
 			return level;
 		} else {
 			level = getLevel(this, -1, new HashSet<String>());

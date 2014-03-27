@@ -1,10 +1,10 @@
 <Setting>
   <x>0</x>
-  <y>22</y>
+  <y>24</y>
   <width>1440</width>
-  <height>835</height>
+  <height>852</height>
   <divX>248</divX>
-  <lastOpenPath>/usr/bin</lastOpenPath>
+  <lastOpenPath>/lib</lastOpenPath>
   <historyList>
     <string>/usr/bin/acpi_listen</string>
     <string>/usr/bin/POST</string>
@@ -30,6 +30,10 @@
     <string>/usr/lib/libevview3.so.3</string>
     <string>/usr/lib/libevview3.so.3.0.0</string>
     <string>/usr/bin/java</string>
+    <string>/lib/x86_64-linux-gnu/libpthread.so.0</string>
+    <string>/lib/libbrlapi.so.0.5.6</string>
+    <string>/lib/libgssglue.so.1.0.0</string>
+    <string>/lib/libbrlapi.so.0.5</string>
   </historyList>
   <lookupDirectory>
     <string>/usr</string>
