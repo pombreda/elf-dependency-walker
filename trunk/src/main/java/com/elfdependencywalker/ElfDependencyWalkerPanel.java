@@ -94,7 +94,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	private JEditorPane textArea1;
 	private JTree tree1;
 	public JSplitPane splitPane1;
-	private JButton jSaveToPngButton;
+	private JButton saveToPngButton;
 	private JCheckBox filterNoChildNodejCheckBox;
 	private JButton dotButton;
 	private JButton zoom100Button;
@@ -504,13 +504,13 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 				callGraphPreviewPanel.add(graphOutline, BorderLayout.CENTER);
 				callGraphPreviewPanel.setPreferredSize(new Dimension(100, 100));
 				{
-					jSaveToPngButton = new JButton();
-					panel1.add(jSaveToPngButton);
-					jSaveToPngButton.setText("Save png");
-					jSaveToPngButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/disk.png")));
-					jSaveToPngButton.addActionListener(new ActionListener() {
+					saveToPngButton = new JButton();
+					panel1.add(saveToPngButton);
+					saveToPngButton.setText("Save png");
+					saveToPngButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/famfam_icons/disk.png")));
+					saveToPngButton.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
-							jSaveToPngButtonActionPerformed(evt);
+							saveToPngButtonActionPerformed(evt);
 						}
 					});
 				}
@@ -828,7 +828,11 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 
 	public static boolean saveImage(Image image, File file) {
 		try {
-			ImageIO.write(imageToBufferedImage(image), "PNG", file);
+			if (file.getName().endsWith(".png")) {
+				ImageIO.write(imageToBufferedImage(image), "PNG", file);
+			} else {
+				ImageIO.write(imageToBufferedImage(image), "PNG", new File(file.getAbsolutePath() + File.separator + ".png"));
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
@@ -850,11 +854,12 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		return true;
 	}
 
-	private void jSaveToPngButtonActionPerformed(ActionEvent evt) {
+	private void saveToPngButtonActionPerformed(ActionEvent evt) {
 		final JFileChooser fc = new JFileChooser(Setting.getInstance().lastOpenPath);
 		int returnVal = fc.showSaveDialog(this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			File file;
+			System.out.println(fc.getSelectedFile().getName());
 			if (fc.getSelectedFile().getName().endsWith(".png")) {
 				file = fc.getSelectedFile();
 			} else {
@@ -1076,16 +1081,16 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			return 0;
 		}
 		int maxChildDepth = node.getLevel();
-//		Iterator<ELFNode> ir = node.child.iterator();
-//		while (ir.hasNext()) {
-//			ELFNode childNode = ir.next();
-//			if (childNode.getLevel() > node.getLevel()) {
-//				int childLevel = getMaxDepth(childNode);
-//				if (childLevel > maxChildDepth) {
-//					maxChildDepth = childLevel;
-//				}
-//			}
-//		}
+		//		Iterator<ELFNode> ir = node.child.iterator();
+		//		while (ir.hasNext()) {
+		//			ELFNode childNode = ir.next();
+		//			if (childNode.getLevel() > node.getLevel()) {
+		//				int childLevel = getMaxDepth(childNode);
+		//				if (childLevel > maxChildDepth) {
+		//					maxChildDepth = childLevel;
+		//				}
+		//			}
+		//		}
 		return maxChildDepth;
 	}
 
