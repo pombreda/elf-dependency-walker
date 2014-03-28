@@ -86,6 +86,18 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 
 	@Override
 	public void run() {
+		Setting setting = Setting.getInstance();
+		if (setting.lookupDirectory.size() == 0) {
+			String s[] = "/usr\n/usr/lib\n/lib\n/usr/local/lib\n/lib64\n/usr/lib64\n/usr/local/lib64".split("\n");
+			setting.lookupDirectory.clear();
+			for (String a : s) {
+				if (!a.equals("")) {
+					setting.lookupDirectory.add(a);
+				}
+			}
+			setting.save();
+		}
+
 		noOfVertex = 0;
 		ELFNode root = new ELFNode(null, new File("Peter"), null, true);
 		parsedFiles.clear();
@@ -111,25 +123,13 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 			if (file.isDirectory()) {
 				for (File f : file.listFiles()) {
 					String filename = f.getName().toLowerCase();
-					if (filename.contains(".so") || filename.contains(".dylib")) {
+					if (filename.contains(".so") || filename.contains(".dylib") || filename.contains(".a") || filename.contains(".o")) {
 						label1.setText("Processing directory " + file.getAbsolutePath());
 						analystELF(parent, f, debugStr + "    ");
 					}
 				}
 				return;
 			} else {
-				Setting setting = Setting.getInstance();
-
-				if (setting.lookupDirectory.size() == 0) {
-					String s[] = "/usr\n/usr/lib\n/lib\n/usr/local/lib\n/lib64\n/usr/lib64\n/usr/local/lib64".split("\n");
-					setting.lookupDirectory.clear();
-					for (String a : s) {
-						if (!a.equals("")) {
-							setting.lookupDirectory.add(a);
-						}
-					}
-					setting.save();
-				}
 				if (noOfVertex >= MAX_NUMBER_OF_VERTEX) {
 					return;
 				}
@@ -143,8 +143,9 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 				} else {
 					currentNode = new ELFNode(parent, file, null, false);
 					parent.child.add(currentNode);
-					parsedFiles.put(parent.getFile().getCanonicalPath() + "-" + file.getCanonicalPath(), currentNode);
+					parsedFiles.put(canonicalPath, currentNode);
 				}
+				Global.debug(debugStr + noOfVertex + "," + canonicalPath);
 
 				String results[];
 				boolean needToCache = false;
@@ -185,7 +186,7 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 								found = true;
 							}
 						} else {
-							for (String s : setting.lookupDirectory) {
+							for (String s : Setting.getInstance().lookupDirectory) {
 								if (new File(s + "/" + words[1]).exists()) {
 									childFile = new File(s + "/" + words[1]);
 									found = true;
@@ -203,27 +204,7 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 						}
 						if (childFile != null && childFile.isFile()) {
 							label1.setText("Processing file " + childFile.getAbsolutePath());
-							try {
-								//								if (parsedFiles.keySet().contains(file.getCanonicalPath() + "-" + childFile.getCanonicalPath())) {
-								//									ELFNode childNode = parsedFiles.get(file.getCanonicalPath() + "-" + childFile.getCanonicalPath());
-								//									currentNode.child.add(childNode);
-								//									childNode.parent.add(currentNode);
-								//									System.out.println("parsed : " + file.getCanonicalPath() + "-" + childFile.getCanonicalPath());
-								//								} else {
-								//									parsedFiles.put(file.getCanonicalPath() + "-" + childFile.getCanonicalPath(), null);
-								analystELF(currentNode, childFile, debugStr + "    ");
-								//									if (node != null) {
-								//										System.out.println("<<" + file.getCanonicalPath() + "-" + childFile.getCanonicalPath());
-								//										parsedFiles.put(file.getCanonicalPath() + "-" + childFile.getCanonicalPath(), node);
-								//										currentNode.child.add(node);
-								//										jLabel1.setText(noOfVertex + " " + file.getCanonicalPath());
-								//										noOfVertex++;
-								//									}
-								//								}
-								Global.debug(debugStr + noOfVertex + "," + currentNode.file.getCanonicalPath() + "======" + childFile.getCanonicalPath());
-							} catch (Exception ex) {
-								ex.printStackTrace();
-							}
+							analystELF(currentNode, childFile, debugStr + "    ");
 						}
 					}
 				}
