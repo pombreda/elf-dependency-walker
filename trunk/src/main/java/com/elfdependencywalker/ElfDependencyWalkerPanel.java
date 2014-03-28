@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -302,7 +303,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 						try {
 							BufferedWriter of = new BufferedWriter(new FileWriter(file));
 							of.write("Source,Target,Type,Id,Label,Weight\n");
-							genGephiCSV(of, (ELFNode) myTreeModel.getRoot(), 1);
+							genGephiCSV(of, (ELFNode) myTreeModel.getRoot(), 1, new HashSet<String>());
 							of.close();
 						} catch (Exception ex) {
 							ex.printStackTrace();
@@ -1127,22 +1128,26 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		}
 	}
 
-	protected void genGephiCSV(BufferedWriter of, ELFNode node, int id) throws IOException {
+	protected void genGephiCSV(BufferedWriter of, ELFNode node, int id, HashSet<String> parsed) throws IOException {
 		Iterator<ELFNode> ir = node.child.iterator();
 		while (ir.hasNext()) {
 			ELFNode childNode = ir.next();
-			if (node.file.getName().equals("peter")) {
+			if (parsed.contains(childNode.file.getName())) {
+				continue;
+			}
+			parsed.add(childNode.file.getName());
+			if (node.file.getName().equals("Peter")) {
 				continue;
 			}
 			if (!node.file.getName().equals(childNode.file.getName())) {
-				of.write(node.file.getName() + "," + childNode.file.getName() + ",Directed," + id + "," + node.file.getName() + ",1.0\n");
+				of.write(node.file.getName() + "," + childNode.file.getName() + ",Directed," + id + "," + node.file.getName() + "," + node.getLevel() + "\n");
 				id++;
 			}
 		}
 		ir = node.child.iterator();
 		while (ir.hasNext()) {
 			ELFNode childNode = ir.next();
-			genGephiCSV(of, childNode, id);
+			genGephiCSV(of, childNode, id, parsed);
 		}
 	}
 }
