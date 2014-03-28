@@ -1082,16 +1082,16 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			return 0;
 		}
 		int maxChildDepth = node.getLevel();
-		//		Iterator<ELFNode> ir = node.child.iterator();
-		//		while (ir.hasNext()) {
-		//			ELFNode childNode = ir.next();
-		//			if (childNode.getLevel() > node.getLevel()) {
-		//				int childLevel = getMaxDepth(childNode);
-		//				if (childLevel > maxChildDepth) {
-		//					maxChildDepth = childLevel;
-		//				}
-		//			}
-		//		}
+		Iterator<ELFNode> ir = node.child.iterator();
+		while (ir.hasNext()) {
+			ELFNode childNode = ir.next();
+			if (childNode.getLevel() > node.getLevel()) {
+				int childLevel = getMaxDepth(childNode);
+				if (childLevel > maxChildDepth) {
+					maxChildDepth = childLevel;
+				}
+			}
+		}
 		return maxChildDepth;
 	}
 

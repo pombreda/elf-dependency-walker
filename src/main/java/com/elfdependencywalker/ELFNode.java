@@ -122,7 +122,7 @@ public class ELFNode implements TreeNode, Comparable {
 				maxLevel = temp;
 			}
 		}
-		return maxLevel + level;
+		return maxLevel;
 	}
 
 	@Override
