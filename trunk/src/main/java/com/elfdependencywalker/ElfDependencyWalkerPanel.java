@@ -1129,18 +1129,21 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	}
 
 	protected void genGephiCSV(BufferedWriter of, ELFNode node, int id, HashSet<String> parsed) throws IOException {
+		if (parsed.contains(node.file.getName())) {
+			return;
+		}
+		parsed.add(node.file.getName());
+
 		Iterator<ELFNode> ir = node.child.iterator();
 		while (ir.hasNext()) {
 			ELFNode childNode = ir.next();
-			if (parsed.contains(childNode.file.getName())) {
-				continue;
-			}
-			parsed.add(childNode.file.getName());
 			if (node.file.getName().equals("Peter")) {
 				continue;
 			}
 			if (!node.file.getName().equals(childNode.file.getName())) {
-				of.write(node.file.getName() + "," + childNode.file.getName() + ",Directed," + id + "," + node.file.getName() + "," + node.getLevel() + "\n");
+				if ((filterNoChildNodejCheckBox.isSelected() && childNode.getChildCount() > 0) || !filterNoChildNodejCheckBox.isSelected()) {
+					of.write(node.file.getName() + "," + childNode.file.getName() + ",Directed," + id + "," + node.file.getName() + "," + node.getLevel() + "\n");
+				}
 				id++;
 			}
 		}
