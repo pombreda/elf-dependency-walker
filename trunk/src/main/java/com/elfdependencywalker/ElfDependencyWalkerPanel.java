@@ -924,7 +924,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 					Global.debug("maxDepthOfTree=" + maxDepthOfTree);
 
 					//rank
-					for (int x = maxDepthOfTree; x >= 0; x--) {
+					for (int x = maxDepthOfTree; x > 0; x--) {
 						int level = maxDepthOfTree - x;
 						if (level > (Integer) maxLevelSpinner.getValue()) {
 							continue;
@@ -1112,7 +1112,6 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		if (filterNoChildNodejCheckBox.isSelected() && node.getChildCount() == 0 && node.getParent().getParent() == null) {
 			return;
 		}
-		Iterator<ELFNode> ir = node.child.iterator();
 		if (!node.file.getName().equals("Peter") && !finishedDotNodes.contains(node.file.getName())) {
 			if ((maxDepthOfTree - node.getLevel()) <= (Integer) maxLevelSpinner.getValue()) {
 				writer.write("\t\"" + node.file.getName() + "\" [];\n");
@@ -1125,13 +1124,16 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		float g = numGen.nextFloat();
 		float b = numGen.nextFloat();
 
+		Iterator<ELFNode> ir = node.child.iterator();
 		while (ir.hasNext()) {
 			ELFNode childNode = ir.next();
 			if (hasEdge && !node.file.getName().equals("Peter") && !allEdges.contains(node.file.getName() + "\" -> \"" + childNode.file.getName())) {
 				if ((maxDepthOfTree - node.getLevel()) <= (Integer) maxLevelSpinner.getValue() && (maxDepthOfTree - childNode.getLevel()) <= (Integer) maxLevelSpinner.getValue()) {
-					d.jProgressBar.setString("\t\t\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\"");
-					writer.write("\t\t\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\" [width=1, color=\"" + r + " ," + g + ", " + b + "\"];\n");
-					allEdges.add(node.file.getName() + "\" -> \"" + childNode.file.getName());
+					if (node.getLevel() < childNode.getLevel()) {
+						d.jProgressBar.setString("\t\t\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\"");
+						writer.write("\t\t\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\" [width=1, color=\"" + r + " ," + g + ", " + b + "\"];\n");
+						allEdges.add(node.file.getName() + "\" -> \"" + childNode.file.getName());
+					}
 				}
 			}
 			addDotCells(writer, childNode, hasEdge, maxDepthOfTree, d, parsed);
