@@ -56,7 +56,7 @@ public class ELFNode implements TreeNode, Comparable {
 		if (file != null && file.isDirectory()) {
 			return file.getPath();
 		} else {
-			return file.getName();
+			return file.getName() + " ," + getLevel();
 		}
 	}
 
@@ -110,16 +110,22 @@ public class ELFNode implements TreeNode, Comparable {
 	}
 
 	public int getLevel(ELFNode node, int level, HashSet<String> parsedNode) {
+		if (node == null) {
+			return level;
+		}
 		//		if (node == null || parsedNode.contains(node.getFile().getName())) {
 		//			return level;
 		//		}
 		//		parsedNode.add(node.getFile().getName());
 		int maxLevel = 0;
-		Iterator<ELFNode> ir = node.parent.iterator();
-		while (ir.hasNext()) {
-			int temp = getLevel(ir.next(), level + 1, parsedNode);
-			if (temp > maxLevel) {
-				maxLevel = temp;
+		if (node.parent != null) {
+			Iterator<ELFNode> ir = node.parent.iterator();
+			while (ir.hasNext()) {
+				ELFNode temNode = ir.next();
+				int temp = getLevel(temNode, level + 1, parsedNode);
+				if (temp > maxLevel) {
+					maxLevel = temp;
+				}
 			}
 		}
 		return maxLevel;
