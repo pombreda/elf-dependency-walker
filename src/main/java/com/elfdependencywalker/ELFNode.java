@@ -97,7 +97,11 @@ public class ELFNode implements TreeNode, Comparable {
 
 	@Override
 	public TreeNode getParent() {
-		return (TreeNode) parent.toArray()[0];
+		if (parent.size() > 0) {
+			return (TreeNode) parent.toArray()[0];
+		} else {
+			return null;
+		}
 	}
 
 	@Override
