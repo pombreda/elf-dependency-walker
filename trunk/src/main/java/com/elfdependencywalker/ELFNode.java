@@ -110,10 +110,10 @@ public class ELFNode implements TreeNode, Comparable {
 	}
 
 	public int getLevel(ELFNode node, int level, HashSet<String> parsedNode) {
-		if (node == null || parsedNode.contains(node.getFile().getName())) {
-			return level;
-		}
-		parsedNode.add(node.getFile().getName());
+		//		if (node == null || parsedNode.contains(node.getFile().getName())) {
+		//			return level;
+		//		}
+		//		parsedNode.add(node.getFile().getName());
 		int maxLevel = 0;
 		Iterator<ELFNode> ir = node.parent.iterator();
 		while (ir.hasNext()) {

@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -82,6 +83,7 @@ import com.peterswing.advancedswing.jdropdownbutton.JDropDownButton;
 import com.peterswing.advancedswing.jprogressbardialog.JProgressBarDialog;
 
 public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Printable {
+	File files[] = null;
 	private JTabbedPane tabbedPane1;
 	private JPanel treePanel;
 	private JScrollPane scrollPane1;
@@ -389,7 +391,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			buttonZoomIn = new JButton("+");
 			buttonZoomIn.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					ImageIcon icon = new ImageIcon("elf.png");
+					ImageIcon icon = new ImageIcon(Global.filename);
 					icon.getImage().flush();
 					preferWidth = (int) (((float) preferWidth) * 1.1);
 					preferHeight = (int) (((float) preferHeight) * 1.1);
@@ -401,7 +403,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			buttonZoomOut = new JButton("-");
 			buttonZoomOut.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					ImageIcon icon = new ImageIcon("elf.png");
+					ImageIcon icon = new ImageIcon(Global.filename);
 					icon.getImage().flush();
 					preferWidth = (int) (((float) preferWidth) * 0.9);
 					preferHeight = (int) (((float) preferHeight) * 0.9);
@@ -413,7 +415,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			button = new JButton("100%");
 			button.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					ImageIcon icon = new ImageIcon("elf.png");
+					ImageIcon icon = new ImageIcon(Global.filename);
 					icon.getImage().flush();
 					dotLabel.setIcon(resizeImage(icon, icon.getIconWidth(), icon.getIconHeight()));
 				}
@@ -428,7 +430,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		final JFileChooser fc = new JFileChooser(Setting.getInstance().lastOpenPath);
 		int returnVal = fc.showSaveDialog(this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			saveImage(new ImageIcon("elf.png").getImage(), fc.getSelectedFile());
+			saveImage(new ImageIcon(Global.filename).getImage(), fc.getSelectedFile());
 		}
 	}
 
@@ -601,17 +603,16 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		return new mxCell[] { port1, port2 };
 	}
 
-	private void setMarkerMaxAndMinSize() {
-		graphComponent.markerOffset = 10;
-		graphComponent.markerEnd = 10;
-	}
-
-	private void cellClientEvent(String label) {
-		String str[] = label.split("->");
-	}
+	//	private void setMarkerMaxAndMinSize() {
+	//		graphComponent.markerOffset = 10;
+	//		graphComponent.markerEnd = 10;
+	//	}
+	//
+	//	private void cellClientEvent(String label) {
+	//		String str[] = label.split("->");
+	//	}
 
 	private void analystButtonActionPerformed(ActionEvent evt) {
-		File files[] = null;
 		if (analystButton.getEventSource() == null) {
 			final JFileChooser fc = new JFileChooser(Setting.getInstance().lastOpenPath);
 			fc.setMultiSelectionEnabled(true);
@@ -907,7 +908,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 					finishedDotNodes.clear();
 					File file = new File("elf.dot");
 					BufferedWriter of = new BufferedWriter(new FileWriter(file));
-					of.write("digraph G{\n");
+					of.write("digraph \"" + Arrays.toString(files) + "\"{\n");
 					of.write("\tmargin = 0.7;\n");
 					of.write("\tfontname = Verdana;\n");
 					of.write("\tfontsize = 8;\n");
@@ -992,9 +993,9 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 					}
 					//file.delete();
 
-					addText(new File("elf.png"));
+					addText(new File(Global.filename));
 
-					ImageIcon icon = new ImageIcon("elf.png");
+					ImageIcon icon = new ImageIcon(Global.filename);
 					icon.getImage().flush();
 
 					preferWidth = dotLabel.getWidth() > icon.getIconWidth() ? icon.getIconWidth() : dotLabel.getWidth();
@@ -1062,7 +1063,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		for (ELFNode n : allNodes) {
 			if (lastNode != null && !n.file.getName().equals(lastNode.file.getName())) {
 				if (maxDepth == level) {
-					Global.debug(lastNode.file.getName() + " == " + level);
+//					Global.debug(lastNode.file.getName() + " == " + level);
 					nodesInLevel.addElement(lastNode);
 				}
 				maxDepth = n.getLevel();
@@ -1071,7 +1072,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 					maxDepth = n.getLevel();
 				}
 
-				Global.debug("   " + n.file.getName() + " = " + n.getLevel());
+//				Global.debug("   " + n.file.getName() + " = " + n.getLevel());
 			}
 			lastNode = n;
 		}
