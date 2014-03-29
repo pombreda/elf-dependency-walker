@@ -919,7 +919,9 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 					of.write("\tranksep=0.15;\n");
 					of.write("\tnode [shape=box, margin=0.04, shape=box, fontname=\"Ubuntu-M\", fontsize = 10, width=0.2, height=0.1];\n");
 
+					((ELFNode) myTreeModel.getRoot()).setProcessed(false);
 					int maxDepthOfTree = getMaxDepth((ELFNode) myTreeModel.getRoot());
+					Global.debug("maxDepthOfTree=" + maxDepthOfTree);
 
 					//rank
 					for (int x = 1; x <= maxDepthOfTree; x++) {
@@ -950,16 +952,6 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 								}
 								hasAtLeastOneNodeInLevel = true;
 								tempStr += "\"" + node.getFile().getName() + "\"";
-								//					if (y % 4 == 0 && y > 0 && y != nodesInLevel.size() - 1) {
-								//						//level = level + 0.1f;
-								//						level = level.add(BigDecimal.valueOf(0.1));
-								//						of.write("\n\t}\n");
-								//						of.write("\t{\n\t\trank=same;\"Level " + level + "\";");
-								//						allLevelNames.add("\"Level " + level + "\"");
-								//						newline = true;
-								//					} else {
-								//						newline = false;
-								//					}
 							}
 						}
 
@@ -1063,7 +1055,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		for (ELFNode n : allNodes) {
 			if (lastNode != null && !n.file.getName().equals(lastNode.file.getName())) {
 				if (maxDepth == level) {
-//					Global.debug(lastNode.file.getName() + " == " + level);
+					//					Global.debug(lastNode.file.getName() + " == " + level);
 					nodesInLevel.addElement(lastNode);
 				}
 				maxDepth = n.getLevel();
@@ -1072,16 +1064,17 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 					maxDepth = n.getLevel();
 				}
 
-//				Global.debug("   " + n.file.getName() + " = " + n.getLevel());
+				//				Global.debug("   " + n.file.getName() + " = " + n.getLevel());
 			}
 			lastNode = n;
 		}
 	}
 
 	private int getMaxDepth(ELFNode node) {
-		if (node == null) {
+		if (node == null || node.processed) {
 			return 0;
 		}
+		node.processed = true;
 		int maxChildDepth = node.getLevel();
 		Iterator<ELFNode> ir = node.child.iterator();
 		while (ir.hasNext()) {

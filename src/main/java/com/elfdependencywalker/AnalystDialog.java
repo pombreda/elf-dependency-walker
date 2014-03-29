@@ -24,8 +24,6 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 	private JLabel label1;
 	private JTree jTree;
 	private File files[];
-	final int MAX_NUMBER_OF_VERTEX = 100000000;
-	int noOfVertex;
 	boolean started;
 
 	// private String onlyInTheseDirectories[] = { "/lib", "/usr/lib",
@@ -98,7 +96,6 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 			setting.save();
 		}
 
-		noOfVertex = 0;
 		ELFNode root = new ELFNode(null, new File("Peter"), null, true);
 		parsedFiles.clear();
 		for (File file : files) {
@@ -112,6 +109,7 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 		}
 		System.out.println("finished analystELF()");
 		if (root != null) {
+			root.updateLevel(0);
 			((MyTreeModel) jTree.getModel()).setRoot(root);
 		}
 		this.cancelButton.setText("Finished");
@@ -120,6 +118,9 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 
 	private void analystELF(ELFNode parent, File file, String debugStr) {
 		try {
+			if (parent.file.getName().equals(file.getName())) {
+				return;
+			}
 			if (file.isDirectory()) {
 				for (File f : file.listFiles()) {
 					String filename = f.getName().toLowerCase();
@@ -130,10 +131,6 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 				}
 				return;
 			} else {
-				if (noOfVertex >= MAX_NUMBER_OF_VERTEX) {
-					return;
-				}
-
 				ELFNode currentNode;
 				String canonicalPath = parent.getFile().getCanonicalPath() + "-" + file.getCanonicalPath();
 				if (parsedFiles.keySet().contains(canonicalPath)) {
@@ -145,7 +142,7 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 					parent.child.add(currentNode);
 					parsedFiles.put(canonicalPath, currentNode);
 				}
-				Global.debug(debugStr + noOfVertex + "," + canonicalPath);
+				Global.debug(debugStr + "," + parent.getFile().getName() + " >> " + file.getName());
 
 				String results[];
 				boolean needToCache = false;
@@ -204,7 +201,7 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 						}
 						if (childFile != null && childFile.isFile()) {
 							label1.setText("Processing file " + childFile.getAbsolutePath());
-							analystELF(currentNode, childFile, debugStr + "    ");
+							analystELF(currentNode, childFile, debugStr + " ");
 						}
 					}
 				}
