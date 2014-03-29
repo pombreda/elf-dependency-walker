@@ -833,7 +833,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			if (file.getName().endsWith(".png")) {
 				ImageIO.write(imageToBufferedImage(image), "PNG", file);
 			} else {
-				ImageIO.write(imageToBufferedImage(image), "PNG", new File(file.getAbsolutePath() + File.separator + ".png"));
+				ImageIO.write(imageToBufferedImage(image), "PNG", new File(file.getAbsolutePath() + ".png"));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -924,13 +924,14 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 					Global.debug("maxDepthOfTree=" + maxDepthOfTree);
 
 					//rank
-					for (int x = 1; x <= maxDepthOfTree; x++) {
+					for (int x = maxDepthOfTree; x >= 0; x--) {
 						int level = maxDepthOfTree - x;
 						if (level > (Integer) maxLevelSpinner.getValue()) {
 							continue;
 						}
 						d.jProgressBar.setString("Level " + level);
 						Vector<ELFNode> nodesInLevel = new Vector<ELFNode>();
+						((ELFNode) myTreeModel.getRoot()).setProcessed(false);
 						getNodesInLevel(nodesInLevel, (ELFNode) myTreeModel.getRoot(), x);
 
 						String tempStr = "";
@@ -967,8 +968,8 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 
 					of.write("\t{\n\t");
 					//of.write("\t\tnode[shape=box fontsize=8 width=0.2 height=0.1];\n");
-					for (int x = 0; x < allLevelNames.size(); x++) {
-						if (x > 0) {
+					for (int x = allLevelNames.size() - 1; x >= 0; x--) {
+						if (x < allLevelNames.size() - 1) {
 							of.write(" -> ");
 						}
 						of.write(allLevelNames.toArray()[x].toString());
@@ -1046,27 +1047,42 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		}
 	}
 
-	private void getNodesInLevel(Vector<ELFNode> nodesInLevel, ELFNode node, int level) {
-		Vector<ELFNode> allNodes = new Vector<ELFNode>();
-		getAllNodes(allNodes, (ELFNode) myTreeModel.getRoot());
-		Collections.sort(allNodes);
-		ELFNode lastNode = null;
-		int maxDepth = -9999;
-		for (ELFNode n : allNodes) {
-			if (lastNode != null && !n.file.getName().equals(lastNode.file.getName())) {
-				if (maxDepth == level) {
-					//					Global.debug(lastNode.file.getName() + " == " + level);
-					nodesInLevel.addElement(lastNode);
-				}
-				maxDepth = n.getLevel();
-			} else {
-				if (n.getLevel() > maxDepth) {
-					maxDepth = n.getLevel();
-				}
+	//	private void getNodesInLevel(Vector<ELFNode> nodesInLevel, ELFNode node, int level) {
+	//		Vector<ELFNode> allNodes = new Vector<ELFNode>();
+	//		getAllNodes(allNodes, (ELFNode) myTreeModel.getRoot());
+	//		Collections.sort(allNodes);
+	//		ELFNode lastNode = null;
+	//		int maxDepth = -9999;
+	//		for (ELFNode n : allNodes) {
+	//			if (lastNode != null && !n.file.getName().equals(lastNode.file.getName())) {
+	//				if (maxDepth == level) {
+	//					//					Global.debug(lastNode.file.getName() + " == " + level);
+	//					nodesInLevel.addElement(lastNode);
+	//				}
+	//				maxDepth = n.getLevel();
+	//			} else {
+	//				if (n.getLevel() > maxDepth) {
+	//					maxDepth = n.getLevel();
+	//				}
+	//
+	//				//				Global.debug("   " + n.file.getName() + " = " + n.getLevel());
+	//			}
+	//			lastNode = n;
+	//		}
+	//	}
 
-				//				Global.debug("   " + n.file.getName() + " = " + n.getLevel());
-			}
-			lastNode = n;
+	private void getNodesInLevel(Vector<ELFNode> nodesInLevel, ELFNode node, int level) {
+		if (node.processed) {
+			return;
+		}
+		node.processed = true;
+		if (node.getLevel() == level) {
+			nodesInLevel.add(node);
+		}
+		Iterator<ELFNode> ir = node.child.iterator();
+		while (ir.hasNext()) {
+			ELFNode tempNode = ir.next();
+			getNodesInLevel(nodesInLevel, tempNode, level);
 		}
 	}
 

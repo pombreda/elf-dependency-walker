@@ -115,7 +115,7 @@ public class ELFNode implements TreeNode, Comparable {
 
 	public void updateLevel(int level) {
 		if (this.level != -1) {
-			System.out.println(file.getName() + " ==== " + level);
+//			System.out.println(file.getName() + " ==== " + level);
 			return;
 		}
 		this.level = level;

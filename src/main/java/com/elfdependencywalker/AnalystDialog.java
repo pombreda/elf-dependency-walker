@@ -132,7 +132,7 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 				return;
 			} else {
 				ELFNode currentNode;
-				String canonicalPath = parent.getFile().getCanonicalPath() + "-" + file.getCanonicalPath();
+				String canonicalPath = file.getCanonicalPath();
 				if (parsedFiles.keySet().contains(canonicalPath)) {
 					currentNode = parsedFiles.get(canonicalPath);
 					parent.child.add(currentNode);
