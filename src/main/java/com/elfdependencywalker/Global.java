@@ -4,6 +4,7 @@ public class Global {
 	public static String version = "20140326";
 	public static boolean debug = true;
 	public static boolean isMac = false;
+	public static String filename = "elf.png";
 
 	public static void debug(String str) {
 		if (debug) {
