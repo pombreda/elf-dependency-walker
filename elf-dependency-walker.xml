@@ -1,10 +1,10 @@
 <Setting>
-  <x>416</x>
-  <y>22</y>
-  <width>1440</width>
-  <height>835</height>
-  <divX>248</divX>
-  <lastOpenPath>/bin</lastOpenPath>
+  <x>354</x>
+  <y>146</y>
+  <width>1024</width>
+  <height>703</height>
+  <divX>487</divX>
+  <lastOpenPath>/usr/lib</lastOpenPath>
   <historyList>
     <string>/usr/bin/acpi_listen</string>
     <string>/usr/bin/POST</string>
