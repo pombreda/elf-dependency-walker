@@ -1016,6 +1016,8 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 					BufferedImage image = ImageIO.read(file);
 					Graphics g = image.getGraphics();
 					g.setFont(new Font("Verdana", Font.PLAIN, 12));
+					g.setColor(Color.white);
+					g.fillRect(0, 0, 200, 60);
 					g.setColor(Color.black);
 					g.drawString(System.getProperty("os.name") + " " + System.getProperty("os.version") + " " + System.getProperty("os.arch"), 10, 30);
 					g.drawString(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()), 10, 50);
