@@ -24,7 +24,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -140,6 +139,9 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	private JCheckBox chckbxEdge;
 	private JCheckBox chckbxOrtho;
 	private JSpinner maxLevelSpinner;
+	private JLabel lblMaxLevel;
+	private JLabel lblMaxNodePer;
+	private JSpinner maxNodePerLevelSpinner;
 
 	public ElfDependencyWalkerPanel(JFrame jframe) {
 		super();
@@ -278,13 +280,24 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			chckbxEdge.setSelected(true);
 			toolBar1.add(chckbxEdge);
 
-			chckbxOrtho = new JCheckBox("Ortho");
+			chckbxOrtho = new JCheckBox("Ortho", true);
 			toolBar1.add(chckbxOrtho);
+
+			lblMaxLevel = new JLabel("Max level:");
+			toolBar1.add(lblMaxLevel);
 
 			maxLevelSpinner = new JSpinner();
 			maxLevelSpinner.setModel(new SpinnerNumberModel(100, 0, 100, 1));
 			maxLevelSpinner.setMaximumSize(new Dimension(50, 18));
 			toolBar1.add(maxLevelSpinner);
+
+			lblMaxNodePer = new JLabel("Max node per level");
+			toolBar1.add(lblMaxNodePer);
+
+			maxNodePerLevelSpinner = new JSpinner();
+			maxNodePerLevelSpinner.setModel(new SpinnerNumberModel(10, 1, 100, 1));
+			maxNodePerLevelSpinner.setMaximumSize(new Dimension(50, 18));
+			toolBar1.add(maxNodePerLevelSpinner);
 
 			dotButton = new JButton();
 			toolBar1.add(dotButton);
@@ -934,32 +947,34 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 						((ELFNode) myTreeModel.getRoot()).setProcessed(false);
 						getNodesInLevel(nodesInLevel, (ELFNode) myTreeModel.getRoot(), x);
 
-						String tempStr = "";
-
-						if (level <= (Integer) maxLevelSpinner.getValue()) {
-							allLevelNames.add("\"Level " + level + "\"");
-						}
-						tempStr = "\t{\n\t\trank=same;\"Level " + level + "\";";
-						boolean newline = false;
-						boolean hasAtLeastOneNodeInLevel = false;
-						for (int y = 0; y < nodesInLevel.size(); y++) {
-							ELFNode node = nodesInLevel.get(y);
-							if (filterNoChildNodejCheckBox.isSelected() && node.getChildCount() == 0 && node.getParent().getParent() == null) {
-								continue;
+						int maxNode = (int) maxNodePerLevelSpinner.getValue();
+						for (int l = 0; l < Math.ceil((float) nodesInLevel.size() / maxNode); l++) {
+							String tempStr = "";
+							if (level <= (Integer) maxLevelSpinner.getValue()) {
+								allLevelNames.add("\"Level " + level + "." + l + "\"");
 							}
-							if ((maxDepthOfTree - node.getLevel()) <= (Integer) maxLevelSpinner.getValue()) {
-								if (y > 0 && !newline && hasAtLeastOneNodeInLevel) {
-									tempStr += " ; ";
+							tempStr = "\t{\n\t\trank=same;\"Level " + level + "." + l + "\";";
+							boolean newline = false;
+							boolean hasAtLeastOneNodeInLevel = false;
+							for (int y = l * maxNode; y < (l + 1) * maxNode && y < nodesInLevel.size(); y++) {
+								ELFNode node = nodesInLevel.get(y);
+								if (filterNoChildNodejCheckBox.isSelected() && node.getChildCount() == 0 && node.getParent().getParent() == null) {
+									continue;
 								}
-								hasAtLeastOneNodeInLevel = true;
-								tempStr += "\"" + node.getFile().getName() + "\"";
+								if ((maxDepthOfTree - node.getLevel()) <= (Integer) maxLevelSpinner.getValue()) {
+									if (y > 0 && !newline && hasAtLeastOneNodeInLevel) {
+										tempStr += " ; ";
+									}
+									hasAtLeastOneNodeInLevel = true;
+									tempStr += "\"" + node.getFile().getName() + "\"";
+								}
 							}
-						}
 
-						tempStr += "\n\t}\n";
-
-						if (hasAtLeastOneNodeInLevel) {
-							of.write(tempStr);
+							tempStr += "\n\t}\n";
+							System.out.println(level + "." + l + " = " + hasAtLeastOneNodeInLevel);
+							if (hasAtLeastOneNodeInLevel) {
+								of.write(tempStr);
+							}
 						}
 					}
 					//end rank
