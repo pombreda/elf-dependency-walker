@@ -1,0 +1,24 @@
+<Setting>
+  <x>499</x>
+  <y>105</y>
+  <width>1359</width>
+  <height>793</height>
+  <divX>232</divX>
+  <lastOpenPath>/bin</lastOpenPath>
+  <historyList>
+    <string>/bin/ls</string>
+    <string>/bin/cat</string>
+    <string>/bin/dd</string>
+    <string>/bin/kill</string>
+  </historyList>
+  <lookupDirectory>
+    <string>/usr</string>
+    <string>/usr/lib</string>
+    <string>/lib</string>
+    <string>/usr/local/lib</string>
+    <string>/lib64</string>
+    <string>/usr/lib64</string>
+    <string>/usr/local/lib64</string>
+    <string>/lib/x86_64-linux-gnu</string>
+  </lookupDirectory>
+</Setting>
