@@ -993,6 +993,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 					of.write("}\n"); //end graph
 					of.close();
 
+					new File("elf.png");
 					d.jProgressBar.setString("running dot command : " + "dot -Tpng " + file.getName() + " -o elf.png");
 					if (Global.isMac) {
 						CommonLib.runCommand("/opt/local/bin/dot -Tpng " + file.getName() + " -o elf.png");
