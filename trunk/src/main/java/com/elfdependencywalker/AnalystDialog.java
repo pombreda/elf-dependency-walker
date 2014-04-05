@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Vector;
@@ -12,6 +13,7 @@ import java.util.Vector;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTree;
@@ -19,7 +21,7 @@ import javax.swing.LayoutStyle;
 
 import com.peterswing.CommonLib;
 
-public class AnalystDialog extends javax.swing.JDialog implements Runnable {
+public class AnalystDialog extends JDialog implements Runnable {
 	private JButton cancelButton;
 	private JLabel label1;
 	private JTree jTree;
@@ -32,11 +34,19 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 	// Vector<String> parsedFiles = new Vector<String>();
 	HashMap<String, ELFNode> parsedFiles = new HashMap<String, ELFNode>();
 	HashMap<String, String[]> cache = new HashMap<String, String[]>();
+	ArrayList<File> dirs = new ArrayList<File>();
 
 	public AnalystDialog(JFrame frame, JTree jTree, File files[]) {
 		super(frame, true);
 		this.jTree = jTree;
 		this.files = files;
+
+		dirs.clear();
+		for (String s : Setting.getInstance().lookupDirectory) {
+			listDirectory(s, dirs);
+//			System.out.println(s + " => " + dirs.size());
+		}
+//		System.out.println("d=" + dirs.size());
 
 		initGUI();
 		CommonLib.centerDialog(this);
@@ -183,13 +193,17 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 								found = true;
 							}
 						} else {
-							for (String s : Setting.getInstance().lookupDirectory) {
-								if (new File(s + "/" + words[1]).exists()) {
-									childFile = new File(s + "/" + words[1]);
+							//							outer1: for (String s : Setting.getInstance().lookupDirectory) {
+							//								ArrayList<File> dirs = new ArrayList<File>();
+							//								listDirectory(s, dirs);
+							for (File d : dirs) {
+								if (new File(d.getAbsolutePath() + File.separator + words[1]).exists()) {
+									childFile = new File(d.getAbsolutePath() + File.separator + words[1]);
 									found = true;
 									break;
 								}
 							}
+							//							}
 						}
 
 						if (!found) {
@@ -215,6 +229,25 @@ public class AnalystDialog extends javax.swing.JDialog implements Runnable {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return;
+		}
+	}
+
+	public void listDirectory(String directoryName, ArrayList<File> files) {
+		if (directoryName == null || files == null) {
+			return;
+		}
+		File directory = new File(directoryName);
+		if (directory.isDirectory()) {
+			files.add(directory);
+		}
+		File[] fList = directory.listFiles();
+		if (fList == null) {
+			return;
+		}
+		for (File file : fList) {
+			if (file.isDirectory()) {
+				listDirectory(file.getAbsolutePath(), files);
+			}
 		}
 	}
 
