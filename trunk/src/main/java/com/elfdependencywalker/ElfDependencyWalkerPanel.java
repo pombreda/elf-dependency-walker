@@ -117,6 +117,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	int x = 0;
 	Hashtable<String, mxCell> allNodes = new Hashtable<String, mxCell>();
 	Hashtable<String, String> allNodesEdgeColor = new Hashtable<String, String>();
+	Hashtable<Integer, String> allNodesColor = new Hashtable<Integer, String>();
 	Random numGen = new Random();
 	private JPanel panel;
 	private JScrollPane scrollPane;
@@ -142,6 +143,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	private JLabel lblMaxLevel;
 	private JLabel lblMaxNodePer;
 	private JSpinner maxNodePerLevelSpinner;
+	private JCheckBox colorCheckBox;
 
 	public ElfDependencyWalkerPanel(JFrame jframe) {
 		super();
@@ -272,7 +274,11 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 				}
 			});
 
+			colorCheckBox = new JCheckBox("Color");
+			toolBar1.add(colorCheckBox);
+
 			filterNoChildNodejCheckBox = new JCheckBox();
+			filterNoChildNodejCheckBox.setSelected(true);
 			toolBar1.add(filterNoChildNodejCheckBox);
 			filterNoChildNodejCheckBox.setText("filter no child node");
 
@@ -544,9 +550,9 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	}
 
 	String getRandomColor() {
-		Color aColor = new Color(numGen.nextInt(256), numGen.nextInt(256), numGen.nextInt(256));
+		Color aColor = new Color(numGen.nextInt(100) + 156, numGen.nextInt(100) + 156, numGen.nextInt(100) + 156);
 		String hexStr = Integer.toHexString(aColor.getRGB());
-		return hexStr;
+		return hexStr.substring(2);
 	}
 
 	String getEdgeColor(String edgeIDStr) {
@@ -632,6 +638,8 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			int returnVal = fc.showOpenDialog(this);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				files = fc.getSelectedFiles();
+				Setting.getInstance().lastOpenPath = files[0].getAbsolutePath();
+				Setting.getInstance().save();
 			}
 		} else {
 			files = new File[1];
@@ -919,6 +927,8 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 					LinkedHashSet<String> allLevelNames = new LinkedHashSet<String>();
 					allEdges.clear();
 					finishedDotNodes.clear();
+					allNodesEdgeColor.clear();
+					allNodesColor.clear();
 					File file = new File("elf.dot");
 					BufferedWriter of = new BufferedWriter(new FileWriter(file));
 					of.write("digraph \"" + Arrays.toString(files) + "\"{\n");
@@ -934,7 +944,6 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 
 					((ELFNode) myTreeModel.getRoot()).setProcessed(false);
 					int maxDepthOfTree = getMaxDepth((ELFNode) myTreeModel.getRoot());
-					Global.debug("maxDepthOfTree=" + maxDepthOfTree);
 
 					//rank
 					for (int x = maxDepthOfTree; x > 0; x--) {
@@ -956,9 +965,9 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 							tempStr = "\t{\n\t\trank=same;\"Level " + level + "." + l + "\";";
 							boolean newline = false;
 							boolean hasAtLeastOneNodeInLevel = false;
-//							System.out.println("==" + l * maxNode);
+							//							System.out.println("==" + l * maxNode);
 							for (int y = l * maxNode; y < (l + 1) * maxNode && y < nodesInLevel.size(); y++) {
-//								System.out.print(y + ",");
+								//								System.out.print(y + ",");
 								ELFNode node = nodesInLevel.get(y);
 								if (filterNoChildNodejCheckBox.isSelected() && node.getChildCount() == 0 && node.getParent().getParent() == null) {
 									continue;
@@ -971,7 +980,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 									tempStr += "\"" + node.getFile().getName() + "\"";
 								}
 							}
-//							System.out.println();
+							//							System.out.println();
 
 							tempStr += "\n\t}\n";
 							if (hasAtLeastOneNodeInLevel) {
@@ -995,14 +1004,13 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 					of.write("}\n"); //end graph
 					of.close();
 
-					new File("elf.png");
+					new File("elf.png").delete();
 					d.jProgressBar.setString("running dot command : " + "dot -Tpng " + file.getName() + " -o elf.png");
 					if (Global.isMac) {
 						CommonLib.runCommand("/opt/local/bin/dot -Tpng " + file.getName() + " -o elf.png");
 					} else {
 						CommonLib.runCommand("dot -Tpng " + file.getName() + " -o elf.png");
 					}
-					//file.delete();
 
 					addText(new File(Global.filename));
 
@@ -1023,7 +1031,6 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 					//					g.drawString("FUCK", 100, 100);
 					dotLabel.setIcon(resizedIcon);
 					tabbedPane1.setSelectedIndex(2);
-					System.out.println("Process ended");
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
@@ -1132,17 +1139,26 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		if (filterNoChildNodejCheckBox.isSelected() && node.getChildCount() == 0 && node.getParent().getParent() == null) {
 			return;
 		}
+		String color = allNodesColor.get(node.getLevel());
+		if (color == null) {
+			color = getRandomColor();
+			allNodesColor.put(node.getLevel(), color);
+		}
 		if (!node.file.getName().equals("Peter") && !finishedDotNodes.contains(node.file.getName())) {
 			if ((maxDepthOfTree - node.getLevel()) <= (Integer) maxLevelSpinner.getValue()) {
-				writer.write("\t\"" + node.file.getName() + "\" [];\n");
+				if (colorCheckBox.isSelected()) {
+					writer.write("\t\"" + node.file.getName() + "\" [style=filled, fillcolor=\"#" + color + "\"];\n");
+				} else {
+					writer.write("\t\"" + node.file.getName() + "\" [];\n");
+				}
 				parsed.add(node.file.getName());
 				finishedDotNodes.add(node.file.getName());
 			}
 		}
 
-		float r = numGen.nextFloat();
-		float g = numGen.nextFloat();
-		float b = numGen.nextFloat();
+		//		float r = numGen.nextFloat();
+		//		float g = numGen.nextFloat();
+		//		float b = numGen.nextFloat();
 
 		Iterator<ELFNode> ir = node.child.iterator();
 		while (ir.hasNext()) {
@@ -1151,7 +1167,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 				if ((maxDepthOfTree - node.getLevel()) <= (Integer) maxLevelSpinner.getValue() && (maxDepthOfTree - childNode.getLevel()) <= (Integer) maxLevelSpinner.getValue()) {
 					if (node.getLevel() < childNode.getLevel()) {
 						d.jProgressBar.setString("\t\t\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\"");
-						writer.write("\t\t\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\" [width=1, color=\"" + r + " ," + g + ", " + b + "\"];\n");
+						writer.write("\t\t\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\" [width=1, color=\"#" + color + "\"];\n");
 						allEdges.add(node.file.getName() + "\" -> \"" + childNode.file.getName());
 					}
 				}

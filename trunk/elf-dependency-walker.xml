@@ -1,15 +1,21 @@
 <Setting>
-  <x>331</x>
+  <x>0</x>
   <y>24</y>
-  <width>1109</width>
-  <height>720</height>
+  <width>1440</width>
+  <height>852</height>
   <divX>306</divX>
-  <lastOpenPath>/usr/bin</lastOpenPath>
+  <lastOpenPath>/usr/bin/aleph</lastOpenPath>
   <historyList>
     <string>/bin/bzcat</string>
     <string>/bin/bash</string>
     <string>/usr/bin/javac</string>
     <string>/usr/bin/alsaucm</string>
+    <string>/boot/abi-3.8.0-29-generic</string>
+    <string>/bin/bzcmp</string>
+    <string>/bin/cat</string>
+    <string>/bin/bzdiff</string>
+    <string>/usr/bin/a2p</string>
+    <string>/usr/bin/aleph</string>
   </historyList>
   <lookupDirectory>
     <string>/lib</string>
