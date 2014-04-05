@@ -1,24 +1,24 @@
 <Setting>
-  <x>40</x>
-  <y>22</y>
-  <width>1359</width>
-  <height>793</height>
-  <divX>232</divX>
-  <lastOpenPath>/bin</lastOpenPath>
+  <x>749</x>
+  <y>24</y>
+  <width>1109</width>
+  <height>720</height>
+  <divX>306</divX>
+  <lastOpenPath>/usr/bin</lastOpenPath>
   <historyList>
-    <string>/bin/ls</string>
-    <string>/bin/cat</string>
-    <string>/bin/dd</string>
-    <string>/bin/kill</string>
+    <string>/bin/bzcat</string>
+    <string>/bin/bash</string>
+    <string>/usr/bin/javac</string>
+    <string>/usr/bin/alsaucm</string>
   </historyList>
   <lookupDirectory>
-    <string>/usr</string>
-    <string>/usr/lib</string>
     <string>/lib</string>
-    <string>/usr/local/lib</string>
+    <string>/lib/x86_64-linux-gnu</string>
     <string>/lib64</string>
+    <string>/usr/lib</string>
+    <string>/usr/local/lib</string>
     <string>/usr/lib64</string>
     <string>/usr/local/lib64</string>
-    <string>/lib/x86_64-linux-gnu</string>
+    <string>/usr/lib/x86_64-linux-gnu/</string>
   </lookupDirectory>
 </Setting>

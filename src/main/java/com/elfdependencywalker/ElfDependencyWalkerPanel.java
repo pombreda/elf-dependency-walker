@@ -956,7 +956,9 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 							tempStr = "\t{\n\t\trank=same;\"Level " + level + "." + l + "\";";
 							boolean newline = false;
 							boolean hasAtLeastOneNodeInLevel = false;
+//							System.out.println("==" + l * maxNode);
 							for (int y = l * maxNode; y < (l + 1) * maxNode && y < nodesInLevel.size(); y++) {
+//								System.out.print(y + ",");
 								ELFNode node = nodesInLevel.get(y);
 								if (filterNoChildNodejCheckBox.isSelected() && node.getChildCount() == 0 && node.getParent().getParent() == null) {
 									continue;
@@ -969,9 +971,9 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 									tempStr += "\"" + node.getFile().getName() + "\"";
 								}
 							}
+//							System.out.println();
 
 							tempStr += "\n\t}\n";
-							System.out.println(level + "." + l + " = " + hasAtLeastOneNodeInLevel);
 							if (hasAtLeastOneNodeInLevel) {
 								of.write(tempStr);
 							}
