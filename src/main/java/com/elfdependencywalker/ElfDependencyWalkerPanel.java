@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -119,7 +120,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	Hashtable<String, String> allNodesEdgeColor = new Hashtable<String, String>();
 	Hashtable<Integer, String> allNodesColor = new Hashtable<Integer, String>();
 	Random numGen = new Random();
-	private JPanel panel;
+	private JPanel dotPanel;
 	private JScrollPane scrollPane;
 	private JLabel dotLabel;
 	private JPanel panel_1;
@@ -144,6 +145,9 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	private JLabel lblMaxNodePer;
 	private JSpinner maxNodePerLevelSpinner;
 	private JCheckBox colorCheckBox;
+	private JPanel graphPanel;
+	private JPanel panel_3;
+	private JCheckBox filterEdgeCheckBox;
 
 	public ElfDependencyWalkerPanel(JFrame jframe) {
 		super();
@@ -187,9 +191,6 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			lines.setBackground(new Color(230, 230, 230));
 			lines.setEditable(false);
 			scrollPane2.setRowHeaderView(lines);
-
-			graphSplitPane = new JSplitPane();
-			tabbedPane1.addTab("Graph", null, graphSplitPane, null);
 
 			toolBar1 = new JToolBar();
 			this.add(toolBar1, BorderLayout.NORTH);
@@ -247,68 +248,6 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 				}
 			});
 
-			zoomInButton = new JButton();
-			toolBar1.add(zoomInButton);
-			zoomInButton.setText("Zoom in");
-			zoomInButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent evt) {
-					zoomInButtonActionPerformed(evt);
-				}
-			});
-
-			zoomOutButton = new JButton();
-			toolBar1.add(zoomOutButton);
-			zoomOutButton.setText("Zoom out");
-			zoomOutButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent evt) {
-					zoomOutButtonActionPerformed(evt);
-				}
-			});
-
-			zoom100Button = new JButton();
-			toolBar1.add(zoom100Button);
-			zoom100Button.setText("100%");
-			zoom100Button.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent evt) {
-					zoom100ButtonActionPerformed(evt);
-				}
-			});
-
-			colorCheckBox = new JCheckBox("Color");
-			toolBar1.add(colorCheckBox);
-
-			filterNoChildNodejCheckBox = new JCheckBox();
-			filterNoChildNodejCheckBox.setSelected(true);
-			toolBar1.add(filterNoChildNodejCheckBox);
-			filterNoChildNodejCheckBox.setText("filter no child node");
-
-			chckbxEdge = new JCheckBox("Edge");
-			chckbxEdge.setSelected(true);
-			toolBar1.add(chckbxEdge);
-
-			chckbxOrtho = new JCheckBox("Ortho", true);
-			toolBar1.add(chckbxOrtho);
-
-			lblMaxLevel = new JLabel("Max level:");
-			toolBar1.add(lblMaxLevel);
-
-			maxLevelSpinner = new JSpinner();
-			maxLevelSpinner.setModel(new SpinnerNumberModel(100, 0, 100, 1));
-			maxLevelSpinner.setMaximumSize(new Dimension(50, 18));
-			toolBar1.add(maxLevelSpinner);
-
-			lblMaxNodePer = new JLabel("Max node per level");
-			toolBar1.add(lblMaxNodePer);
-
-			maxNodePerLevelSpinner = new JSpinner();
-			maxNodePerLevelSpinner.setModel(new SpinnerNumberModel(10, 1, 100, 1));
-			maxNodePerLevelSpinner.setMaximumSize(new Dimension(50, 18));
-			toolBar1.add(maxNodePerLevelSpinner);
-
-			dotButton = new JButton();
-			toolBar1.add(dotButton);
-			dotButton.setText("dot");
-
 			btnExportCsvFor = new JButton("Export CSV for Gephi");
 			btnExportCsvFor.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -334,12 +273,6 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			});
 			toolBar1.add(btnExportCsvFor);
 
-			dotButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent evt) {
-					dotButtonActionPerformed(evt);
-				}
-			});
-
 			int x = Setting.getInstance().x;
 			int y = Setting.getInstance().y;
 			setLocation(x, y);
@@ -350,12 +283,12 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			addLayoutMenuitems();
 			splitPane1.setDividerLocation(Setting.getInstance().divX);
 
-			panel = new JPanel();
-			tabbedPane1.addTab("Dot", null, panel, null);
-			panel.setLayout(new BorderLayout(0, 0));
+			dotPanel = new JPanel();
+			tabbedPane1.addTab("Dot", null, dotPanel, null);
+			dotPanel.setLayout(new BorderLayout(0, 0));
 
 			scrollPane = new JScrollPane();
-			panel.add(scrollPane, BorderLayout.CENTER);
+			dotPanel.add(scrollPane, BorderLayout.CENTER);
 
 			dotLabel = new JLabel("");
 			dotLabel.addMouseListener(new MouseAdapter() {
@@ -397,12 +330,57 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			scrollPane.setViewportView(dotLabel);
 
 			panel_1 = new JPanel();
-			panel.add(panel_1, BorderLayout.NORTH);
+			dotPanel.add(panel_1, BorderLayout.NORTH);
 
 			btnSavePng = new JButton("Save png");
 			btnSavePng.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					saveDotToPng();
+				}
+			});
+
+			colorCheckBox = new JCheckBox("Color");
+			colorCheckBox.setSelected(true);
+			panel_1.add(colorCheckBox);
+
+			filterNoChildNodejCheckBox = new JCheckBox();
+			panel_1.add(filterNoChildNodejCheckBox);
+			filterNoChildNodejCheckBox.setSelected(true);
+			filterNoChildNodejCheckBox.setText("filter no child node");
+
+			chckbxEdge = new JCheckBox("Edge");
+			panel_1.add(chckbxEdge);
+			chckbxEdge.setSelected(true);
+
+			chckbxOrtho = new JCheckBox("Ortho", true);
+			panel_1.add(chckbxOrtho);
+
+			filterEdgeCheckBox = new JCheckBox("Filter edge");
+			panel_1.add(filterEdgeCheckBox);
+
+			lblMaxLevel = new JLabel("Max level:");
+			panel_1.add(lblMaxLevel);
+
+			maxLevelSpinner = new JSpinner();
+			panel_1.add(maxLevelSpinner);
+			maxLevelSpinner.setModel(new SpinnerNumberModel(100, 0, 100, 1));
+			maxLevelSpinner.setMaximumSize(new Dimension(50, 18));
+
+			lblMaxNodePer = new JLabel("Max node per level:");
+			panel_1.add(lblMaxNodePer);
+
+			maxNodePerLevelSpinner = new JSpinner();
+			panel_1.add(maxNodePerLevelSpinner);
+			maxNodePerLevelSpinner.setModel(new SpinnerNumberModel(10, 1, 100, 1));
+			maxNodePerLevelSpinner.setMaximumSize(new Dimension(50, 18));
+
+			dotButton = new JButton();
+			panel_1.add(dotButton);
+			dotButton.setText("dot");
+
+			dotButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					dotButtonActionPerformed(evt);
 				}
 			});
 			panel_1.add(btnSavePng);
@@ -436,10 +414,49 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 				public void actionPerformed(ActionEvent arg0) {
 					ImageIcon icon = new ImageIcon(Global.filename);
 					icon.getImage().flush();
+					preferWidth = icon.getIconWidth();
+					preferHeight = icon.getIconHeight();
 					dotLabel.setIcon(resizeImage(icon, icon.getIconWidth(), icon.getIconHeight()));
 				}
 			});
 			panel_1.add(button);
+
+			graphPanel = new JPanel();
+			tabbedPane1.addTab("Graph", null, graphPanel, null);
+			graphPanel.setLayout(new BorderLayout(0, 0));
+
+			graphSplitPane = new JSplitPane();
+			graphPanel.add(graphSplitPane, BorderLayout.CENTER);
+
+			panel_3 = new JPanel();
+			graphPanel.add(panel_3, BorderLayout.NORTH);
+
+			zoomInButton = new JButton();
+			panel_3.add(zoomInButton);
+			zoomInButton.setText("Zoom in");
+
+			zoomOutButton = new JButton();
+			panel_3.add(zoomOutButton);
+			zoomOutButton.setText("Zoom out");
+
+			zoom100Button = new JButton();
+			panel_3.add(zoom100Button);
+			zoom100Button.setText("100%");
+			zoom100Button.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					zoom100ButtonActionPerformed(evt);
+				}
+			});
+			zoomOutButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					zoomOutButtonActionPerformed(evt);
+				}
+			});
+			zoomInButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					zoomInButtonActionPerformed(evt);
+				}
+			});
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -621,15 +638,6 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		graph.addCell(port2, node);
 		return new mxCell[] { port1, port2 };
 	}
-
-	//	private void setMarkerMaxAndMinSize() {
-	//		graphComponent.markerOffset = 10;
-	//		graphComponent.markerEnd = 10;
-	//	}
-	//
-	//	private void cellClientEvent(String label) {
-	//		String str[] = label.split("->");
-	//	}
 
 	private void analystButtonActionPerformed(ActionEvent evt) {
 		if (analystButton.getEventSource() == null) {
@@ -1027,10 +1035,8 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 						return;
 					}
 					ImageIcon resizedIcon = resizeImage(icon, preferWidth, preferHeight);
-					//					Graphics g = resizedIcon.getImage().getGraphics();
-					//					g.drawString("FUCK", 100, 100);
 					dotLabel.setIcon(resizedIcon);
-					tabbedPane1.setSelectedIndex(2);
+					tabbedPane1.setSelectedIndex(1);
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
@@ -1139,10 +1145,15 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		if (filterNoChildNodejCheckBox.isSelected() && node.getChildCount() == 0 && node.getParent().getParent() == null) {
 			return;
 		}
-		String color = allNodesColor.get(node.getLevel());
-		if (color == null) {
-			color = getRandomColor();
-			allNodesColor.put(node.getLevel(), color);
+		String color;
+		if (colorCheckBox.isSelected()) {
+			color = allNodesColor.get(node.getLevel());
+			if (color == null) {
+				color = getRandomColor();
+				allNodesColor.put(node.getLevel(), color);
+			}
+		} else {
+			color = "#000000";
 		}
 		if (!node.file.getName().equals("Peter") && !finishedDotNodes.contains(node.file.getName())) {
 			if ((maxDepthOfTree - node.getLevel()) <= (Integer) maxLevelSpinner.getValue()) {
@@ -1156,16 +1167,15 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			}
 		}
 
-		//		float r = numGen.nextFloat();
-		//		float g = numGen.nextFloat();
-		//		float b = numGen.nextFloat();
-
 		Iterator<ELFNode> ir = node.child.iterator();
 		while (ir.hasNext()) {
 			ELFNode childNode = ir.next();
 			if (hasEdge && !node.file.getName().equals("Peter") && !allEdges.contains(node.file.getName() + "\" -> \"" + childNode.file.getName())) {
 				if ((maxDepthOfTree - node.getLevel()) <= (Integer) maxLevelSpinner.getValue() && (maxDepthOfTree - childNode.getLevel()) <= (Integer) maxLevelSpinner.getValue()) {
 					if (node.getLevel() < childNode.getLevel()) {
+						if (filterEdgeCheckBox.isSelected() && childNode.getLevel() - node.getLevel() != 1) {
+							continue;
+						}
 						d.jProgressBar.setString("\t\t\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\"");
 						writer.write("\t\t\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\" [width=1, color=\"#" + color + "\"];\n");
 						allEdges.add(node.file.getName() + "\" -> \"" + childNode.file.getName());
