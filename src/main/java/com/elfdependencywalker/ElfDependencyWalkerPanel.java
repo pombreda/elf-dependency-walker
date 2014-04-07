@@ -962,7 +962,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 						d.jProgressBar.setString("Level " + level);
 						Vector<ELFNode> nodesInLevel = new Vector<ELFNode>();
 						((ELFNode) myTreeModel.getRoot()).setProcessed(false);
-						getNodesInLevel(nodesInLevel, (ELFNode) myTreeModel.getRoot(), x);
+						getNodesInLevel(nodesInLevel, (ELFNode) myTreeModel.getRoot(), x, filterNoChildNodejCheckBox.isSelected());
 
 						int maxNode = (int) maxNodePerLevelSpinner.getValue();
 						for (int l = 0; l < Math.ceil((float) nodesInLevel.size() / maxNode); l++) {
@@ -977,9 +977,9 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 							for (int y = l * maxNode; y < (l + 1) * maxNode && y < nodesInLevel.size(); y++) {
 								//								System.out.print(y + ",");
 								ELFNode node = nodesInLevel.get(y);
-								if (filterNoChildNodejCheckBox.isSelected() && node.getChildCount() == 0 && node.getParent().getParent() == null) {
-									continue;
-								}
+								//								if (filterNoChildNodejCheckBox.isSelected() && node.getChildCount() == 0 && node.getParent().getParent() == null) {
+								//									continue;
+								//								}
 								if ((maxDepthOfTree - node.getLevel()) <= (Integer) maxLevelSpinner.getValue()) {
 									if (y > 0 && !newline && hasAtLeastOneNodeInLevel) {
 										tempStr += " ; ";
@@ -1104,18 +1104,18 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	//		}
 	//	}
 
-	private void getNodesInLevel(Vector<ELFNode> nodesInLevel, ELFNode node, int level) {
+	private void getNodesInLevel(Vector<ELFNode> nodesInLevel, ELFNode node, int level, boolean filterNoChildNode) {
 		if (node.processed) {
 			return;
 		}
 		node.processed = true;
-		if (node.getLevel() == level) {
+		if (node.getLevel() == level && (!filterNoChildNode || node.getChildCount() > 0)) {
 			nodesInLevel.add(node);
 		}
 		Iterator<ELFNode> ir = node.child.iterator();
 		while (ir.hasNext()) {
 			ELFNode tempNode = ir.next();
-			getNodesInLevel(nodesInLevel, tempNode, level);
+			getNodesInLevel(nodesInLevel, tempNode, level, filterNoChildNode);
 		}
 	}
 
