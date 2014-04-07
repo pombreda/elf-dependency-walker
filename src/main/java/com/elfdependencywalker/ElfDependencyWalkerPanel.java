@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -57,7 +56,6 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
-import com.mxgraph.canvas.mxICanvas;
 import com.mxgraph.layout.mxCircleLayout;
 import com.mxgraph.layout.mxCompactTreeLayout;
 import com.mxgraph.layout.mxEdgeLabelLayout;
@@ -75,8 +73,6 @@ import com.mxgraph.util.mxConstants;
 import com.mxgraph.util.mxEvent;
 import com.mxgraph.util.mxEventObject;
 import com.mxgraph.util.mxEventSource.mxIEventListener;
-import com.mxgraph.util.mxPoint;
-import com.mxgraph.view.mxCellState;
 import com.mxgraph.view.mxGraph;
 import com.peterswing.CommonLib;
 import com.peterswing.advancedswing.jdropdownbutton.JDropDownButton;
@@ -117,8 +113,8 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	JFrame jframe;
 	int x = 0;
 	Hashtable<String, mxCell> allNodes = new Hashtable<String, mxCell>();
-	Hashtable<String, String> allNodesEdgeColor = new Hashtable<String, String>();
-	Hashtable<Integer, String> allNodesColor = new Hashtable<Integer, String>();
+	Hashtable<String, Color> allNodesEdgeColor = new Hashtable<String, Color>();
+	Hashtable<Integer, Color> allNodesColor = new Hashtable<Integer, Color>();
 	Random numGen = new Random();
 	private JPanel dotPanel;
 	private JScrollPane scrollPane;
@@ -313,7 +309,6 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 				}
 			});
 			dotLabel.addMouseMotionListener(new MouseMotionAdapter() {
-
 				@Override
 				public void mouseDragged(MouseEvent e) {
 					imageX = e.getX();
@@ -478,7 +473,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			public void run() {
 
 				graph = new mxGraph() {
-					public void drawState(mxICanvas canvas, mxCellState state, String label) {
+					/*public void drawState(mxICanvas canvas, mxCellState state, String label) {
 						if (getModel().isVertex(state.getCell()) && canvas instanceof PeterSwingCanvas) {
 							PeterSwingCanvas c = (PeterSwingCanvas) canvas;
 							c.drawVertex(state, label);
@@ -486,7 +481,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 							// draw edge, at least
 							//					super.drawState(canvas, state, label);
 						}
-					}
+					}*/
 
 					// Ports are not used as terminals for edges, they are
 					// only used to compute the graphical connection point
@@ -566,14 +561,13 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		return true;
 	}
 
-	String getRandomColor() {
-		Color aColor = new Color(numGen.nextInt(100) + 156, numGen.nextInt(100) + 156, numGen.nextInt(100) + 156);
-		String hexStr = Integer.toHexString(aColor.getRGB());
-		return hexStr.substring(2);
+	Color getRandomColor() {
+		Color color = new Color(numGen.nextInt(100) + 156, numGen.nextInt(100) + 156, numGen.nextInt(100) + 156);
+		return color;
 	}
 
-	String getEdgeColor(String edgeIDStr) {
-		String hexStr = allNodesEdgeColor.get(edgeIDStr);
+	Color getEdgeColor(String edgeIDStr) {
+		Color hexStr = allNodesEdgeColor.get(edgeIDStr);
 		if (hexStr == null) {
 			hexStr = getRandomColor();
 			allNodesEdgeColor.put(edgeIDStr, hexStr);
@@ -597,7 +591,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 				x++;
 
 				if (lastVertex != null && lastVertex != newNode) {
-					String hexStr = getEdgeColor(lastVertex.getValue().toString());
+					String hexStr = Integer.toHexString(getEdgeColor(lastVertex.getValue().toString()).getRGB()).substring(2);
 					graph.insertEdge(parent, null, "", lastVertex, newNode, mxConstants.STYLE_STROKECOLOR + "=#" + hexStr + ";edgeStyle=elbowEdgeStyle;");
 				}
 				while (ir.hasNext()) {
@@ -607,7 +601,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 
 			} else {
 				if (lastVertex != null && lastVertex != allNodes.get(node.getFile().getName())) {
-					String hexStr = getEdgeColor(lastVertex.getValue().toString());
+					String hexStr = Integer.toHexString(getEdgeColor(lastVertex.getValue().toString()).getRGB()).substring(2);
 					graph.insertEdge(parent, null, "", lastVertex, allNodes.get(node.getFile().getName()), mxConstants.STYLE_STROKECOLOR + "=#" + hexStr
 							+ ";edgeStyle=elbowEdgeStyle;");
 				}
@@ -617,27 +611,29 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		}
 	}
 
-	private mxCell[] addPort(mxCell node) {
-		final int PORT_DIAMETER = 0;
-		final int PORT_RADIUS = PORT_DIAMETER / 2;
+	/*
+		private mxCell[] addPort(mxCell node) {
+			final int PORT_DIAMETER = 0;
+			final int PORT_RADIUS = PORT_DIAMETER / 2;
 
-		mxGeometry geo1 = new mxGeometry(0.5, 0, PORT_DIAMETER, PORT_DIAMETER);
-		geo1.setOffset(new mxPoint(-PORT_RADIUS, -PORT_RADIUS));
-		geo1.setRelative(true);
+			mxGeometry geo1 = new mxGeometry(0.5, 0, PORT_DIAMETER, PORT_DIAMETER);
+			geo1.setOffset(new mxPoint(-PORT_RADIUS, -PORT_RADIUS));
+			geo1.setRelative(true);
 
-		mxCell port1 = new mxCell(null, geo1, "shape=ellipse;perimter=ellipsePerimeter");
-		port1.setVertex(true);
-		graph.addCell(port1, node);
+			mxCell port1 = new mxCell(null, geo1, "shape=ellipse;perimter=ellipsePerimeter");
+			port1.setVertex(true);
+			graph.addCell(port1, node);
 
-		mxGeometry geo2 = new mxGeometry(0.5, 1, PORT_DIAMETER, PORT_DIAMETER);
-		geo2.setOffset(new mxPoint(-PORT_RADIUS, -PORT_RADIUS));
-		geo2.setRelative(true);
+			mxGeometry geo2 = new mxGeometry(0.5, 1, PORT_DIAMETER, PORT_DIAMETER);
+			geo2.setOffset(new mxPoint(-PORT_RADIUS, -PORT_RADIUS));
+			geo2.setRelative(true);
 
-		mxCell port2 = new mxCell(null, geo2, "shape=ellipse;perimter=ellipsePerimeter");
-		port2.setVertex(true);
-		graph.addCell(port2, node);
-		return new mxCell[] { port1, port2 };
-	}
+			mxCell port2 = new mxCell(null, geo2, "shape=ellipse;perimter=ellipsePerimeter");
+			port2.setVertex(true);
+			graph.addCell(port2, node);
+			return new mxCell[] { port1, port2 };
+		}
+	*/
 
 	private void analystButtonActionPerformed(ActionEvent evt) {
 		if (analystButton.getEventSource() == null) {
@@ -962,7 +958,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 						d.jProgressBar.setString("Level " + level);
 						Vector<ELFNode> nodesInLevel = new Vector<ELFNode>();
 						((ELFNode) myTreeModel.getRoot()).setProcessed(false);
-						getNodesInLevel(nodesInLevel, (ELFNode) myTreeModel.getRoot(), x, filterNoChildNodejCheckBox.isSelected());
+						getNodesInLevel(nodesInLevel, (ELFNode) myTreeModel.getRoot(), x, maxDepthOfTree, filterNoChildNodejCheckBox.isSelected());
 
 						int maxNode = (int) maxNodePerLevelSpinner.getValue();
 						for (int l = 0; l < Math.ceil((float) nodesInLevel.size() / maxNode); l++) {
@@ -1068,6 +1064,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		return new ImageIcon(icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH));
 	}
 
+	/*
 	private void getAllNodes(Vector<ELFNode> allNodes, ELFNode node) {
 		if (allNodes.contains(node)) {
 			return;
@@ -1079,6 +1076,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			getAllNodes(allNodes, childNode);
 		}
 	}
+	*/
 
 	//	private void getNodesInLevel(Vector<ELFNode> nodesInLevel, ELFNode node, int level) {
 	//		Vector<ELFNode> allNodes = new Vector<ELFNode>();
@@ -1104,18 +1102,18 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	//		}
 	//	}
 
-	private void getNodesInLevel(Vector<ELFNode> nodesInLevel, ELFNode node, int level, boolean filterNoChildNode) {
+	private void getNodesInLevel(Vector<ELFNode> nodesInLevel, ELFNode node, int level, int maxDepthOfTree, boolean filterNoChildNode) {
 		if (node.processed) {
 			return;
 		}
 		node.processed = true;
-		if (node.getLevel() == level && (!filterNoChildNode || node.getChildCount() > 0)) {
+		if ((node.getLevel() == maxDepthOfTree && maxDepthOfTree == level) || (node.getLevel() == level && (!filterNoChildNode || node.getChildCount() > 0))) {
 			nodesInLevel.add(node);
 		}
 		Iterator<ELFNode> ir = node.child.iterator();
 		while (ir.hasNext()) {
 			ELFNode tempNode = ir.next();
-			getNodesInLevel(nodesInLevel, tempNode, level, filterNoChildNode);
+			getNodesInLevel(nodesInLevel, tempNode, level, maxDepthOfTree, filterNoChildNode);
 		}
 	}
 
@@ -1145,7 +1143,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		if (filterNoChildNodejCheckBox.isSelected() && node.getChildCount() == 0 && node.getParent().getParent() == null) {
 			return;
 		}
-		String color;
+		Color color;
 		if (colorCheckBox.isSelected()) {
 			color = allNodesColor.get(node.getLevel());
 			if (color == null) {
@@ -1153,15 +1151,11 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 				allNodesColor.put(node.getLevel(), color);
 			}
 		} else {
-			color = "#000000";
+			color = Color.black;
 		}
 		if (!node.file.getName().equals("Peter") && !finishedDotNodes.contains(node.file.getName())) {
 			if ((maxDepthOfTree - node.getLevel()) <= (Integer) maxLevelSpinner.getValue()) {
-				if (colorCheckBox.isSelected()) {
-					writer.write("\t\"" + node.file.getName() + "\" [style=filled, fillcolor=\"#" + color + "\"];\n");
-				} else {
-					writer.write("\t\"" + node.file.getName() + "\" [];\n");
-				}
+				writer.write("\t\"" + node.file.getName() + "\" [style=filled, fillcolor=\"#" + Integer.toHexString(color.getRGB()).substring(2) + "\"];\n");
 				parsed.add(node.file.getName());
 				finishedDotNodes.add(node.file.getName());
 			}
@@ -1177,7 +1171,8 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 							continue;
 						}
 						d.jProgressBar.setString("\t\t\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\"");
-						writer.write("\t\t\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\" [width=1, color=\"#" + color + "\"];\n");
+						writer.write("\t\t\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\" [width=1, color=\"#"
+								+ Integer.toHexString(color.darker().getRGB()).substring(2) + "\", arrowhead=none];\n");
 						allEdges.add(node.file.getName() + "\" -> \"" + childNode.file.getName());
 					}
 				}
