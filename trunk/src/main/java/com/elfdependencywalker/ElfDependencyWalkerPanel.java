@@ -981,7 +981,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 										tempStr += " ; ";
 									}
 									hasAtLeastOneNodeInLevel = true;
-									tempStr += "\"" + node.getFile().getName() + "\"";
+									tempStr += "\"" + node + "\"";
 								}
 							}
 							//							System.out.println();
@@ -1155,7 +1155,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		}
 		if (!node.file.getName().equals("Peter") && !finishedDotNodes.contains(node.file.getName())) {
 			if ((maxDepthOfTree - node.getLevel()) <= (Integer) maxLevelSpinner.getValue()) {
-				writer.write("\t\"" + node.file.getName() + "\" [style=filled, fillcolor=\"#" + Integer.toHexString(color.getRGB()).substring(2) + "\"];\n");
+				writer.write("\t\"" + node + "\" [style=filled, fillcolor=\"#" + Integer.toHexString(color.getRGB()).substring(2) + "\"];\n");
 				parsed.add(node.file.getName());
 				finishedDotNodes.add(node.file.getName());
 			}
@@ -1171,7 +1171,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 							continue;
 						}
 						d.jProgressBar.setString("\t\t\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\"");
-						writer.write("\t\t\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\" [width=1, color=\"#"
+						writer.write("\t\t\"" + node + "\" -> \"" + childNode + "\" [width=1, color=\"#"
 								+ Integer.toHexString(color.darker().getRGB()).substring(2) + "\", arrowhead=none];\n");
 						allEdges.add(node.file.getName() + "\" -> \"" + childNode.file.getName());
 					}

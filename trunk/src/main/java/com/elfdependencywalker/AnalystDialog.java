@@ -119,7 +119,7 @@ public class AnalystDialog extends JDialog implements Runnable {
 		}
 		System.out.println("finished analystELF()");
 		if (root != null) {
-			root.updateLevel(0);
+			root.updateLevel(2);
 			((MyTreeModel) jTree.getModel()).setRoot(root);
 		}
 		this.cancelButton.setText("Finished");
