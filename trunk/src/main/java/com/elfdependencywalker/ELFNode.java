@@ -115,7 +115,6 @@ public class ELFNode implements TreeNode, Comparable {
 
 	public void updateLevel(int level) {
 		if (this.level != -1) {
-//			System.out.println(file.getName() + " ==== " + level);
 			return;
 		}
 		this.level = level;
@@ -125,36 +124,20 @@ public class ELFNode implements TreeNode, Comparable {
 			ELFNode tempNode = ir.next();
 			tempNode.updateLevel(level + 1);
 		}
-	}
 
-	//	public int getLevel() {
-	//		if (processed) {
-	//			return level;
-	//		} else {
-	//			level = getLevel(this, 0, new HashSet<String>());
-	//			System.out.println("level = " + file.getName() + " = " + level);
-	//			return level;
-	//		}
-	//	}
-	//
-	//	public int getLevel(ELFNode node, int level, HashSet<String> parsedNode) {
-	//		if (node == null || processed == true) {
-	//			return level;
-	//		}
-	//		processed = true;
-	//		int maxLevel = 0;
-	//		if (node.parent != null) {
-	//			Iterator<ELFNode> ir = node.parent.iterator();
-	//			while (ir.hasNext()) {
-	//				ELFNode tempNode = ir.next();
-	//				int temp = getLevel(tempNode, level + 1, parsedNode);
-	//				if (temp > maxLevel) {
-	//					maxLevel = temp;
-	//				}
-	//			}
-	//		}
-	//		return maxLevel;
-	//	}
+		// find smallest level of all childNode
+		int smallestLevel = 99999;
+		ir = child.iterator();
+		while (ir.hasNext()) {
+			ELFNode tempNode = ir.next();
+			if (tempNode.level < smallestLevel) {
+				smallestLevel = tempNode.level;
+			}
+		}
+		if (smallestLevel != 99999) {
+			this.level = smallestLevel - 1;
+		}
+	}
 
 	@Override
 	public int compareTo(Object o) {
