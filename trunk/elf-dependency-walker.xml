@@ -1,10 +1,10 @@
 <Setting>
   <x>0</x>
-  <y>24</y>
+  <y>22</y>
   <width>1440</width>
-  <height>852</height>
+  <height>835</height>
   <divX>306</divX>
-  <lastOpenPath>/usr/bin/aleph</lastOpenPath>
+  <lastOpenPath>/usr/bin/afconvert</lastOpenPath>
   <historyList>
     <string>/bin/bzcat</string>
     <string>/bin/bash</string>
