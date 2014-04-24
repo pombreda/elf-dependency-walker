@@ -837,7 +837,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			});
 
 			morph.startAnimation();
-			tabbedPane1.setSelectedIndex(1);
+			tabbedPane1.setSelectedIndex(2);
 		}
 	}
 

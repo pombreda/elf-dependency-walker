@@ -1,10 +1,10 @@
 <Setting>
-  <x>346</x>
-  <y>103</y>
-  <width>1440</width>
-  <height>835</height>
+  <x>0</x>
+  <y>24</y>
+  <width>1920</width>
+  <height>1032</height>
   <divX>306</divX>
-  <lastOpenPath>/bin/tar</lastOpenPath>
+  <lastOpenPath>/bin/dbus-uuidgen</lastOpenPath>
   <historyList>
     <string>/bin/bzcat</string>
     <string>/bin/bash</string>
