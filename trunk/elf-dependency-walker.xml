@@ -1,10 +1,10 @@
 <Setting>
-  <x>0</x>
-  <y>22</y>
+  <x>346</x>
+  <y>103</y>
   <width>1440</width>
   <height>835</height>
   <divX>306</divX>
-  <lastOpenPath>/usr/bin/afconvert</lastOpenPath>
+  <lastOpenPath>/bin/tar</lastOpenPath>
   <historyList>
     <string>/bin/bzcat</string>
     <string>/bin/bash</string>
@@ -16,6 +16,16 @@
     <string>/bin/bzdiff</string>
     <string>/usr/bin/a2p</string>
     <string>/usr/bin/aleph</string>
+    <string>/usr/bin/aclocal</string>
+    <string>/usr/bin/gcc</string>
+    <string>/usr/bin/google-chrome</string>
+    <string>/usr/bin/google-chrome-stable</string>
+    <string>/bin/gzip</string>
+    <string>/root/Downloads/eclipse/eclipse</string>
+    <string>/lib/ld-linux.so.2</string>
+    <string>/lib/libx86.so.1</string>
+    <string>/bin/bunzip2</string>
+    <string>/bin/busybox</string>
   </historyList>
   <lookupDirectory>
     <string>/lib</string>

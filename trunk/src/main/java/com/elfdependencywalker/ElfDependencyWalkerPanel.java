@@ -938,13 +938,14 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 					of.write("digraph \"" + Arrays.toString(files) + "\"{\n");
 					of.write("\tmargin = 0.7;\n");
 					of.write("\tfontname = Verdana;\n");
-					of.write("\tfontsize = 8;\n");
+					of.write("\tfontsize = 12;\n");
+					of.write("\tfontsize = 12;\n");
 					if (chckbxOrtho.isSelected()) {
 						of.write("\tsplines=ortho;\n");
 					}
 					of.write("\tnodesep=0.15;\n");
 					of.write("\tranksep=0.15;\n");
-					of.write("\tnode [shape=box, margin=0.04, shape=box, fontname=\"Ubuntu-M\", fontsize = 10, width=0.2, height=0.1];\n");
+					of.write("\tnode [shape=box, margin=0.04, shape=box, fontname=\"Ubuntu-M\", fontsize = 12, width=0.2, height=0.1];\n");
 
 					((ELFNode) myTreeModel.getRoot()).setProcessed(false);
 					int maxDepthOfTree = getMaxDepth((ELFNode) myTreeModel.getRoot());
@@ -962,27 +963,32 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 
 						int maxNode = (int) maxNodePerLevelSpinner.getValue();
 						for (int l = 0; l < Math.ceil((float) nodesInLevel.size() / maxNode); l++) {
-							String tempStr = "";
+							String levelName = "\"Level " + level + "." + l + "\"";
 							if (level <= (Integer) maxLevelSpinner.getValue()) {
-								allLevelNames.add("\"Level " + level + "." + l + "\"");
+								allLevelNames.add(levelName);
 							}
-							tempStr = "\t{\n\t\trank=same;\"Level " + level + "." + l + "\";";
+							String tempStr = "\t{\n\t\trank=same;\"Level " + level + "." + l + "\";";
 							boolean newline = false;
 							boolean hasAtLeastOneNodeInLevel = false;
 							//							System.out.println("==" + l * maxNode);
+							int noOfMatch = 0;
 							for (int y = l * maxNode; y < (l + 1) * maxNode && y < nodesInLevel.size(); y++) {
 								//								System.out.print(y + ",");
 								ELFNode node = nodesInLevel.get(y);
 								//								if (filterNoChildNodejCheckBox.isSelected() && node.getChildCount() == 0 && node.getParent().getParent() == null) {
 								//									continue;
 								//								}
-								if ((maxDepthOfTree - node.getLevel()) <= (Integer) maxLevelSpinner.getValue()) {
+								if ((maxDepthOfTree - node.getLevel()) <= (Integer) maxLevelSpinner.getValue() && !node.file.getName().equals("Peter")) {
 									if (y > 0 && !newline && hasAtLeastOneNodeInLevel) {
 										tempStr += " ; ";
 									}
 									hasAtLeastOneNodeInLevel = true;
 									tempStr += "\"" + node + "\"";
+									noOfMatch++;
 								}
+							}
+							if (noOfMatch == 0) {
+								allLevelNames.remove(levelName);
 							}
 							//							System.out.println();
 
@@ -1171,8 +1177,8 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 							continue;
 						}
 						d.jProgressBar.setString("\t\t\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\"");
-						writer.write("\t\t\"" + node + "\" -> \"" + childNode + "\" [width=1, color=\"#"
-								+ Integer.toHexString(color.darker().getRGB()).substring(2) + "\", arrowhead=none];\n");
+						writer.write("\t\t\"" + node + "\" -> \"" + childNode + "\" [width=1, color=\"#" + Integer.toHexString(color.darker().getRGB()).substring(2)
+								+ "\", arrowhead=none];\n");
 						allEdges.add(node.file.getName() + "\" -> \"" + childNode.file.getName());
 					}
 				}
