@@ -53,7 +53,7 @@
 			<version>1.2</version>
 		</dependency>
 		<dependency>
-			<groupId>com.peter</groupId>
+			<groupId>com.github.mcheung63</groupId>
 			<artifactId>peter-swing</artifactId>
 			<version>20140721</version>
 		</dependency>
