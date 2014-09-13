@@ -1,13 +1,7 @@
 package com.elfdependencywalker;
 
 import java.io.File;
-import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
-
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.tree.TreeNode;
 
 public class RealNode {
 	File file;
