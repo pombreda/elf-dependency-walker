@@ -2,7 +2,6 @@ package com.elfdependencywalker;
 
 import java.io.File;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 

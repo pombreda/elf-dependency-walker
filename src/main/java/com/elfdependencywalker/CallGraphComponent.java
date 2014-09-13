@@ -53,25 +53,25 @@ public class CallGraphComponent extends mxGraphComponent {
 			// address line
 			int actualWidth = this.getViewport().getComponent(0).getWidth();
 			int actualHeight = this.getViewport().getComponent(0).getHeight();
-//			g2.drawLine(0, minY, actualWidth, minY);
-//			int wordWidth = fm.stringWidth("Address  ");
-//			g2.drawString("Address", minX, minY - 10);
+			//			g2.drawLine(0, minY, actualWidth, minY);
+			//			int wordWidth = fm.stringWidth("Address  ");
+			//			g2.drawString("Address", minX, minY - 10);
 
-//			int width = (int) ((markerEnd - markerOffset) / addressPerPixel);
+			//			int width = (int) ((markerEnd - markerOffset) / addressPerPixel);
 
-//			for (int x = 0; x <= width; x += pixelPerMarker) {
-//				float positionX = x;
-//				float scaledPositionX = (float) (positionX * scale);
-//				scaledPositionX += minX;
-//				g2.drawLine((int) scaledPositionX, (int) (minY - (tricker * scale)), (int) scaledPositionX, (int) (minY + (tricker * scale)));
-//				g2.drawString("0x" + Long.toHexString((long) (x * addressPerPixel) + markerOffset), (int) scaledPositionX, minY);
-//			}
+			//			for (int x = 0; x <= width; x += pixelPerMarker) {
+			//				float positionX = x;
+			//				float scaledPositionX = (float) (positionX * scale);
+			//				scaledPositionX += minX;
+			//				g2.drawLine((int) scaledPositionX, (int) (minY - (tricker * scale)), (int) scaledPositionX, (int) (minY + (tricker * scale)));
+			//				g2.drawString("0x" + Long.toHexString((long) (x * addressPerPixel) + markerOffset), (int) scaledPositionX, minY);
+			//			}
 			// end address line
 
 			// time line
-//			g2.drawLine(minX, 0, minX, actualHeight);
-//			wordWidth = fm.stringWidth("Time");
-//			g2.drawString("Time", minX - wordWidth, minY + 15);
+			//			g2.drawLine(minX, 0, minX, actualHeight);
+			//			wordWidth = fm.stringWidth("Time");
+			//			g2.drawString("Time", minX - wordWidth, minY + 15);
 			// end time line
 
 		}
