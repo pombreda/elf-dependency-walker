@@ -143,7 +143,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	private JCheckBox colorCheckBox;
 	private JPanel graphPanel;
 	private JPanel panel_3;
-	private JCheckBox filterEdgeCheckBox;
+	private JCheckBox oneLevelDownwardOnlyCheckBox;
 
 	public ElfDependencyWalkerPanel(JFrame jframe) {
 		super();
@@ -350,10 +350,10 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			chckbxOrtho = new JCheckBox("Ortho", true);
 			panel_1.add(chckbxOrtho);
 
-			filterEdgeCheckBox = new JCheckBox("Filter edge");
-			panel_1.add(filterEdgeCheckBox);
+			oneLevelDownwardOnlyCheckBox = new JCheckBox("Connect to one level downward only");
+			panel_1.add(oneLevelDownwardOnlyCheckBox);
 
-			lblMaxLevel = new JLabel("Max level:");
+			lblMaxLevel = new JLabel(", Max level:");
 			panel_1.add(lblMaxLevel);
 
 			maxLevelSpinner = new JSpinner();
@@ -1173,7 +1173,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			if (hasEdge && !node.file.getName().equals("Peter") && !allEdges.contains(node.file.getName() + "\" -> \"" + childNode.file.getName())) {
 				if ((maxDepthOfTree - node.getLevel()) <= (Integer) maxLevelSpinner.getValue() && (maxDepthOfTree - childNode.getLevel()) <= (Integer) maxLevelSpinner.getValue()) {
 					if (node.getLevel() < childNode.getLevel()) {
-						if (filterEdgeCheckBox.isSelected() && childNode.getLevel() - node.getLevel() != 1) {
+						if (oneLevelDownwardOnlyCheckBox.isSelected() && childNode.getLevel() - node.getLevel() != 1) {
 							continue;
 						}
 						d.jProgressBar.setString("\t\t\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\"");
