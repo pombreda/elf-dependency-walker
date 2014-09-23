@@ -1,10 +1,10 @@
 <Setting>
-  <x>0</x>
-  <y>24</y>
-  <width>1920</width>
-  <height>1032</height>
+  <x>253</x>
+  <y>95</y>
+  <width>1440</width>
+  <height>836</height>
   <divX>306</divX>
-  <lastOpenPath>/bin/dbus-uuidgen</lastOpenPath>
+  <lastOpenPath>/bin</lastOpenPath>
   <historyList>
     <string>/bin/bzcat</string>
     <string>/bin/bash</string>
@@ -26,6 +26,13 @@
     <string>/lib/libx86.so.1</string>
     <string>/bin/bunzip2</string>
     <string>/bin/busybox</string>
+    <string>/Users/peter/Applications/Chrome Apps.localized/Default gdmmodjlfegeieihcdcgcalkgmhgmiae.app/Contents/MacOS/app_mode_loader</string>
+    <string>/bin/chmod</string>
+    <string>/bin/cp</string>
+    <string>/bin/csh</string>
+    <string>/bin/pwd</string>
+    <string>/bin/ps</string>
+    <string>/bin/rm</string>
   </historyList>
   <lookupDirectory>
     <string>/lib</string>
