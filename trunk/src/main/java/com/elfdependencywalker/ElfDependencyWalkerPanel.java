@@ -110,7 +110,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	JProgressBar jStatusProgressBar = new JProgressBar();
 	AnalystDialog dialog;
 	Object parent;
-	JFrame jframe;
+	JFrame frame;
 	int x = 0;
 	Hashtable<String, mxCell> allNodes = new Hashtable<String, mxCell>();
 	Hashtable<String, Color> allNodesEdgeColor = new Hashtable<String, Color>();
@@ -143,11 +143,11 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	private JCheckBox colorCheckBox;
 	private JPanel graphPanel;
 	private JPanel panel_3;
-	private JCheckBox oneLevelDownwardOnlyCheckBox;
+	private JCheckBox filterUselessEdgeCheckBox;
 
 	public ElfDependencyWalkerPanel(JFrame jframe) {
 		super();
-		this.jframe = jframe;
+		this.frame = jframe;
 		try {
 			BorderLayout thisLayout = new BorderLayout();
 			this.setLayout(thisLayout);
@@ -277,6 +277,10 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			setSize(Setting.getInstance().width, Setting.getInstance().height);
 
 			addLayoutMenuitems();
+			if (Setting.getInstance().divX == 0) {
+				Setting.getInstance().divX = 200;
+				Setting.getInstance().save();
+			}
 			splitPane1.setDividerLocation(Setting.getInstance().divX);
 
 			dotPanel = new JPanel();
@@ -350,8 +354,8 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			chckbxOrtho = new JCheckBox("Ortho", true);
 			panel_1.add(chckbxOrtho);
 
-			oneLevelDownwardOnlyCheckBox = new JCheckBox("Connect to one level downward only");
-			panel_1.add(oneLevelDownwardOnlyCheckBox);
+			filterUselessEdgeCheckBox = new JCheckBox("Clear useless edge");
+			panel_1.add(filterUselessEdgeCheckBox);
 
 			lblMaxLevel = new JLabel(", Max level:");
 			panel_1.add(lblMaxLevel);
@@ -466,7 +470,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	}
 
 	public boolean updateJGraphx(MyTreeModel model) {
-		final JProgressBarDialog d = new JProgressBarDialog(jframe, "Updating tree...", true);
+		final JProgressBarDialog d = new JProgressBarDialog(frame, "Updating tree...", true);
 		d.jProgressBar.setIndeterminate(true);
 		d.jProgressBar.setStringPainted(true);
 		Thread longRunningThread = new Thread() {
@@ -611,30 +615,6 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		}
 	}
 
-	/*
-		private mxCell[] addPort(mxCell node) {
-			final int PORT_DIAMETER = 0;
-			final int PORT_RADIUS = PORT_DIAMETER / 2;
-
-			mxGeometry geo1 = new mxGeometry(0.5, 0, PORT_DIAMETER, PORT_DIAMETER);
-			geo1.setOffset(new mxPoint(-PORT_RADIUS, -PORT_RADIUS));
-			geo1.setRelative(true);
-
-			mxCell port1 = new mxCell(null, geo1, "shape=ellipse;perimter=ellipsePerimeter");
-			port1.setVertex(true);
-			graph.addCell(port1, node);
-
-			mxGeometry geo2 = new mxGeometry(0.5, 1, PORT_DIAMETER, PORT_DIAMETER);
-			geo2.setOffset(new mxPoint(-PORT_RADIUS, -PORT_RADIUS));
-			geo2.setRelative(true);
-
-			mxCell port2 = new mxCell(null, geo2, "shape=ellipse;perimter=ellipsePerimeter");
-			port2.setVertex(true);
-			graph.addCell(port2, node);
-			return new mxCell[] { port1, port2 };
-		}
-	*/
-
 	private void analystButtonActionPerformed(ActionEvent evt) {
 		if (analystButton.getEventSource() == null) {
 			final JFileChooser fc = new JFileChooser(Setting.getInstance().lastOpenPath);
@@ -656,7 +636,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 				Setting.getInstance().historyList.add(files[0].getAbsolutePath());
 				Setting.getInstance().lastOpenPath = files[0].getParentFile().getAbsolutePath();
 			}
-			dialog = new AnalystDialog(jframe, tree1, files);
+			dialog = new AnalystDialog(frame, tree1, files);
 			dialog.setVisible(true);
 			boolean success = updateJGraphx(myTreeModel);
 			if (success) {
@@ -773,7 +753,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		int returnVal = fc.showOpenDialog(this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			Setting.getInstance().lastOpenPath = fc.getSelectedFile().getAbsolutePath();
-			AnalystDialog d = new AnalystDialog(jframe, tree1, fc.getSelectedFiles());
+			AnalystDialog d = new AnalystDialog(frame, tree1, fc.getSelectedFiles());
 			d.setVisible(true);
 			updateJGraphx(myTreeModel);
 			dotButtonActionPerformed(null);
@@ -897,7 +877,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	}
 
 	private void settingButtonActionPerformed(ActionEvent evt) {
-		SettingDialog settingDialog = new SettingDialog(jframe, true);
+		SettingDialog settingDialog = new SettingDialog(frame, true);
 		settingDialog.setLocationRelativeTo(null);
 		settingDialog.setVisible(true);
 	}
@@ -921,7 +901,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 	}
 
 	private void dotButtonActionPerformed(ActionEvent evt) {
-		final JProgressBarDialog d = new JProgressBarDialog(jframe, "Generating dot...", true);
+		final JProgressBarDialog d = new JProgressBarDialog(frame, "Generating dot...", true);
 		d.jProgressBar.setIndeterminate(true);
 		d.jProgressBar.setStringPainted(true);
 
@@ -1180,18 +1160,38 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 			ELFNode childNode = ir.next();
 			if (hasEdge && !node.file.getName().equals("Peter") && !allEdges.contains(node.file.getName() + "\" -> \"" + childNode.file.getName())) {
 				if ((maxDepthOfTree - node.getLevel()) <= (Integer) maxLevelSpinner.getValue() && (maxDepthOfTree - childNode.getLevel()) <= (Integer) maxLevelSpinner.getValue()) {
-					if (node.getLevel() < childNode.getLevel()) {
-						if (oneLevelDownwardOnlyCheckBox.isSelected() && childNode.getLevel() - node.getLevel() != 1) {
+					//if (node.getLevel() < childNode.getLevel()) {
+
+					if (filterUselessEdgeCheckBox.isSelected()) {
+						int maxNoOfNode = maxNoOfNode(node, childNode, 0);
+						System.out.println(node + " == " + childNode + " << " + maxNoOfNode);
+						if (maxNoOfNode > 1) {
 							continue;
 						}
-						d.jProgressBar.setString("\t\t\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\"");
-						writer.write("\t\t\"" + node + "\" -> \"" + childNode + "\" [width=1, color=\"#" + Integer.toHexString(color.darker().getRGB()).substring(2)
-								+ "\", arrowhead=none];\n");
-						allEdges.add(node.file.getName() + "\" -> \"" + childNode.file.getName());
 					}
+					d.jProgressBar.setString("\t\t\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\"");
+					writer.write("\t\t\"" + node + "\" -> \"" + childNode + "\" [width=1, color=\"#" + Integer.toHexString(color.darker().getRGB()).substring(2)
+							+ "\", arrowhead=none];\n");
+					allEdges.add(node.file.getName() + "\" -> \"" + childNode.file.getName());
+					//}
 				}
 			}
 			addDotCells(writer, childNode, hasEdge, maxDepthOfTree, d, parsed);
+		}
+	}
+
+	private int maxNoOfNode(ELFNode node, ELFNode destNode, int noOfLevelPassed) {
+		if (node == destNode) {
+			return noOfLevelPassed;
+		} else {
+			int maxLevel = -99999;
+			for (ELFNode child : node.child) {
+				int temp = maxNoOfNode(child, destNode, noOfLevelPassed + 1);
+				if (temp > maxLevel) {
+					maxLevel = temp;
+				}
+			}
+			return maxLevel;
 		}
 	}
 
