@@ -7,6 +7,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -18,6 +19,10 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTree;
 import javax.swing.LayoutStyle;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.apache.commons.io.filefilter.RegexFileFilter;
 
 import com.peterswing.CommonLib;
 
@@ -44,9 +49,7 @@ public class AnalystDialog extends JDialog implements Runnable {
 		dirs.clear();
 		for (String s : Setting.getInstance().lookupDirectory) {
 			listDirectory(s, dirs);
-//			System.out.println(s + " => " + dirs.size());
 		}
-//		System.out.println("d=" + dirs.size());
 
 		initGUI();
 		CommonLib.centerDialog(this);
@@ -239,14 +242,14 @@ public class AnalystDialog extends JDialog implements Runnable {
 		File directory = new File(directoryName);
 		if (directory.isDirectory()) {
 			files.add(directory);
-		}
-		File[] fList = directory.listFiles();
-		if (fList == null) {
-			return;
-		}
-		for (File file : fList) {
-			if (file.isDirectory()) {
-				listDirectory(file.getAbsolutePath(), files);
+			File[] fList = directory.listFiles();
+			if (fList == null) {
+				return;
+			}
+			for (File file : fList) {
+				if (file.isDirectory()) {
+					listDirectory(file.getAbsolutePath(), files);
+				}
 			}
 		}
 	}
