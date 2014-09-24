@@ -39,16 +39,17 @@ public class AnalystDialog extends JDialog implements Runnable {
 	// Vector<String> parsedFiles = new Vector<String>();
 	HashMap<String, ELFNode> parsedFiles = new HashMap<String, ELFNode>();
 	HashMap<String, String[]> cache = new HashMap<String, String[]>();
-	ArrayList<File> dirs = new ArrayList<File>();
+	static ArrayList<File> dirs = new ArrayList<File>();
 
 	public AnalystDialog(JFrame frame, JTree jTree, File files[]) {
 		super(frame, true);
 		this.jTree = jTree;
 		this.files = files;
 
-		dirs.clear();
-		for (String s : Setting.getInstance().lookupDirectory) {
-			listDirectory(s, dirs);
+		if (dirs.size() == 0) {
+			for (String s : Setting.getInstance().lookupDirectory) {
+				listDirectory(s, dirs);
+			}
 		}
 
 		initGUI();
