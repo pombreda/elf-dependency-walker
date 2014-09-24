@@ -60,7 +60,7 @@ public class ELFNode implements TreeNode, Comparable {
 		if (file != null && file.isDirectory()) {
 			return file.getPath();
 		} else {
-			return file.getName() + " ," + getLevel();
+			return file.getName();
 		}
 	}
 

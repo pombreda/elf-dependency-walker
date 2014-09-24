@@ -1153,7 +1153,15 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		if (colorCheckBox.isSelected()) {
 			color = allNodesColor.get(node.getLevel());
 			if (color == null) {
-				color = getRandomColor();
+				//color = getRandomColor();
+				int hashCode = node.file.getName().hashCode();
+				color = new Color(hashCode);
+				double luma = 0.2126 * color.getRed() + 0.7152 * color.getGreen() + 0.0722 * color.getBlue();
+				while (luma < 120) {
+					hashCode = hashCode * 2;
+					color = new Color(hashCode);
+					luma = 0.2126 * color.getRed() + 0.7152 * color.getGreen() + 0.0722 * color.getBlue();
+				}
 				allNodesColor.put(node.getLevel(), color);
 			}
 		} else {
