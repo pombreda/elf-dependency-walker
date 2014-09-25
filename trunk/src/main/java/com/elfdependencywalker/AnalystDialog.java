@@ -7,7 +7,6 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -19,10 +18,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTree;
 import javax.swing.LayoutStyle;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.DirectoryFileFilter;
-import org.apache.commons.io.filefilter.RegexFileFilter;
 
 import com.peterswing.CommonLib;
 
@@ -123,7 +118,7 @@ public class AnalystDialog extends JDialog implements Runnable {
 		}
 		System.out.println("finished analystELF()");
 		if (root != null) {
-			root.updateLevel(2);
+			root.updateLevel(0, new Vector<ELFNode>());
 			((MyTreeModel) jTree.getModel()).setRoot(root);
 		}
 		this.cancelButton.setText("Finished");

@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.Vector;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -60,7 +61,7 @@ public class ELFNode implements TreeNode, Comparable {
 		if (file != null && file.isDirectory()) {
 			return file.getPath();
 		} else {
-			return file.getName();
+			return file.getName() + " , " + getLevel();
 		}
 	}
 
@@ -112,16 +113,22 @@ public class ELFNode implements TreeNode, Comparable {
 		return level;
 	}
 
-	public void updateLevel(int level) {
+	public void updateLevel(int level, Vector<ELFNode> processedNodes) {
+		if (processedNodes.contains(this)) {
+			return;
+		} else {
+			processedNodes.add(this);
+		}
 		if (this.level != -1) {
 			return;
 		}
 		this.level = level;
 		System.out.print(", " + file.getName() + "=" + level);
 		Iterator<ELFNode> ir = child.iterator();
+
 		while (ir.hasNext()) {
 			ELFNode tempNode = ir.next();
-			tempNode.updateLevel(level + 1);
+			tempNode.updateLevel(level + 1, processedNodes);
 		}
 
 		// find smallest level of all childNode
