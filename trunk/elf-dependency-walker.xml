@@ -1,18 +1,15 @@
 <Setting>
-  <x>100</x>
-  <y>29</y>
-  <width>1282</width>
-  <height>735</height>
-  <divX>564</divX>
-  <lastOpenPath>/bin</lastOpenPath>
+  <x>246</x>
+  <y>56</y>
+  <width>1421</width>
+  <height>819</height>
+  <divX>427</divX>
+  <lastOpenPath>/bin/bash</lastOpenPath>
   <historyList>
     <string>/bin/bzcat</string>
-    <string>/usr/local/bin/sphinx-quickstart</string>
-    <string>/usr/local/bin/nop</string>
-    <string>/bin/chmod</string>
-    <string>/bin/cat</string>
-    <string>/bin/echo</string>
-    <string>/bin/pwd</string>
+    <string>/bin/busybox</string>
+    <string>/bin/bzmore</string>
+    <string>/bin/bunzip2</string>
   </historyList>
   <lookupDirectory>
     <string>/usr</string>
