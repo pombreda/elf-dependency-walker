@@ -1050,44 +1050,6 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		return new ImageIcon(icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH));
 	}
 
-	/*
-	private void getAllNodes(Vector<ELFNode> allNodes, ELFNode node) {
-		if (allNodes.contains(node)) {
-			return;
-		}
-		allNodes.add(node);
-		Iterator<ELFNode> ir = node.child.iterator();
-		while (ir.hasNext()) {
-			ELFNode childNode = ir.next();
-			getAllNodes(allNodes, childNode);
-		}
-	}
-	*/
-
-	//	private void getNodesInLevel(Vector<ELFNode> nodesInLevel, ELFNode node, int level) {
-	//		Vector<ELFNode> allNodes = new Vector<ELFNode>();
-	//		getAllNodes(allNodes, (ELFNode) myTreeModel.getRoot());
-	//		Collections.sort(allNodes);
-	//		ELFNode lastNode = null;
-	//		int maxDepth = -9999;
-	//		for (ELFNode n : allNodes) {
-	//			if (lastNode != null && !n.file.getName().equals(lastNode.file.getName())) {
-	//				if (maxDepth == level) {
-	//					//					Global.debug(lastNode.file.getName() + " == " + level);
-	//					nodesInLevel.addElement(lastNode);
-	//				}
-	//				maxDepth = n.getLevel();
-	//			} else {
-	//				if (n.getLevel() > maxDepth) {
-	//					maxDepth = n.getLevel();
-	//				}
-	//
-	//				//				Global.debug("   " + n.file.getName() + " = " + n.getLevel());
-	//			}
-	//			lastNode = n;
-	//		}
-	//	}
-
 	private void getNodesInLevel(Vector<ELFNode> nodesInLevel, ELFNode node, int level, int maxDepthOfTree, boolean filterNoChildNode) {
 		if (node.processed) {
 			return;
@@ -1186,9 +1148,12 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		} else {
 			int maxLevel = -99999;
 			for (ELFNode child : node.child) {
-				int temp = maxNoOfNode(child, destNode, noOfLevelPassed + 1);
-				if (temp > maxLevel) {
-					maxLevel = temp;
+				System.out.println(node + " === " + child);
+				if (node != child) {
+					int temp = maxNoOfNode(child, destNode, noOfLevelPassed + 1);
+					if (temp > maxLevel) {
+						maxLevel = temp;
+					}
 				}
 			}
 			return maxLevel;
