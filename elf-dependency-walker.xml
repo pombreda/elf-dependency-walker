@@ -1,14 +1,15 @@
 <Setting>
-  <x>869</x>
-  <y>52</y>
-  <width>1581</width>
-  <height>926</height>
+  <x>100</x>
+  <y>29</y>
+  <width>1282</width>
+  <height>735</height>
   <divX>200</divX>
   <lastOpenPath>/bin</lastOpenPath>
   <historyList>
     <string>/bin/bzcat</string>
     <string>/usr/local/bin/sphinx-quickstart</string>
     <string>/usr/local/bin/nop</string>
+    <string>/bin/chmod</string>
   </historyList>
   <lookupDirectory>
     <string>/usr</string>
