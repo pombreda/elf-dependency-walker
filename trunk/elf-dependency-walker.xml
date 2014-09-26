@@ -1,15 +1,19 @@
 <Setting>
-  <x>246</x>
-  <y>56</y>
-  <width>1421</width>
-  <height>819</height>
+  <x>-1</x>
+  <y>24</y>
+  <width>1922</width>
+  <height>1033</height>
   <divX>427</divX>
-  <lastOpenPath>/bin/bash</lastOpenPath>
+  <lastOpenPath>/usr/lib/libgtk-vnc-2.0.so</lastOpenPath>
   <historyList>
     <string>/bin/bzcat</string>
     <string>/bin/busybox</string>
     <string>/bin/bzmore</string>
     <string>/bin/bunzip2</string>
+    <string>/usr/lib/libxmi.so.0</string>
+    <string>/usr/lib/libmpeg2.so.0.0.0</string>
+    <string>/usr/lib/sftp-server</string>
+    <string>/usr/lib/libmpif77.so</string>
   </historyList>
   <lookupDirectory>
     <string>/usr</string>
