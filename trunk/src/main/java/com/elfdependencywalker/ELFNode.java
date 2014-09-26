@@ -131,18 +131,18 @@ public class ELFNode implements TreeNode, Comparable {
 			tempNode.updateLevel(level + 1, processedNodes);
 		}
 
-		// find smallest level of all childNode
-		int smallestLevel = 99999;
-		ir = child.iterator();
-		while (ir.hasNext()) {
-			ELFNode tempNode = ir.next();
-			if (tempNode.level < smallestLevel) {
-				smallestLevel = tempNode.level;
-			}
-		}
-		if (smallestLevel != 99999) {
-			this.level = smallestLevel - 1;
-		}
+//		// find smallest level of all childNode
+//		int smallestLevel = 99999;
+//		ir = child.iterator();
+//		while (ir.hasNext()) {
+//			ELFNode tempNode = ir.next();
+//			if (tempNode.level < smallestLevel) {
+//				smallestLevel = tempNode.level;
+//			}
+//		}
+//		if (smallestLevel != 99999) {
+//			this.level = smallestLevel - 1;
+//		}
 	}
 
 	@Override

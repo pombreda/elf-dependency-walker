@@ -1148,8 +1148,8 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		} else {
 			int maxLevel = -99999;
 			for (ELFNode child : node.child) {
-				System.out.println(node + " === " + child + " , " + node.getLevel() + " , " + child.getLevel());
 				if (node != child && child.getLevel() > node.getLevel()) {
+					System.out.println(node + " === " + child + " , " + node.getLevel() + " , " + child.getLevel());
 					int temp = maxNoOfNode(child, destNode, noOfLevelPassed + 1);
 					if (temp > maxLevel) {
 						maxLevel = temp;
