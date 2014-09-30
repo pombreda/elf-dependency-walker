@@ -914,18 +914,20 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 					allNodesEdgeColor.clear();
 					allNodesColor.clear();
 					File file = new File("elf.dot");
-					BufferedWriter of = new BufferedWriter(new FileWriter(file));
-					of.write("digraph \"" + Arrays.toString(files) + "\"{\n");
-					of.write("\tmargin = 0.7;\n");
-					of.write("\tfontname = Verdana;\n");
-					of.write("\tfontsize = 12;\n");
-					of.write("\tfontsize = 12;\n");
+					String str = "";
+					//					BufferedWriter of = new BufferedWriter(new FileWriter(file));
+					str += "digraph \"" + Arrays.toString(files) + "\"{\n";
+					str += "\tmargin = 0.7;\n";
+					str += "\tfontname = Verdana;\n";
+					str += "\tfontsize = 12;\n";
+					str += "\tfontsize = 12;\n";
 					if (chckbxOrtho.isSelected()) {
-						of.write("\tsplines=ortho;\n");
+						str += "\tsplines=ortho;\n";
 					}
-					of.write("\tnodesep=0.15;\n");
-					of.write("\tranksep=0.15;\n");
-					of.write("\tnode [shape=box, margin=0.04, shape=box, fontname=\"Ubuntu-M\", fontsize = 12, width=0.2, height=0.1];\n");
+					str += "\tnodesep=0.15;\n";
+					str += "\tranksep=0.15;\n";
+					str += "\tnode [shape=box, margin=0.04, shape=box, fontname=\"Ubuntu-M\", fontsize = 12, width=0.2, height=0.1];\n";
+					str += "AAABBBCCC\n";
 
 					((ELFNode) myTreeModel.getRoot()).setProcessed(false);
 					int maxDepthOfTree = getMaxDepth((ELFNode) myTreeModel.getRoot());
@@ -974,25 +976,31 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 
 							tempStr += "\n\t}\n";
 							if (hasAtLeastOneNodeInLevel) {
-								of.write(tempStr);
+								str += tempStr;
 							}
 						}
 					}
 					//end rank
 
-					addDotCells(of, (ELFNode) myTreeModel.getRoot(), chckbxEdge.isSelected(), maxDepthOfTree, d, new Vector<String>());
+					str = addDotCells(str, (ELFNode) myTreeModel.getRoot(), chckbxEdge.isSelected(), maxDepthOfTree, d, new Vector<String>());
 
-					of.write("\t{\n\t");
-					//of.write("\t\tnode[shape=box fontsize=8 width=0.2 height=0.1];\n");
+					// rank level
+					String tempLevel = "\t{\n\t";
 					for (int x = allLevelNames.size() - 1; x >= 0; x--) {
 						if (x < allLevelNames.size() - 1) {
-							of.write(" -> ");
+							tempLevel += " -> ";
 						}
-						of.write(allLevelNames.toArray()[x].toString());
+						tempLevel += allLevelNames.toArray()[x].toString();
 					}
-					of.write("\n\t}\n");
-					of.write("}\n"); //end graph
-					of.close();
+					tempLevel += "\n\t}\n";
+					str = str.replaceAll("AAABBBCCC", tempLevel);
+					// rank level
+
+					str += "}\n"; //end graph
+
+					BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+					bw.write(str);
+					bw.close();
 
 					new File("elf.png").delete();
 					d.jProgressBar.setString("running dot command : " + "dot -Tpng " + file.getName() + " -o elf.png");
@@ -1084,12 +1092,12 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		return maxChildDepth;
 	}
 
-	private void addDotCells(BufferedWriter writer, ELFNode node, boolean hasEdge, int maxDepthOfTree, JProgressBarDialog d, Vector<String> parsed) throws IOException {
+	private String addDotCells(String str, ELFNode node, boolean hasEdge, int maxDepthOfTree, JProgressBarDialog d, Vector<String> parsed) throws IOException {
 		if (parsed.contains(node.getFile().getName())) {
-			return;
+			return str;
 		}
 		if (filterNoChildNodejCheckBox.isSelected() && node.getChildCount() == 0 && node.getParent().getParent() == null) {
-			return;
+			return str;
 		}
 		Color color;
 		if (colorCheckBox.isSelected()) {
@@ -1111,7 +1119,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 		}
 		if (!node.file.getName().equals("Peter") && !finishedDotNodes.contains(node.file.getName())) {
 			if ((maxDepthOfTree - node.getLevel()) <= (Integer) maxLevelSpinner.getValue()) {
-				writer.write("\t\"" + node + "\" [style=filled, fillcolor=\"#" + Integer.toHexString(color.getRGB()).substring(2) + "\"];\n");
+				str += "\t\"" + node + "\" [style=filled, fillcolor=\"#" + Integer.toHexString(color.getRGB()).substring(2) + "\"];\n";
 				parsed.add(node.file.getName());
 				finishedDotNodes.add(node.file.getName());
 			}
@@ -1132,14 +1140,15 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 						}
 					}
 					d.jProgressBar.setString("\t\t\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\"");
-					writer.write("\t\t\"" + node + "\" -> \"" + childNode + "\" [width=1, color=\"#" + Integer.toHexString(color.darker().getRGB()).substring(2)
-							+ "\", arrowhead=none];\n");
+					str += "\t\t\"" + node + "\" -> \"" + childNode + "\" [width=1, color=\"#" + Integer.toHexString(color.darker().getRGB()).substring(2)
+							+ "\", arrowhead=none];\n";
 					allEdges.add(node.file.getName() + "\" -> \"" + childNode.file.getName());
 					//}
 				}
 			}
-			addDotCells(writer, childNode, hasEdge, maxDepthOfTree, d, parsed);
+			str = addDotCells(str, childNode, hasEdge, maxDepthOfTree, d, parsed);
 		}
+		return str;
 	}
 
 	private int maxNoOfNode(ELFNode node, ELFNode destNode, int noOfLevelPassed) {
