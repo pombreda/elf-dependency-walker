@@ -471,8 +471,8 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 
 	public boolean updateJGraphx(MyTreeModel model) {
 		final JProgressBarDialog d = new JProgressBarDialog(frame, "Updating tree...", true);
-		d.jProgressBar.setIndeterminate(true);
-		d.jProgressBar.setStringPainted(true);
+		d.progressBar.setIndeterminate(true);
+		d.progressBar.setStringPainted(true);
 		Thread longRunningThread = new Thread() {
 			public void run() {
 
@@ -517,7 +517,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 				while (ir.hasNext()) {
 					ELFNode n = ir.next();
 					addCells(parent, n, null);
-					d.jProgressBar.setString(n.getFile().getName());
+					d.progressBar.setString(n.getFile().getName());
 				}
 
 				graph.setCellsDisconnectable(false);
@@ -902,8 +902,8 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 
 	private void dotButtonActionPerformed(ActionEvent evt) {
 		final JProgressBarDialog d = new JProgressBarDialog(frame, "Generating dot...", true);
-		d.jProgressBar.setIndeterminate(true);
-		d.jProgressBar.setStringPainted(true);
+		d.progressBar.setIndeterminate(true);
+		d.progressBar.setStringPainted(true);
 
 		Thread longRunningThread = new Thread() {
 			public void run() {
@@ -938,7 +938,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 						if (level > (Integer) maxLevelSpinner.getValue()) {
 							continue;
 						}
-						d.jProgressBar.setString("Level " + level);
+						d.progressBar.setString("Level " + level);
 						Vector<ELFNode> nodesInLevel = new Vector<ELFNode>();
 						((ELFNode) myTreeModel.getRoot()).setProcessed(false);
 						getNodesInLevel(nodesInLevel, (ELFNode) myTreeModel.getRoot(), x, maxDepthOfTree, filterNoChildNodejCheckBox.isSelected());
@@ -1003,7 +1003,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 					bw.close();
 
 					new File("elf.png").delete();
-					d.jProgressBar.setString("running dot command : " + "dot -Tpng " + file.getName() + " -o elf.png");
+					d.progressBar.setString("running dot command : " + "dot -Tpng " + file.getName() + " -o elf.png");
 					if (Global.isMac) {
 						CommonLib.runCommand("/opt/local/bin/dot -Tpng " + file.getName() + " -o elf.png");
 					} else {
@@ -1139,7 +1139,7 @@ public class ElfDependencyWalkerPanel extends javax.swing.JPanel implements Prin
 							continue;
 						}
 					}
-					d.jProgressBar.setString("\t\t\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\"");
+					d.progressBar.setString("\t\t\"" + node.file.getName() + "\" -> \"" + childNode.file.getName() + "\"");
 					str += "\t\t\"" + node + "\" -> \"" + childNode + "\" [width=1, color=\"#" + Integer.toHexString(color.darker().getRGB()).substring(2)
 							+ "\", arrowhead=none];\n";
 					allEdges.add(node.file.getName() + "\" -> \"" + childNode.file.getName());
