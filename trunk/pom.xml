@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<version>20141215</version>
+	<version>20150128</version>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>elf-dependency-walker</groupId>
 	<artifactId>elf-dependency-walker</artifactId>
@@ -50,7 +50,7 @@
 		<dependency>
 			<groupId>com.github.mcheung63</groupId>
 			<artifactId>peter-swing</artifactId>
-			<version>20141215</version>
+			<version>20150128</version>
 		</dependency>
 		<dependency>
 			<groupId>xstream</groupId>
@@ -70,7 +70,7 @@
 		<dependency>
 			<groupId>org.tinyjee.jgraphx</groupId>
 			<artifactId>jgraphx</artifactId>
-			<version>1.10.4.1</version>
+			<version>20150128</version>
 		</dependency>
 	</dependencies>
 </project>
