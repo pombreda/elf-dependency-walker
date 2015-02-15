@@ -1,7 +1,6 @@
 package com.elfdependencywalker;
 
 public class Global {
-	public static String version = "20141002";
 	public static boolean debug = true;
 	public static boolean isMac = false;
 	public static String filename = "elf.png";
