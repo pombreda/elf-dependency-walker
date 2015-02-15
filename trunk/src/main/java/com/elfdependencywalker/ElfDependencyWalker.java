@@ -64,7 +64,7 @@ public class ElfDependencyWalker extends JFrame implements ApplicationListener {
 			macApp.addApplicationListener(this);
 		}
 		try {
-			setTitle("Elf Dependency Walker " + Global.version);
+			setTitle("Elf Dependency Walker " + PropertyUtil.getProperty("version"));
 			this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 			this.addWindowListener(new WindowAdapter() {
 				public void windowClosing(WindowEvent evt) {
